@@ -83,6 +83,14 @@ export default function Landing() {
         <div className="absolute inset-0 bg-gradient-to-r from-[#0F1B2D] via-[#0F1B2D]/95 to-[#0F1B2D]/85 z-[1]" />
         <div className="absolute inset-0 bg-gradient-to-t from-[#0F1B2D] via-transparent to-transparent z-[1]" />
 
+        {/* Animated gold line accent above hero */}
+        <motion.div
+          initial={{ scaleX: 0 }}
+          animate={{ scaleX: 1 }}
+          transition={{ duration: 1.2, delay: 0.5, ease: [0.25, 0.1, 0.25, 1] }}
+          className="absolute top-28 left-1/2 -translate-x-1/2 w-32 h-px bg-gold/40 z-10 origin-left"
+        />
+
         <motion.div style={{ opacity: heroOpacity }} className="relative z-10 w-full pt-24 pb-20 md:pb-32">
           <div className="mx-auto max-w-7xl px-6 sm:px-8 lg:px-10">
             <div className="max-w-4xl">
@@ -168,10 +176,42 @@ export default function Landing() {
             transition={{ duration: 2.5, repeat: Infinity, ease: "easeInOut" }}
             className="flex flex-col items-center gap-2"
           >
-            <span className="text-[10px] tracking-widest uppercase text-muted-foreground">Scroll</span>
-            <div className="h-6 w-px bg-border" />
+            <span className="text-[10px] tracking-widest uppercase text-white/30">Scroll</span>
+            <div className="h-6 w-px bg-white/20" />
           </motion.div>
         </motion.div>
+
+        {/* Bottom decorative gradient bar */}
+        <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-gold/30 to-transparent" />
+      </section>
+
+      {/* ===== SHOWCASE STRIP ===== */}
+      <section className="bg-[#0F1B2D] border-b border-white/5">
+        <div className="mx-auto max-w-7xl px-6 sm:px-8 lg:px-10 py-8">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+            {projects.slice(0, 4).map((project) => (
+              <motion.a
+                key={project.id}
+                href={`/portfolio#${project.id}`}
+                initial={{ opacity: 0, y: 15 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                className="group relative overflow-hidden"
+              >
+                <img
+                  src={project.image}
+                  alt={project.title}
+                  className="w-full h-32 object-cover opacity-60 group-hover:opacity-100 transition-opacity duration-500"
+                  loading="lazy"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-[#0F1B2D] to-transparent" />
+                <p className="absolute bottom-2 left-3 text-xs font-medium text-white/70 group-hover:text-white transition-colors">
+                  {project.title}
+                </p>
+              </motion.a>
+            ))}
+          </div>
+        </div>
       </section>
 
       {/* ===== STATS ===== */}

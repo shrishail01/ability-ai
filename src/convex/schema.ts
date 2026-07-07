@@ -32,12 +32,74 @@ const schema = defineSchema(
       role: v.optional(roleValidator), // role of the user. do not remove
     }).index("email", ["email"]), // index for the email. do not remove or modify
 
-    // add other tables here
+    // CMS Tables for Admin Panel
+    cms_services: defineTable({
+      title: v.string(),
+      description: v.string(),
+      icon: v.string(),
+      benefits: v.array(v.string()),
+      technologies: v.array(v.string()),
+      color: v.string(),
+      order: v.number(),
+    }).index("by_order", ["order"]),
 
-    // tableName: defineTable({
-    //   ...
-    //   // table fields
-    // }).index("by_field", ["field"])
+    cms_projects: defineTable({
+      title: v.string(),
+      category: v.string(),
+      description: v.string(),
+      longDescription: v.string(),
+      image: v.string(),
+      color: v.string(),
+      technologies: v.array(v.string()),
+      liveUrl: v.optional(v.string()),
+      githubUrl: v.optional(v.string()),
+      results: v.array(v.string()),
+      year: v.string(),
+      featured: v.boolean(),
+      order: v.number(),
+    }).index("by_order", ["order"]),
+
+    cms_blog_posts: defineTable({
+      title: v.string(),
+      excerpt: v.string(),
+      content: v.string(),
+      author: v.string(),
+      authorRole: v.string(),
+      date: v.string(),
+      readTime: v.string(),
+      category: v.string(),
+      image: v.string(),
+      tags: v.array(v.string()),
+      featured: v.boolean(),
+      order: v.number(),
+    }).index("by_order", ["order"]),
+
+    cms_team_members: defineTable({
+      name: v.string(),
+      role: v.string(),
+      bio: v.string(),
+      image: v.string(),
+      color: v.string(),
+      twitter: v.optional(v.string()),
+      linkedin: v.optional(v.string()),
+      github: v.optional(v.string()),
+      order: v.number(),
+    }).index("by_order", ["order"]),
+
+    cms_testimonials: defineTable({
+      name: v.string(),
+      role: v.string(),
+      company: v.string(),
+      content: v.string(),
+      avatar: v.string(),
+      rating: v.number(),
+      order: v.number(),
+    }).index("by_order", ["order"]),
+
+    cms_site_settings: defineTable({
+      key: v.string(),
+      value: v.string(),
+    }).index("by_key", ["key"]),
   },
   {
     schemaValidation: false,

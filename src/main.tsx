@@ -28,6 +28,16 @@ const Contact = lazy(() => import("./pages/Contact.tsx"));
 const AuthPage = lazy(() => import("./pages/Auth.tsx"));
 const NotFound = lazy(() => import("./pages/NotFound.tsx"));
 
+// Admin pages
+const AdminLayout = lazy(() => import("./pages/admin/AdminLayout.tsx"));
+const AdminDashboard = lazy(() => import("./pages/admin/Dashboard.tsx"));
+const AdminServices = lazy(() => import("./pages/admin/ServicesPage.tsx"));
+const AdminProjects = lazy(() => import("./pages/admin/ProjectsPage.tsx"));
+const AdminBlog = lazy(() => import("./pages/admin/BlogPage.tsx"));
+const AdminTeam = lazy(() => import("./pages/admin/TeamPage.tsx"));
+const AdminTestimonials = lazy(() => import("./pages/admin/TestimonialsPage.tsx"));
+const AdminSettings = lazy(() => import("./pages/admin/SettingsPage.tsx"));
+
 // Simple loading fallback for route transitions
 function RouteLoading() {
   return (
@@ -89,6 +99,18 @@ createRoot(document.getElementById("root")!).render(
                 <Route path="/careers" element={<Layout><Careers /></Layout>} />
                 <Route path="/contact" element={<Layout><Contact /></Layout>} />
                 <Route path="/auth" element={<AuthPage redirectAfterAuth="/" />} />
+                
+                {/* Admin Routes */}
+                <Route path="/admin" element={<AdminLayout />}>
+                  <Route index element={<AdminDashboard />} />
+                  <Route path="services" element={<AdminServices />} />
+                  <Route path="projects" element={<AdminProjects />} />
+                  <Route path="blog" element={<AdminBlog />} />
+                  <Route path="team" element={<AdminTeam />} />
+                  <Route path="testimonials" element={<AdminTestimonials />} />
+                  <Route path="settings" element={<AdminSettings />} />
+                </Route>
+
                 <Route path="*" element={<Layout><NotFound /></Layout>} />
               </Routes>
             </Suspense>
