@@ -3,7 +3,6 @@ import { Menu, X, ChevronDown, Sparkles } from "lucide-react";
 import { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router";
 import { cn } from "../../lib/utils";
-import { ThemeToggle } from "./ThemeToggle";
 import { services } from "../../data/services";
 
 const navLinks = [
@@ -151,7 +150,6 @@ export function Navbar() {
 
             {/* Right side */}
             <div className="flex items-center gap-3">
-              <ThemeToggle />
               <Link
                 to="/contact"
                 className={cn(

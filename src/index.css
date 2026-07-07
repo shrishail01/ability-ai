@@ -1,6 +1,5 @@
 @import "tailwindcss";
 @import "tw-animate-css";
-@custom-variant dark (&:is(.dark *));
 
 @theme inline {
   --radius-sm: calc(var(--radius) - 4px);
@@ -38,110 +37,53 @@
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-ring: var(--sidebar-ring);
-  --color-electric-blue: #0066FF;
-  --color-electric-blue-dark: #0052CC;
-  --color-electric-blue-light: #4D94FF;
-  --color-cyan: #00D4FF;
-  --color-purple: #7C3AED;
-  --color-purple-light: #A78BFA;
-  --color-glass: rgba(255, 255, 255, 0.05);
-  --color-glass-border: rgba(255, 255, 255, 0.1);
-  --color-glass-hover: rgba(255, 255, 255, 0.1);
-  --animate-aurora: aurora 60s linear infinite;
   --animate-float: float 6s ease-in-out infinite;
   --animate-glow: glow 2s ease-in-out infinite alternate;
-  --animate-grid: grid 20s linear infinite;
-}
-
-@keyframes aurora {
-  0%, 100% { transform: translateX(0%) translateY(0%) rotate(0deg); }
-  25% { transform: translateX(-25%) translateY(-15%) rotate(5deg); }
-  50% { transform: translateX(10%) translateY(10%) rotate(-3deg); }
-  75% { transform: translateX(-15%) translateY(5%) rotate(4deg); }
 }
 
 @keyframes float {
   0%, 100% { transform: translateY(0px); }
-  50% { transform: translateY(-20px); }
+  50% { transform: translateY(-10px); }
 }
 
 @keyframes glow {
-  0% { box-shadow: 0 0 20px rgba(0, 102, 255, 0.3), 0 0 40px rgba(0, 102, 255, 0.1); }
-  100% { box-shadow: 0 0 30px rgba(0, 102, 255, 0.5), 0 0 60px rgba(0, 102, 255, 0.2), 0 0 80px rgba(124, 58, 237, 0.1); }
-}
-
-@keyframes grid {
-  0% { transform: translateY(0); }
-  100% { transform: translateY(-50px); }
+  0% { box-shadow: 0 0 10px rgba(37, 99, 235, 0.2), 0 0 20px rgba(37, 99, 235, 0.1); }
+  100% { box-shadow: 0 0 20px rgba(37, 99, 235, 0.3), 0 0 40px rgba(37, 99, 235, 0.15); }
 }
 
 :root {
-  --radius: 0.75rem;
-  --background: oklch(0.98 0 0);
-  --foreground: oklch(0.1 0 0);
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.1 0 0);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.1 0 0);
-  --primary: #0066FF;
-  --primary-foreground: oklch(0.98 0 0);
-  --secondary: oklch(0.95 0 0);
-  --secondary-foreground: oklch(0.2 0 0);
-  --muted: oklch(0.95 0 0);
-  --muted-foreground: oklch(0.5 0 0);
-  --accent: #7C3AED;
-  --accent-foreground: oklch(0.98 0 0);
-  --destructive: oklch(0.577 0.245 27.325);
-  --border: oklch(0.9 0 0);
-  --input: oklch(0.9 0 0);
-  --ring: #0066FF;
-  --chart-1: #0066FF;
-  --chart-2: #00D4FF;
-  --chart-3: #7C3AED;
-  --chart-4: #A78BFA;
-  --chart-5: #4D94FF;
-  --sidebar: oklch(0.98 0 0);
-  --sidebar-foreground: oklch(0.1 0 0);
-  --sidebar-primary: #0066FF;
-  --sidebar-primary-foreground: oklch(0.98 0 0);
-  --sidebar-accent: oklch(0.95 0 0);
-  --sidebar-accent-foreground: oklch(0.2 0 0);
-  --sidebar-border: oklch(0.9 0 0);
-  --sidebar-ring: #0066FF;
-}
-
-.dark {
-  --background: oklch(0.03 0.005 260);
-  --foreground: oklch(0.98 0 0);
-  --card: oklch(0.08 0.01 260);
-  --card-foreground: oklch(0.98 0 0);
-  --popover: oklch(0.08 0.01 260);
-  --popover-foreground: oklch(0.98 0 0);
-  --primary: #0066FF;
-  --primary-foreground: oklch(0.98 0 0);
-  --secondary: oklch(0.15 0.01 260);
-  --secondary-foreground: oklch(0.98 0 0);
-  --muted: oklch(0.12 0.01 260);
-  --muted-foreground: oklch(0.65 0 0);
-  --accent: #7C3AED;
-  --accent-foreground: oklch(0.98 0 0);
-  --destructive: oklch(0.577 0.245 27.325);
-  --border: rgba(255, 255, 255, 0.08);
-  --input: rgba(255, 255, 255, 0.12);
-  --ring: #0066FF;
-  --chart-1: #0066FF;
-  --chart-2: #00D4FF;
-  --chart-3: #7C3AED;
-  --chart-4: #A78BFA;
-  --chart-5: #4D94FF;
-  --sidebar: oklch(0.06 0.005 260);
-  --sidebar-foreground: oklch(0.98 0 0);
-  --sidebar-primary: #0066FF;
-  --sidebar-primary-foreground: oklch(0.98 0 0);
-  --sidebar-accent: oklch(0.12 0.01 260);
-  --sidebar-accent-foreground: oklch(0.98 0 0);
-  --sidebar-border: rgba(255, 255, 255, 0.08);
-  --sidebar-ring: #0066FF;
+  --radius: 0.625rem;
+  --background: #FFFFFF;
+  --foreground: #1E293B;
+  --card: #FFFFFF;
+  --card-foreground: #1E293B;
+  --popover: #FFFFFF;
+  --popover-foreground: #1E293B;
+  --primary: #2563EB;
+  --primary-foreground: #FFFFFF;
+  --secondary: #F1F5F9;
+  --secondary-foreground: #1E293B;
+  --muted: #F8FAFC;
+  --muted-foreground: #64748B;
+  --accent: #3B82F6;
+  --accent-foreground: #FFFFFF;
+  --destructive: #EF4444;
+  --border: #E2E8F0;
+  --input: #E2E8F0;
+  --ring: #2563EB;
+  --chart-1: #2563EB;
+  --chart-2: #3B82F6;
+  --chart-3: #60A5FA;
+  --chart-4: #93C5FD;
+  --chart-5: #1D4ED8;
+  --sidebar: #F8FAFC;
+  --sidebar-foreground: #1E293B;
+  --sidebar-primary: #2563EB;
+  --sidebar-primary-foreground: #FFFFFF;
+  --sidebar-accent: #F1F5F9;
+  --sidebar-accent-foreground: #1E293B;
+  --sidebar-border: #E2E8F0;
+  --sidebar-ring: #2563EB;
 }
 
 @layer base {
@@ -157,77 +99,39 @@
     cursor: pointer;
   }
   ::selection {
-    background-color: rgba(0, 102, 255, 0.3);
-    color: white;
+    background-color: rgba(37, 99, 235, 0.2);
   }
 }
 
 @layer utilities {
   .glass {
-    background: rgba(255, 255, 255, 0.05);
-    backdrop-filter: blur(16px);
-    -webkit-backdrop-filter: blur(16px);
-    border: 1px solid rgba(255, 255, 255, 0.08);
-  }
-  .glass-card {
-    background: linear-gradient(135deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.02));
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    border-radius: var(--radius);
-  }
-  .glass-card-light {
-    background: linear-gradient(135deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.03));
+    background: rgba(255, 255, 255, 0.7);
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(226, 232, 240, 0.8);
+  }
+  .glass-card {
+    background: #FFFFFF;
+    border: 1px solid #E2E8F0;
+    border-radius: var(--radius);
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05), 0 1px 2px -1px rgba(0, 0, 0, 0.05);
+    transition: box-shadow 0.2s ease, border-color 0.2s ease;
+  }
+  .glass-card:hover {
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.07), 0 2px 4px -2px rgba(0, 0, 0, 0.05);
+    border-color: #CBD5E1;
   }
   .text-gradient {
-    background: linear-gradient(135deg, #0066FF, #7C3AED, #00D4FF);
+    background: linear-gradient(135deg, #2563EB, #3B82F6);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
   }
   .text-gradient-blue {
-    background: linear-gradient(135deg, #0066FF, #4D94FF);
+    background: linear-gradient(135deg, #2563EB, #60A5FA);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
-  }
-  .aurora-bg {
-    position: relative;
-    overflow: hidden;
-  }
-  .aurora-bg::before {
-    content: '';
-    position: absolute;
-    top: -50%;
-    left: -50%;
-    width: 200%;
-    height: 200%;
-    background: radial-gradient(ellipse 80% 60% at 30% 20%, rgba(0, 102, 255, 0.15) 0%, transparent 60%),
-                radial-gradient(ellipse 60% 50% at 70% 80%, rgba(124, 58, 237, 0.1) 0%, transparent 50%),
-                radial-gradient(ellipse 50% 40% at 50% 50%, rgba(0, 212, 255, 0.05) 0%, transparent 40%);
-    animation: aurora 60s linear infinite;
-    pointer-events: none;
-    z-index: 0;
-  }
-  .glow-border {
-    position: relative;
-  }
-  .glow-border::after {
-    content: '';
-    position: absolute;
-    inset: -1px;
-    border-radius: inherit;
-    background: linear-gradient(135deg, #0066FF, #7C3AED, #00D4FF, #0066FF);
-    background-size: 300% 300%;
-    animation: aurora 4s ease infinite;
-    z-index: -1;
-    opacity: 0.5;
-  }
-  .glow-border-hover:hover::after {
-    opacity: 1;
   }
   .hide-scrollbar {
     -ms-overflow-style: none;
@@ -235,11 +139,5 @@
   }
   .hide-scrollbar::-webkit-scrollbar {
     display: none;
-  }
-  .grid-bg {
-    background-image: 
-      linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
-    background-size: 60px 60px;
   }
 }
