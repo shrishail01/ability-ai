@@ -13,7 +13,6 @@ import { stats } from "../data/stats";
 import { testimonials } from "../data/testimonials";
 import { projects } from "../data/projects";
 import { faqItems } from "../data/faq";
-import { pricingPlans } from "../data/pricing";
 import { AnimatedCounter } from "../components/shared/AnimatedCounter";
 import { Newsletter } from "../components/shared/Newsletter";
 
@@ -612,63 +611,7 @@ export default function Landing() {
         </div>
       </section>
 
-      {/* ===== PRICING ===== */}
-      <section className="relative py-24">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <SectionHeading
-            label="Pricing"
-            title="Simple, Transparent Pricing"
-            description="Choose the plan that fits your project. All plans include our quality guarantee."
-          />
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto">
-            {pricingPlans.map((plan, i) => (
-              <motion.div
-                key={plan.name}
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.5, delay: i * 0.1, ease: [0.16, 1, 0.3, 1] }}
-                className={`relative glass-card rounded-2xl p-8 border ${
-                  plan.highlighted
-                    ? "border-primary/30 shadow-xl shadow-primary/10"
-                    : "border-white/5"
-                }`}
-              >
-                {plan.highlighted && (
-                  <div className="absolute -top-3 left-1/2 -translate-x-1/2 rounded-full bg-primary px-4 py-1 text-xs font-medium text-white">
-                    Most Popular
-                  </div>
-                )}
-                <h3 className="text-xl font-semibold mb-2">{plan.name}</h3>
-                <p className="text-sm text-muted-foreground mb-6">{plan.description}</p>
-                <div className="mb-6">
-                  <span className="text-4xl font-bold">{plan.price}</span>
-                  <span className="text-sm text-muted-foreground ml-2">/{plan.period}</span>
-                </div>
-                <ul className="space-y-3 mb-8">
-                  {plan.features.map((feature) => (
-                    <li key={feature} className="flex items-start gap-2 text-sm text-muted-foreground">
-                      <CheckCircle2 className="h-4 w-4 text-primary shrink-0 mt-0.5" />
-                      {feature}
-                    </li>
-                  ))}
-                </ul>
-                <Link
-                  to="/contact"
-                  className={`block text-center rounded-xl py-3 text-sm font-medium transition-all ${
-                    plan.highlighted
-                      ? "bg-primary text-white hover:shadow-lg hover:shadow-primary/25"
-                      : "border border-white/10 text-foreground hover:bg-white/5"
-                  }`}
-                >
-                  {plan.cta}
-                </Link>
-              </motion.div>
-            ))}
-          </div>
-        </div>
-      </section>
 
       {/* ===== FAQ ===== */}
       <section id="faq" className="relative py-24">
