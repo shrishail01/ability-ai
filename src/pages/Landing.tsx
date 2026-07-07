@@ -79,9 +79,9 @@ export default function Landing() {
         {/* 3D Geometric Background */}
         <ThreeHero />
         
-        {/* Gradient overlays to ensure text readability */}
-        <div className="absolute inset-0 bg-gradient-to-r from-background via-background/92 to-background/80 z-[1]" />
-        <div className="absolute inset-0 bg-gradient-to-t from-background via-background/10 to-transparent z-[1]" />
+        {/* Dark overlay for text readability */}
+        <div className="absolute inset-0 bg-gradient-to-r from-[#0F1B2D] via-[#0F1B2D]/95 to-[#0F1B2D]/85 z-[1]" />
+        <div className="absolute inset-0 bg-gradient-to-t from-[#0F1B2D] via-transparent to-transparent z-[1]" />
 
         <motion.div style={{ opacity: heroOpacity }} className="relative z-10 w-full pt-24 pb-20 md:pb-32">
           <div className="mx-auto max-w-7xl px-6 sm:px-8 lg:px-10">
@@ -90,7 +90,7 @@ export default function Landing() {
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, delay: 0.2 }}
-                className="eyebrow mb-6"
+                className="text-xs tracking-[0.15em] uppercase font-semibold text-white/50 mb-6"
               >
                 AI-First Software Company
               </motion.p>
@@ -99,7 +99,7 @@ export default function Landing() {
                 initial={{ opacity: 0, y: 30 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.8, delay: 0.3, ease: [0.25, 0.1, 0.25, 1] }}
-                className="text-editorial-lg mb-8"
+                className="text-editorial-lg mb-8 text-white"
               >
                 We Build the
                 <br />
@@ -110,7 +110,7 @@ export default function Landing() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.7, delay: 0.45, ease: [0.25, 0.1, 0.25, 1] }}
-                className="text-muted-foreground text-base md:text-lg max-w-lg leading-relaxed mb-10"
+                className="text-white/60 text-base md:text-lg max-w-lg leading-relaxed mb-10"
               >
                 We design and develop AI-first websites, mobile apps, SaaS platforms, 
                 and enterprise software that transform businesses.
@@ -131,7 +131,7 @@ export default function Landing() {
                 </Link>
                 <Link
                   to="/portfolio"
-                  className="inline-flex items-center gap-2 px-7 py-3 text-sm tracking-wide font-medium text-foreground border border-border hover:border-foreground/30 transition-colors duration-300"
+                  className="inline-flex items-center gap-2 px-7 py-3 text-sm tracking-wide font-medium text-white/80 border border-white/20 hover:border-white/50 transition-colors duration-300"
                 >
                   View Our Work
                 </Link>
@@ -143,10 +143,10 @@ export default function Landing() {
                 transition={{ duration: 0.8, delay: 0.8 }}
                 className="mt-20"
               >
-                <p className="eyebrow mb-6">Trusted By</p>
+                <p className="text-xs tracking-[0.15em] uppercase font-semibold text-white/50 mb-6">Trusted By</p>
                 <div className="flex flex-wrap gap-10 md:gap-14">
                   {["NexusAI", "DataStream", "ShopWave", "MediView", "GreenLife"].map((name) => (
-                    <span key={name} className="text-sm font-semibold tracking-wide text-muted-foreground">
+                    <span key={name} className="text-sm font-semibold tracking-wide text-white/40">
                       {name}
                     </span>
                   ))}
