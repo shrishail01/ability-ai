@@ -1,19 +1,15 @@
-import { motion } from "framer-motion";
-import {
-  Sparkles,
-  Mail,
-  Phone,
-  MapPin,
-  ArrowUpRight,
-} from "lucide-react";
+import { Mail, Phone } from "lucide-react";
 import { Link } from "react-router";
-import { services } from "../../data/services";
 
 const footerLinks = {
-  Services: services.slice(0, 6).map((s) => ({
-    label: s.title,
-    href: `/services#${s.id}`,
-  })),
+  Services: [
+    { label: "Website Development", href: "/services#web-development" },
+    { label: "Mobile App Development", href: "/services#mobile-development" },
+    { label: "AI Solutions", href: "/services#ai-solutions" },
+    { label: "SaaS Development", href: "/services#saas-development" },
+    { label: "UI/UX Design", href: "/services#ui-ux-design" },
+    { label: "E-commerce", href: "/services#ecommerce" },
+  ],
   Company: [
     { label: "About", href: "/about" },
     { label: "Portfolio", href: "/portfolio" },
@@ -21,75 +17,58 @@ const footerLinks = {
     { label: "Careers", href: "/careers" },
     { label: "Contact", href: "/contact" },
   ],
-  Support: [
-    { label: "FAQ", href: "/#faq" },
-    { label: "Privacy Policy", href: "#" },
-    { label: "Terms of Service", href: "#" },
-    { label: "Cookie Policy", href: "#" },
+  Connect: [
+    { label: "Twitter", href: "#" },
+    { label: "LinkedIn", href: "#" },
+    { label: "GitHub", href: "#" },
+    { label: "Dribbble", href: "#" },
   ],
 };
 
 export function Footer() {
   return (
-    <footer className="relative border-t border-white/10 bg-black/50 overflow-hidden">
-      {/* Background gradient */}
-      <div className="absolute inset-0">
-        <div className="absolute bottom-0 left-1/4 w-96 h-96 bg-primary/5 rounded-full blur-3xl" />
-        <div className="absolute top-0 right-1/4 w-64 h-64 bg-purple-500/5 rounded-full blur-3xl" />
-      </div>
-
-      <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-16">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-12 lg:gap-8">
+    <footer className="border-t border-border bg-background">
+      <div className="mx-auto max-w-7xl px-6 sm:px-8 lg:px-10 py-16 md:py-20">
+        <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-12 md:gap-8">
           {/* Brand */}
-          <div className="lg:col-span-2">
-            <Link to="/" className="flex items-center gap-2 mb-4">
-              <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary">
-                <Sparkles className="h-4 w-4 text-white" />
-              </div>
-              <span className="text-lg font-bold">
-                <span className="text-gradient">Ability</span>
+          <div className="col-span-2 md:col-span-1 lg:col-span-2">
+            <Link to="/" className="inline-block mb-6">
+              <span className="text-xl font-bold tracking-tight text-foreground">
+                Ability<span className="text-gold">.</span>
               </span>
             </Link>
-            <p className="text-sm text-muted-foreground mb-6 max-w-sm leading-relaxed">
-              We design and develop AI-first software that transforms businesses.
-              From websites to enterprise platforms, we build the future.
+            <p className="text-sm text-muted-foreground leading-relaxed mb-6 max-w-xs">
+              We design and develop software that transforms businesses. 
+              From AI platforms to elegant websites, we build the future.
             </p>
-            <div className="space-y-3">
+            <div className="space-y-2.5">
               <a
                 href="mailto:hello@ability.ai"
-                className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors group"
+                className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors"
               >
-                <Mail className="h-4 w-4 text-primary" />
+                <Mail className="h-3.5 w-3.5" />
                 hello@ability.ai
-                <ArrowUpRight className="h-3 w-3 opacity-0 group-hover:opacity-100 transition-opacity" />
               </a>
               <a
                 href="tel:+1234567890"
-                className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors group"
+                className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors"
               >
-                <Phone className="h-4 w-4 text-primary" />
+                <Phone className="h-3.5 w-3.5" />
                 +1 (234) 567-890
-                <ArrowUpRight className="h-3 w-3 opacity-0 group-hover:opacity-100 transition-opacity" />
               </a>
-              <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                <MapPin className="h-4 w-4 text-primary" />
-                San Francisco, CA
-              </div>
             </div>
           </div>
 
           {/* Link columns */}
           {Object.entries(footerLinks).map(([title, links]) => (
             <div key={title}>
-              <h3 className="text-sm font-semibold text-foreground mb-4">
-                {title}
-              </h3>
+              <h3 className="eyebrow mb-5">{title}</h3>
               <ul className="space-y-3">
                 {links.map((link) => (
-                  <li key={link.href}>
+                  <li key={link.label}>
                     <Link
                       to={link.href}
-                      className="text-sm text-muted-foreground hover:text-primary transition-colors"
+                      className="text-sm text-muted-foreground hover:text-foreground transition-colors"
                     >
                       {link.label}
                     </Link>
@@ -101,20 +80,20 @@ export function Footer() {
         </div>
 
         {/* Bottom bar */}
-        <div className="mt-16 pt-8 border-t border-white/10 flex flex-col sm:flex-row items-center justify-between gap-4">
+        <div className="mt-16 pt-8 border-t border-border flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
           <p className="text-xs text-muted-foreground">
             &copy; {new Date().getFullYear()} Ability. All rights reserved.
           </p>
-          <div className="flex items-center gap-4">
-            {["Twitter", "LinkedIn", "GitHub", "Dribbble"].map((social) => (
-              <a
-                key={social}
-                href="#"
-                className="text-xs text-muted-foreground hover:text-primary transition-colors"
-              >
-                {social}
-              </a>
-            ))}
+          <div className="flex items-center gap-6">
+            <a href="#" className="text-xs text-muted-foreground hover:text-foreground transition-colors">
+              Privacy
+            </a>
+            <a href="#" className="text-xs text-muted-foreground hover:text-foreground transition-colors">
+              Terms
+            </a>
+            <a href="#" className="text-xs text-muted-foreground hover:text-foreground transition-colors">
+              Cookies
+            </a>
           </div>
         </div>
       </div>
