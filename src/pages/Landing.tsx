@@ -7,6 +7,7 @@ import { testimonials } from "../data/testimonials";
 import { projects } from "../data/projects";
 import { faqItems } from "../data/faq";
 import { AnimatedCounter } from "../components/shared/AnimatedCounter";
+import { ThreeHero } from "../components/home/ThreeHero";
 
 const fadeUp = {
   hidden: { opacity: 0, y: 30 },
@@ -75,41 +76,12 @@ export default function Landing() {
     <div className="bg-background">
       {/* ===== HERO ===== */}
       <section className="relative min-h-screen flex items-center overflow-hidden">
-        {/* Hero Background Image */}
-        <div className="absolute inset-0">
-          <img
-            src="https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=1920&q=80"
-            alt=""
-            className="h-full w-full object-cover"
-            loading="eager"
-          />
-          <div className="absolute inset-0 bg-gradient-to-r from-background via-background/95 to-background/80" />
-          <div className="absolute inset-0 bg-gradient-to-t from-background via-background/20 to-transparent" />
-        </div>
+        {/* 3D Geometric Background */}
+        <ThreeHero />
         
-        {/* Animated particles overlay */}
-        <div className="absolute inset-0 overflow-hidden pointer-events-none">
-          {[...Array(12)].map((_, i) => (
-            <motion.div
-              key={i}
-              className="absolute h-px w-px bg-gold/30"
-              style={{
-                left: `${10 + Math.random() * 80}%`,
-                top: `${10 + Math.random() * 80}%`,
-              }}
-              animate={{
-                y: [0, -30 - Math.random() * 40, 0],
-                opacity: [0, 0.8, 0],
-              }}
-              transition={{
-                duration: 4 + Math.random() * 6,
-                repeat: Infinity,
-                delay: Math.random() * 4,
-                ease: "easeInOut",
-              }}
-            />
-          ))}
-        </div>
+        {/* Gradient overlays to ensure text readability */}
+        <div className="absolute inset-0 bg-gradient-to-r from-background via-background/92 to-background/80 z-[1]" />
+        <div className="absolute inset-0 bg-gradient-to-t from-background via-background/10 to-transparent z-[1]" />
 
         <motion.div style={{ opacity: heroOpacity }} className="relative z-10 w-full pt-24 pb-20 md:pb-32">
           <div className="mx-auto max-w-7xl px-6 sm:px-8 lg:px-10">
