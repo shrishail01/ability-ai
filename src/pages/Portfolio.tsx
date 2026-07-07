@@ -102,20 +102,14 @@ export default function Portfolio() {
                     className="group w-full text-left"
                   >
                     <div className="glass-card rounded-2xl overflow-hidden border border-white/5 hover:border-primary/20 transition-all duration-300">
-                      <div
-                        className="h-48 flex items-center justify-center relative overflow-hidden"
-                        style={{ background: `linear-gradient(135deg, ${project.color}20, ${project.color}05)` }}
-                      >
-                        <div className="text-center p-6 z-10">
-                          <p className="text-lg font-bold text-foreground/80">{project.title}</p>
-                          <span
-                            className="inline-block mt-2 rounded-full px-3 py-1 text-xs font-medium"
-                            style={{ background: `${project.color}20`, color: project.color }}
-                          >
-                            {project.category}
-                          </span>
-                        </div>
-                        <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-6">
+                      <div className="relative overflow-hidden">
+                        <img
+                          src={project.image}
+                          alt={project.title}
+                          className="h-48 w-full object-cover transition-transform duration-700 group-hover:scale-105"
+                          loading="lazy"
+                        />
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-6">
                           <span className="text-white text-sm font-medium flex items-center gap-1">
                             View Details <ChevronRight className="h-3 w-3" />
                           </span>
@@ -162,22 +156,20 @@ export default function Portfolio() {
               onClick={(e) => e.stopPropagation()}
               className="glass-card rounded-3xl max-w-2xl w-full max-h-[85vh] overflow-y-auto border border-white/10 shadow-2xl"
             >
-              <div
-                className="h-48 flex items-center justify-center relative"
-                style={{ background: `linear-gradient(135deg, ${selectedProjectData.color}20, ${selectedProjectData.color}05)` }}
-              >
-                <div className="text-center">
-                  <p className="text-2xl font-bold">{selectedProjectData.title}</p>
-                  <span
-                    className="inline-block mt-2 rounded-full px-3 py-1 text-xs font-medium"
-                    style={{ background: `${selectedProjectData.color}20`, color: selectedProjectData.color }}
-                  >
-                    {selectedProjectData.category} • {selectedProjectData.year}
-                  </span>
+              <div className="relative overflow-hidden">
+                <img
+                  src={selectedProjectData.image}
+                  alt={selectedProjectData.title}
+                  className="h-48 w-full object-cover"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent" />
+                <div className="absolute bottom-4 left-6">
+                  <p className="text-xl font-bold text-white">{selectedProjectData.title}</p>
+                  <span className="text-xs text-white/70">{selectedProjectData.category} • {selectedProjectData.year}</span>
                 </div>
                 <button
                   onClick={() => setSelectedProject(null)}
-                  className="absolute top-4 right-4 h-8 w-8 rounded-full glass flex items-center justify-center text-muted-foreground hover:text-foreground"
+                  className="absolute top-4 right-4 h-8 w-8 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center text-white hover:bg-white/30 transition-colors"
                 >
                   ✕
                 </button>

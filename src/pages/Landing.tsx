@@ -75,7 +75,43 @@ export default function Landing() {
     <div className="bg-background">
       {/* ===== HERO ===== */}
       <section className="relative min-h-screen flex items-center overflow-hidden">
-        <motion.div style={{ opacity: heroOpacity }} className="w-full pt-24 pb-20 md:pb-32">
+        {/* Hero Background Image */}
+        <div className="absolute inset-0">
+          <img
+            src="https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=1920&q=80"
+            alt=""
+            className="h-full w-full object-cover"
+            loading="eager"
+          />
+          <div className="absolute inset-0 bg-gradient-to-r from-background via-background/95 to-background/80" />
+          <div className="absolute inset-0 bg-gradient-to-t from-background via-background/20 to-transparent" />
+        </div>
+        
+        {/* Animated particles overlay */}
+        <div className="absolute inset-0 overflow-hidden pointer-events-none">
+          {[...Array(12)].map((_, i) => (
+            <motion.div
+              key={i}
+              className="absolute h-px w-px bg-gold/30"
+              style={{
+                left: `${10 + Math.random() * 80}%`,
+                top: `${10 + Math.random() * 80}%`,
+              }}
+              animate={{
+                y: [0, -30 - Math.random() * 40, 0],
+                opacity: [0, 0.8, 0],
+              }}
+              transition={{
+                duration: 4 + Math.random() * 6,
+                repeat: Infinity,
+                delay: Math.random() * 4,
+                ease: "easeInOut",
+              }}
+            />
+          ))}
+        </div>
+
+        <motion.div style={{ opacity: heroOpacity }} className="relative z-10 w-full pt-24 pb-20 md:pb-32">
           <div className="mx-auto max-w-7xl px-6 sm:px-8 lg:px-10">
             <div className="max-w-4xl">
               <motion.p
@@ -348,10 +384,19 @@ export default function Landing() {
                 transition={{ duration: 0.6, delay: i * 0.05, ease: [0.25, 0.1, 0.25, 1] }}
                 className="bg-card p-8 md:p-10 group"
               >
-                <Link to={`/portfolio#${project.id}`} className="block">
-                  <div className="border border-border p-6 mb-5 bg-background/50">
-                    <p className="text-sm font-semibold">{project.title}</p>
-                    <p className="text-xs text-muted-foreground mt-1">{project.category}</p>
+                <Link to={`/portfolio#${project.id}`} className="block group">
+                  <div className="relative overflow-hidden mb-5 bg-background/50 border border-border">
+                    <img
+                      src={project.image}
+                      alt={project.title}
+                      className="w-full h-56 object-cover transition-transform duration-700 group-hover:scale-105"
+                      loading="lazy"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-background/80 via-transparent to-transparent" />
+                    <div className="absolute bottom-4 left-4">
+                      <p className="text-sm font-semibold text-white">{project.title}</p>
+                      <p className="text-xs text-white/70 mt-0.5">{project.category}</p>
+                    </div>
                   </div>
                   <p className="text-sm text-muted-foreground leading-relaxed mb-3 line-clamp-2">
                     {project.description}
@@ -410,9 +455,17 @@ export default function Landing() {
                 <p className="text-sm text-foreground/80 leading-relaxed mb-6">
                   &ldquo;{t.content}&rdquo;
                 </p>
-                <div>
-                  <p className="text-sm font-medium">{t.name}</p>
-                  <p className="text-xs text-muted-foreground">{t.role}, {t.company}</p>
+                <div className="flex items-center gap-3">
+                  <img
+                    src={t.avatar}
+                    alt={t.name}
+                    className="w-10 h-10 rounded-full object-cover"
+                    loading="lazy"
+                  />
+                  <div>
+                    <p className="text-sm font-medium">{t.name}</p>
+                    <p className="text-xs text-muted-foreground">{t.role}, {t.company}</p>
+                  </div>
                 </div>
               </motion.div>
             ))}

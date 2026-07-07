@@ -280,11 +280,13 @@ export default function About() {
                 whileHover={{ y: -5 }}
                 className="glass-card rounded-2xl p-6 border border-white/5 text-center group"
               >
-                <div
-                  className="mx-auto h-20 w-20 rounded-full flex items-center justify-center text-2xl font-bold text-white mb-4 transition-transform duration-300 group-hover:scale-110"
-                  style={{ background: `linear-gradient(135deg, ${member.color}, ${member.color}cc)` }}
-                >
-                  {member.name.split(" ").map(n => n[0]).join("")}
+                <div className="mx-auto h-20 w-20 rounded-full overflow-hidden mb-4 transition-transform duration-300 group-hover:scale-110">
+                  <img
+                    src={member.image}
+                    alt={member.name}
+                    className="h-full w-full object-cover"
+                    loading="lazy"
+                  />
                 </div>
                 <h3 className="text-lg font-semibold">{member.name}</h3>
                 <p className="text-sm text-primary mb-3">{member.role}</p>

@@ -109,7 +109,16 @@ export default function Blog() {
               <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-6">
                 Featured Article
               </p>
-              <div className="glass-card rounded-3xl overflow-hidden border border-primary/10">
+              <div className="border border-border overflow-hidden bg-card">
+                <div className="relative h-64 md:h-80">
+                  <img
+                    src={featuredPost.image}
+                    alt={featuredPost.title}
+                    className="h-full w-full object-cover"
+                    loading="lazy"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-card via-card/40 to-transparent" />
+                </div>
                 <div className="p-8 md:p-12">
                   <div className="flex items-center gap-3 mb-4">
                     <span className="rounded-full bg-primary/10 px-3 py-1 text-xs font-medium text-primary">
@@ -171,9 +180,15 @@ export default function Blog() {
                   transition={{ duration: 0.5, delay: i * 0.05 }}
                   layout
                 >
-                  <div className="glass-card rounded-2xl overflow-hidden border border-white/5 hover:border-white/10 transition-all duration-300 group h-full flex flex-col">
-                    <div className="h-44 bg-gradient-to-br from-primary/10 to-purple-500/5 flex items-center justify-center">
-                      <p className="text-3xl font-bold text-foreground/20">{post.category}</p>
+                  <div className="border border-border hover:border-gold/30 transition-colors duration-300 group h-full flex flex-col bg-card">
+                    <div className="relative overflow-hidden h-44">
+                      <img
+                        src={post.image}
+                        alt={post.title}
+                        className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                        loading="lazy"
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-card/60 to-transparent" />
                     </div>
                     <div className="p-6 flex-1 flex flex-col">
                       <div className="flex items-center gap-3 mb-3">
