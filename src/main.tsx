@@ -1,23 +1,37 @@
+import '@vly-ai/integrations';
 import { Toaster } from "@/components/ui/sonner";
 import { VlyToolbar } from "../vly-toolbar-readonly.tsx";
 import { InstrumentationProvider } from "@/instrumentation.tsx";
 import { ConvexAuthProvider } from "@convex-dev/auth/react";
 import { ConvexReactClient } from "convex/react";
-import { StrictMode, useEffect, lazy, Suspense } from "react";
+import { StrictMode, lazy, Suspense, useEffect } from "react";
 import { createRoot } from "react-dom/client";
 import { BrowserRouter, Route, Routes, useLocation } from "react-router";
+import { ThemeProvider } from "./context/ThemeContext";
+import { Navbar } from "./components/shared/Navbar";
+import { Footer } from "./components/shared/Footer";
+import { BackToTop } from "./components/shared/BackToTop";
+import { LoadingScreen } from "./components/shared/LoadingScreen";
+import { CookieConsent } from "./components/shared/CookieConsent";
+import { WhatsAppButton } from "./components/shared/WhatsAppButton";
 import "./index.css";
 import "./types/global.d.ts";
 
 // Lazy load route components for better code splitting
 const Landing = lazy(() => import("./pages/Landing.tsx"));
+const About = lazy(() => import("./pages/About.tsx"));
+const Services = lazy(() => import("./pages/Services.tsx"));
+const Portfolio = lazy(() => import("./pages/Portfolio.tsx"));
+const Blog = lazy(() => import("./pages/Blog.tsx"));
+const Careers = lazy(() => import("./pages/Careers.tsx"));
+const Contact = lazy(() => import("./pages/Contact.tsx"));
 const AuthPage = lazy(() => import("./pages/Auth.tsx"));
 const NotFound = lazy(() => import("./pages/NotFound.tsx"));
 
 // Simple loading fallback for route transitions
 function RouteLoading() {
   return (
-    <div className="min-h-screen flex items-center justify-center">
+    <div className="min-h-screen flex items-center justify-center bg-background">
       <div className="animate-pulse text-muted-foreground">Loading...</div>
     </div>
   );
@@ -25,9 +39,7 @@ function RouteLoading() {
 
 const convex = new ConvexReactClient(import.meta.env.VITE_CONVEX_URL as string);
 
-
-
-function RouteSyncer() {
+function Layout({ children }: { children: React.ReactNode }) {
   const location = useLocation();
   useEffect(() => {
     window.parent.postMessage(
@@ -47,26 +59,42 @@ function RouteSyncer() {
     return () => window.removeEventListener("message", handleMessage);
   }, []);
 
-  return null;
+  return (
+    <>
+      <Navbar />
+      <main>{children}</main>
+      <Footer />
+      <BackToTop />
+      <WhatsAppButton />
+      <CookieConsent />
+    </>
+  );
 }
-
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
     <VlyToolbar />
     <InstrumentationProvider>
       <ConvexAuthProvider client={convex}>
-        <BrowserRouter>
-          <RouteSyncer />
-          <Suspense fallback={<RouteLoading />}>
-            <Routes>
-              <Route path="/" element={<Landing />} />
-              <Route path="/auth" element={<AuthPage redirectAfterAuth="/" />} /> {/* TODO: change redirect after auth to correct page */}
-              <Route path="*" element={<NotFound />} />
-            </Routes>
-          </Suspense>
-        </BrowserRouter>
-        <Toaster />
+        <ThemeProvider>
+          <BrowserRouter>
+            <LoadingScreen />
+            <Suspense fallback={<RouteLoading />}>
+              <Routes>
+                <Route path="/" element={<Layout><Landing /></Layout>} />
+                <Route path="/about" element={<Layout><About /></Layout>} />
+                <Route path="/services" element={<Layout><Services /></Layout>} />
+                <Route path="/portfolio" element={<Layout><Portfolio /></Layout>} />
+                <Route path="/blog" element={<Layout><Blog /></Layout>} />
+                <Route path="/careers" element={<Layout><Careers /></Layout>} />
+                <Route path="/contact" element={<Layout><Contact /></Layout>} />
+                <Route path="/auth" element={<AuthPage redirectAfterAuth="/" />} />
+                <Route path="*" element={<Layout><NotFound /></Layout>} />
+              </Routes>
+            </Suspense>
+          </BrowserRouter>
+          <Toaster />
+        </ThemeProvider>
       </ConvexAuthProvider>
     </InstrumentationProvider>
   </StrictMode>,

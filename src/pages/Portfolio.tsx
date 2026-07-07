@@ -1,0 +1,273 @@
+import { motion, AnimatePresence } from "framer-motion";
+import { Sparkles, ExternalLink, Github, ChevronRight, Filter, ArrowRight } from "lucide-react";
+import { useState } from "react";
+import { Link } from "react-router";
+import { projects, projectCategories } from "../data/projects";
+
+export default function Portfolio() {
+  const [activeCategory, setActiveCategory] = useState("All");
+  const [selectedProject, setSelectedProject] = useState<string | null>(null);
+
+  const filteredProjects =
+    activeCategory === "All"
+      ? projects
+      : projects.filter((p) => p.category === activeCategory);
+
+  const selectedProjectData = selectedProject
+    ? projects.find((p) => p.id === selectedProject)
+    : null;
+
+  return (
+    <div className="min-h-screen bg-background">
+      {/* Hero */}
+      <section className="relative pt-32 pb-16 overflow-hidden">
+        <div className="absolute inset-0">
+          <div className="absolute top-1/3 left-1/4 w-[500px] h-[500px] bg-primary/10 rounded-full blur-[120px]" />
+          <div className="absolute bottom-1/4 right-1/4 w-[400px] h-[400px] bg-purple-500/10 rounded-full blur-[100px]" />
+        </div>
+        <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 text-center">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
+          >
+            <span className="inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/10 px-4 py-1.5 text-xs font-medium text-primary mb-4">
+              <Sparkles className="h-3 w-3" />
+              Our Work
+            </span>
+          </motion.div>
+          <motion.h1
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.1 }}
+            className="text-4xl md:text-6xl font-bold tracking-tight mb-6"
+          >
+            Featured{" "}
+            <span className="text-gradient">Projects</span>
+          </motion.h1>
+          <motion.p
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.2 }}
+            className="text-muted-foreground max-w-2xl mx-auto text-sm md:text-base leading-relaxed"
+          >
+            A selection of our best work across AI, web, mobile, and SaaS.
+          </motion.p>
+        </div>
+      </section>
+
+      {/* Filters */}
+      <section className="pb-10">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <div className="flex flex-wrap items-center justify-center gap-2">
+            {projectCategories.map((category) => (
+              <button
+                key={category}
+                onClick={() => setActiveCategory(category)}
+                className={`rounded-xl px-4 py-2 text-xs font-medium transition-all ${
+                  activeCategory === category
+                    ? "bg-primary text-white"
+                    : "glass text-muted-foreground hover:text-foreground hover:bg-white/10"
+                }`}
+              >
+                {category}
+              </button>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Projects Grid */}
+      <section className="py-10">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={activeCategory}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+              transition={{ duration: 0.3 }}
+              className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
+            >
+              {filteredProjects.map((project, i) => (
+                <motion.div
+                  key={project.id}
+                  initial={{ opacity: 0, y: 30 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.5, delay: i * 0.05 }}
+                  layout
+                >
+                  <button
+                    onClick={() => setSelectedProject(project.id)}
+                    className="group w-full text-left"
+                  >
+                    <div className="glass-card rounded-2xl overflow-hidden border border-white/5 hover:border-primary/20 transition-all duration-300">
+                      <div
+                        className="h-48 flex items-center justify-center relative overflow-hidden"
+                        style={{ background: `linear-gradient(135deg, ${project.color}20, ${project.color}05)` }}
+                      >
+                        <div className="text-center p-6 z-10">
+                          <p className="text-lg font-bold text-foreground/80">{project.title}</p>
+                          <span
+                            className="inline-block mt-2 rounded-full px-3 py-1 text-xs font-medium"
+                            style={{ background: `${project.color}20`, color: project.color }}
+                          >
+                            {project.category}
+                          </span>
+                        </div>
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-6">
+                          <span className="text-white text-sm font-medium flex items-center gap-1">
+                            View Details <ChevronRight className="h-3 w-3" />
+                          </span>
+                        </div>
+                      </div>
+                      <div className="p-5">
+                        <p className="text-sm text-muted-foreground line-clamp-2">
+                          {project.description}
+                        </p>
+                        <div className="flex flex-wrap gap-2 mt-4">
+                          {project.technologies.slice(0, 4).map((tech) => (
+                            <span
+                              key={tech}
+                              className="rounded-lg bg-white/5 px-2.5 py-1 text-xs text-muted-foreground"
+                            >
+                              {tech}
+                            </span>
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+                  </button>
+                </motion.div>
+              ))}
+            </motion.div>
+          </AnimatePresence>
+        </div>
+      </section>
+
+      {/* Project Detail Modal */}
+      <AnimatePresence>
+        {selectedProjectData && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={() => setSelectedProject(null)}
+            className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm"
+          >
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.95, y: 20 }}
+              onClick={(e) => e.stopPropagation()}
+              className="glass-card rounded-3xl max-w-2xl w-full max-h-[85vh] overflow-y-auto border border-white/10 shadow-2xl"
+            >
+              <div
+                className="h-48 flex items-center justify-center relative"
+                style={{ background: `linear-gradient(135deg, ${selectedProjectData.color}20, ${selectedProjectData.color}05)` }}
+              >
+                <div className="text-center">
+                  <p className="text-2xl font-bold">{selectedProjectData.title}</p>
+                  <span
+                    className="inline-block mt-2 rounded-full px-3 py-1 text-xs font-medium"
+                    style={{ background: `${selectedProjectData.color}20`, color: selectedProjectData.color }}
+                  >
+                    {selectedProjectData.category} • {selectedProjectData.year}
+                  </span>
+                </div>
+                <button
+                  onClick={() => setSelectedProject(null)}
+                  className="absolute top-4 right-4 h-8 w-8 rounded-full glass flex items-center justify-center text-muted-foreground hover:text-foreground"
+                >
+                  ✕
+                </button>
+              </div>
+              <div className="p-8">
+                <p className="text-sm text-muted-foreground leading-relaxed mb-6">
+                  {selectedProjectData.longDescription}
+                </p>
+
+                {/* Results */}
+                <div className="mb-6">
+                  <h4 className="text-sm font-semibold mb-3">Key Results</h4>
+                  <ul className="space-y-2">
+                    {selectedProjectData.results.map((result) => (
+                      <li key={result} className="flex items-start gap-2 text-sm text-muted-foreground">
+                        <span className="h-1.5 w-1.5 rounded-full bg-primary mt-2 shrink-0" />
+                        {result}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+
+                {/* Technologies */}
+                <div className="mb-8">
+                  <h4 className="text-sm font-semibold mb-3">Technologies Used</h4>
+                  <div className="flex flex-wrap gap-2">
+                    {selectedProjectData.technologies.map((tech) => (
+                      <span key={tech} className="rounded-lg bg-white/5 px-3 py-1.5 text-xs text-muted-foreground">
+                        {tech}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Actions */}
+                <div className="flex items-center gap-3">
+                  {selectedProjectData.liveUrl && (
+                    <a
+                      href={selectedProjectData.liveUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-2 rounded-xl bg-primary px-5 py-2.5 text-sm font-medium text-white hover:shadow-lg hover:shadow-primary/25 transition-all"
+                    >
+                      <ExternalLink className="h-4 w-4" />
+                      Live Demo
+                    </a>
+                  )}
+                  {selectedProjectData.githubUrl && (
+                    <a
+                      href={selectedProjectData.githubUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-2 rounded-xl border border-white/10 px-5 py-2.5 text-sm font-medium text-foreground hover:bg-white/5 transition-all"
+                    >
+                      <Github className="h-4 w-4" />
+                      Source Code
+                    </a>
+                  )}
+                </div>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* CTA */}
+      <section className="py-24">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <motion.div
+            initial={{ opacity: 0, scale: 0.98 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            viewport={{ once: true }}
+            className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-primary/20 to-purple-500/10 border border-primary/20 p-10 md:p-16 text-center"
+          >
+            <h2 className="text-3xl md:text-4xl font-bold mb-4">
+              Want Results Like These?
+            </h2>
+            <p className="text-muted-foreground mb-8 text-sm max-w-xl mx-auto">
+              Let's create something amazing together. Your next success story starts here.
+            </p>
+            <Link
+              to="/contact"
+              className="inline-flex items-center gap-2 rounded-2xl bg-primary px-8 py-4 text-sm font-semibold text-white hover:shadow-2xl hover:shadow-primary/30 transition-all"
+            >
+              Start Your Project
+              <ArrowRight className="h-4 w-4" />
+            </Link>
+          </motion.div>
+        </div>
+      </section>
+    </div>
+  );
+}
