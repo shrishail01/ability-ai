@@ -2,6 +2,7 @@ import { Mail, Phone } from "lucide-react";
 import { Link } from "react-router";
 import { useQuery } from "convex/react";
 import { api } from "../../convex/_generated/api";
+import logo from "../../assets/logo.png";
 
 const footerLinks = {
   Services: [
@@ -51,9 +52,7 @@ export function Footer() {
           {/* Brand */}
           <div className="col-span-2 md:col-span-1 lg:col-span-2">
             <Link to="/" className="inline-block mb-6">
-              <span className="text-xl font-bold tracking-tight text-foreground">
-                {companyName}<span className="text-gold">.</span>
-              </span>
+              <img src={logo} alt="Aibility Logo" className="h-6 md:h-7 w-auto object-contain" />
             </Link>
             <p className="text-sm text-muted-foreground leading-relaxed mb-6 max-w-xs">
               {footerTagline}
