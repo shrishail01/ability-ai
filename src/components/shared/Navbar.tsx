@@ -3,6 +3,7 @@ import { Menu, X } from "lucide-react";
 import { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router";
 import { cn } from "../../lib/utils";
+import logo from "../../assets/logo.png";
 
 const navLinks = [
   { label: "Home", href: "/" },
@@ -47,9 +48,14 @@ export function Navbar() {
           <div className="flex h-16 md:h-20 items-center justify-between">
             {/* Logo */}
             <Link to="/" className="flex items-center gap-2.5 group">
-              <span className="text-lg md:text-xl font-bold tracking-tight text-foreground">
-                Aibility<span className="text-gold">.</span>
-              </span>
+              <img
+                src={logo}
+                alt="Aibility Logo"
+                className={cn(
+                  "h-6 md:h-7 w-auto object-contain transition-all duration-300",
+                  location.pathname === "/" && !scrolled && "brightness-0 invert"
+                )}
+              />
             </Link>
 
             {/* Desktop Nav */}
