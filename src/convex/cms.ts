@@ -16,7 +16,16 @@ async function requireAdmin(ctx: MutationCtx | QueryCtx) {
 export const listServices = query({
   args: {},
   handler: async (ctx) => {
-    return await ctx.db.query("cms_services").order("asc").collect();
+    const services = await ctx.db.query("cms_services").order("asc").collect();
+    return await Promise.all(
+      services.map(async (service) => {
+        let imageUrl = service.image;
+        if (imageUrl && !imageUrl.startsWith("http") && !imageUrl.startsWith("/") && !imageUrl.startsWith("data:")) {
+          imageUrl = (await ctx.storage.getUrl(imageUrl)) || imageUrl;
+        }
+        return { ...service, image: imageUrl };
+      })
+    );
   },
 });
 
@@ -69,7 +78,16 @@ export const deleteService = mutation({
 export const listProjects = query({
   args: {},
   handler: async (ctx) => {
-    return await ctx.db.query("cms_projects").order("asc").collect();
+    const projects = await ctx.db.query("cms_projects").order("asc").collect();
+    return await Promise.all(
+      projects.map(async (project) => {
+        let imageUrl = project.image;
+        if (imageUrl && !imageUrl.startsWith("http") && !imageUrl.startsWith("/") && !imageUrl.startsWith("data:")) {
+          imageUrl = (await ctx.storage.getUrl(imageUrl)) || imageUrl;
+        }
+        return { ...project, image: imageUrl };
+      })
+    );
   },
 });
 
@@ -132,7 +150,16 @@ export const deleteProject = mutation({
 export const listBlogPosts = query({
   args: {},
   handler: async (ctx) => {
-    return await ctx.db.query("cms_blog_posts").order("asc").collect();
+    const posts = await ctx.db.query("cms_blog_posts").order("asc").collect();
+    return await Promise.all(
+      posts.map(async (post) => {
+        let imageUrl = post.image;
+        if (imageUrl && !imageUrl.startsWith("http") && !imageUrl.startsWith("/") && !imageUrl.startsWith("data:")) {
+          imageUrl = (await ctx.storage.getUrl(imageUrl)) || imageUrl;
+        }
+        return { ...post, image: imageUrl };
+      })
+    );
   },
 });
 
@@ -193,7 +220,16 @@ export const deleteBlogPost = mutation({
 export const listTeamMembers = query({
   args: {},
   handler: async (ctx) => {
-    return await ctx.db.query("cms_team_members").order("asc").collect();
+    const members = await ctx.db.query("cms_team_members").order("asc").collect();
+    return await Promise.all(
+      members.map(async (member) => {
+        let imageUrl = member.image;
+        if (imageUrl && !imageUrl.startsWith("http") && !imageUrl.startsWith("/") && !imageUrl.startsWith("data:")) {
+          imageUrl = (await ctx.storage.getUrl(imageUrl)) || imageUrl;
+        }
+        return { ...member, image: imageUrl };
+      })
+    );
   },
 });
 
@@ -248,7 +284,16 @@ export const deleteTeamMember = mutation({
 export const listTestimonials = query({
   args: {},
   handler: async (ctx) => {
-    return await ctx.db.query("cms_testimonials").order("asc").collect();
+    const testimonials = await ctx.db.query("cms_testimonials").order("asc").collect();
+    return await Promise.all(
+      testimonials.map(async (testimonial) => {
+        let avatarUrl = testimonial.avatar;
+        if (avatarUrl && !avatarUrl.startsWith("http") && !avatarUrl.startsWith("/") && !avatarUrl.startsWith("data:")) {
+          avatarUrl = (await ctx.storage.getUrl(avatarUrl)) || avatarUrl;
+        }
+        return { ...testimonial, avatar: avatarUrl };
+      })
+    );
   },
 });
 
