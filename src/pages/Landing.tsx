@@ -88,10 +88,10 @@ export default function Landing() {
           initial={{ scaleX: 0 }}
           animate={{ scaleX: 1 }}
           transition={{ duration: 1.2, delay: 0.5, ease: [0.25, 0.1, 0.25, 1] }}
-          className="absolute top-28 left-1/2 -translate-x-1/2 w-32 h-px bg-gold/40 z-10 origin-left"
+          className="absolute top-24 md:top-28 left-1/2 -translate-x-1/2 w-32 h-px bg-gold/40 z-10 origin-left"
         />
 
-        <motion.div style={{ opacity: heroOpacity }} className="relative z-10 w-full pt-24 pb-20 md:pb-32">
+        <motion.div style={{ opacity: heroOpacity }} className="relative z-10 w-full pt-16 md:pt-20 pb-12 md:pb-16">
           <div className="mx-auto max-w-7xl px-6 sm:px-8 lg:px-10">
             <div className="max-w-4xl">
               <motion.p
