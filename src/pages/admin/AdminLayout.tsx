@@ -1,3 +1,6 @@
+import { useEffect, useState } from "react";
+import { useMutation, useQuery } from "convex/react";
+import { api } from "../../convex/_generated/api";
 import { useAuth } from "../../hooks/use-auth";
 import { Link, Outlet, useLocation, useNavigate } from "react-router";
 import {
@@ -11,7 +14,6 @@ import {
   LogOut,
   Sparkles,
 } from "lucide-react";
-import { useEffect } from "react";
 
 const sidebarLinks = [
   { label: "Dashboard", href: "/admin", icon: LayoutDashboard },
@@ -27,12 +29,29 @@ export default function AdminLayout() {
   const { isLoading, isAuthenticated, user, signOut } = useAuth();
   const location = useLocation();
   const navigate = useNavigate();
+  const promoteToAdmin = useMutation(api.cms.promoteToAdmin);
+  const canPromoteData = useQuery(api.cms.canPromoteToAdmin);
+  const [promoting, setPromoting] = useState(false);
+  const [promoteError, setPromoteError] = useState<string | null>(null);
 
   useEffect(() => {
-    if (!isLoading && (!isAuthenticated || user?.role !== "admin")) {
+    if (!isLoading && !isAuthenticated) {
       navigate("/auth?redirect=/admin");
     }
-  }, [isLoading, isAuthenticated, user, navigate]);
+  }, [isLoading, isAuthenticated, navigate]);
+
+  const handlePromote = async () => {
+    setPromoting(true);
+    setPromoteError(null);
+    try {
+      await promoteToAdmin();
+      window.location.reload();
+    } catch (e) {
+      setPromoteError(e instanceof Error ? e.message : "Failed to promote");
+    } finally {
+      setPromoting(false);
+    }
+  };
 
   if (isLoading) {
     return (
@@ -42,7 +61,55 @@ export default function AdminLayout() {
     );
   }
 
-  if (!isAuthenticated || user?.role !== "admin") return null;
+  // If authenticated but not admin, show promotion screen
+  if (isAuthenticated && user?.role !== "admin") {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-[#FAF6F1]">
+        <div className="max-w-md w-full mx-4">
+          {canPromoteData?.canPromote ? (
+            <div className="bg-white border border-[#E8E2DA] p-8 text-center">
+              <h1 className="text-xl font-bold tracking-tight mb-3">Welcome to the Admin Panel</h1>
+              <p className="text-sm text-[#8B8178] leading-relaxed mb-6">
+                You're the first user! Click below to become an administrator and start managing your website content.
+              </p>
+              {promoteError && (
+                <p className="text-sm text-red-500 mb-4">{promoteError}</p>
+              )}
+              <button
+                onClick={handlePromote}
+                disabled={promoting}
+                className="px-8 py-3 bg-[#0F1B2D] text-white text-sm font-medium hover:bg-[#0F1B2D]/90 transition-colors disabled:opacity-50"
+              >
+                {promoting ? "Promoting..." : "Become Admin"}
+              </button>
+              <button
+                onClick={() => navigate("/")}
+                className="block mx-auto mt-4 text-sm text-[#8B8178] hover:text-[#1A1A1A] transition-colors"
+              >
+                Back to Home
+              </button>
+            </div>
+          ) : (
+            <div className="bg-white border border-[#E8E2DA] p-8 text-center">
+              <h1 className="text-xl font-bold tracking-tight mb-3">Access Denied</h1>
+              <p className="text-sm text-[#8B8178] leading-relaxed mb-6">
+                You need admin privileges to access this panel. Contact your administrator to get access.
+              </p>
+              <button
+                onClick={() => navigate("/")}
+                className="px-8 py-3 bg-[#0F1B2D] text-white text-sm font-medium hover:bg-[#0F1B2D]/90 transition-colors"
+              >
+                Back to Home
+              </button>
+            </div>
+          )}
+        </div>
+      </div>
+    );
+  }
+
+  // Must be admin to reach this block — TS needs the guard
+  if (!user) return null;
 
   return (
     <div className="min-h-screen bg-[#FAF6F1] flex">

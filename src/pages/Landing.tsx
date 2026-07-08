@@ -1,5 +1,5 @@
 import { motion, useScroll, useTransform } from "framer-motion";
-import { ArrowRight, Star, ChevronRight } from "lucide-react";
+import { ArrowRight, Star, ChevronRight, Loader2 } from "lucide-react";
 import { Link } from "react-router";
 import { services } from "../data/services";
 import { stats } from "../data/stats";
@@ -8,6 +8,8 @@ import { projects } from "../data/projects";
 import { faqItems } from "../data/faq";
 import { AnimatedCounter } from "../components/shared/AnimatedCounter";
 import { ThreeHero } from "../components/home/ThreeHero";
+import { useQuery } from "convex/react";
+import { api } from "../convex/_generated/api";
 
 const fadeUp = {
   hidden: { opacity: 0, y: 30 },
@@ -71,6 +73,20 @@ function SectionDescription({ children }: { children: string }) {
 export default function Landing() {
   const { scrollYProgress } = useScroll();
   const heroOpacity = useTransform(scrollYProgress, [0, 0.12], [1, 0]);
+  
+  // Load site settings from Convex CMS (with fallback to defaults)
+  const siteSettings = useQuery(api.cms.getAllSiteSettings);
+  const settings = siteSettings ?? {};
+  
+  const companyTagline = settings.company_tagline ?? "AI-First Software Company";
+  const heroTitle = settings.hero_title ?? "We Build the Future of Software";
+  const heroAccent = settings.hero_title_accent ?? "Future";
+  const heroSubtitle = settings.hero_subtitle ?? "We design and develop AI-first websites, mobile apps, SaaS platforms, and enterprise software that transform businesses.";
+  const ctaPrimary = settings.hero_cta_primary ?? "Start Your Project";
+  const ctaSecondary = settings.hero_cta_secondary ?? "View Our Work";
+  const ctaPrimaryLink = settings.hero_cta_primary_link ?? "/contact";
+  const ctaSecondaryLink = settings.hero_cta_secondary_link ?? "/portfolio";
+  const trustedCompanies = (settings.trusted_companies ?? "NexusAI, DataStream, ShopWave, MediView, GreenLife").split(", ");
 
   return (
     <div className="bg-background">
@@ -100,7 +116,7 @@ export default function Landing() {
                 transition={{ duration: 0.6, delay: 0.2 }}
                 className="text-xs tracking-[0.15em] uppercase font-semibold text-white/50 mb-6"
               >
-                AI-First Software Company
+                {companyTagline}
               </motion.p>
 
               <motion.h1
@@ -109,9 +125,22 @@ export default function Landing() {
                 transition={{ duration: 0.8, delay: 0.3, ease: [0.25, 0.1, 0.25, 1] }}
                 className="text-editorial-lg mb-8 text-white"
               >
-                We Build the
-                <br />
-                <span className="text-gold">Future</span> of Software
+                {heroTitle.includes(heroAccent) ? (
+                  (() => {
+                    const [before, after] = heroTitle.split(heroAccent);
+                    const parts = before.split("\n");
+                    return (
+                      <>
+                        {parts[0]}
+                        {parts.length > 1 && <><br />{parts[1]}</>}
+                        <span className="text-gold">{heroAccent}</span>
+                        {after}
+                      </>
+                    );
+                  })()
+                ) : (
+                  heroTitle
+                )}
               </motion.h1>
 
               <motion.p
@@ -120,8 +149,7 @@ export default function Landing() {
                 transition={{ duration: 0.7, delay: 0.45, ease: [0.25, 0.1, 0.25, 1] }}
                 className="text-white/60 text-base md:text-lg max-w-lg leading-relaxed mb-10"
               >
-                We design and develop AI-first websites, mobile apps, SaaS platforms, 
-                and enterprise software that transform businesses.
+                {heroSubtitle}
               </motion.p>
 
               <motion.div
@@ -131,17 +159,17 @@ export default function Landing() {
                 className="flex flex-col sm:flex-row items-start gap-4"
               >
                 <Link
-                  to="/contact"
+                  to={ctaPrimaryLink}
                   className="inline-flex items-center gap-2 px-7 py-3 text-sm tracking-wide font-medium text-primary-foreground bg-primary hover:bg-primary/90 transition-colors duration-300"
                 >
-                  Start Your Project
+                  {ctaPrimary}
                   <ArrowRight className="h-3.5 w-3.5" />
                 </Link>
                 <Link
-                  to="/portfolio"
+                  to={ctaSecondaryLink}
                   className="inline-flex items-center gap-2 px-7 py-3 text-sm tracking-wide font-medium text-white/80 border border-white/20 hover:border-white/50 transition-colors duration-300"
                 >
-                  View Our Work
+                  {ctaSecondary}
                 </Link>
               </motion.div>
 
@@ -153,7 +181,7 @@ export default function Landing() {
               >
                 <p className="text-xs tracking-[0.15em] uppercase font-semibold text-white/50 mb-6">Trusted By</p>
                 <div className="flex flex-wrap gap-10 md:gap-14">
-                  {["NexusAI", "DataStream", "ShopWave", "MediView", "GreenLife"].map((name) => (
+                  {trustedCompanies.map((name) => (
                     <span key={name} className="text-sm font-semibold tracking-wide text-white/40">
                       {name}
                     </span>

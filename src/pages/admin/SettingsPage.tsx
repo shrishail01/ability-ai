@@ -1,59 +1,123 @@
-import { useMutation } from "convex/react";
+import { useState } from "react";
+import { useMutation, useQuery } from "convex/react";
 import { api } from "../../convex/_generated/api";
+import { ALL_SETTING_KEYS } from "../../convex/cms";
+import { CheckCircle2, Loader2 } from "lucide-react";
 
-const settingKeys = [
-  { key: "site_title", label: "Site Title" },
-  { key: "site_description", label: "Site Description" },
-  { key: "contact_email", label: "Contact Email" },
-  { key: "contact_phone", label: "Contact Phone" },
-  { key: "office_address", label: "Office Address" },
-];
+const sections = ["Company", "Hero", "Social Proof", "Services", "Portfolio", "About", "Contact", "SEO", "Footer"] as const;
+
+const sectionIcons: Record<string, string> = {
+  Company: "🏢",
+  Hero: "🎯",
+  "Social Proof": "⭐",
+  Services: "⚙️",
+  Portfolio: "💼",
+  About: "📖",
+  Contact: "📬",
+  SEO: "🔍",
+  Footer: "📌",
+};
 
 export default function AdminSettings() {
+  const settings = useQuery(api.cms.getAllSiteSettings);
   const setSetting = useMutation(api.cms.setSiteSetting);
+  const [savingKey, setSavingKey] = useState<string | null>(null);
+  const [savedKey, setSavedKey] = useState<string | null>(null);
 
-  const handleSave = async (key: string, form: FormData) => {
-    const value = form.get(key) as string;
+  const handleSave = async (key: string, value: string) => {
     if (!value) return;
+    setSavingKey(key);
     try {
       await setSetting({ key, value });
-      alert("Saved!");
+      setSavedKey(key);
+      setTimeout(() => setSavedKey(null), 2000);
     } catch (e) {
       alert("Error saving: " + (e instanceof Error ? e.message : "Unknown error"));
+    } finally {
+      setSavingKey(null);
     }
   };
+
+  if (!settings) {
+    return (
+      <div className="flex items-center justify-center py-20">
+        <Loader2 className="h-6 w-6 animate-spin text-[#B8860B]" />
+      </div>
+    );
+  }
 
   return (
     <div>
       <div className="mb-8">
-        <h1 className="text-2xl font-bold tracking-tight">Settings</h1>
-        <p className="text-sm text-[#8B8178] mt-1">Manage your site configuration</p>
+        <h1 className="text-2xl font-bold tracking-tight">Site Settings</h1>
+        <p className="text-sm text-[#8B8178] mt-1">Edit everything about your site — company name, taglines, hero text, contact info, and more</p>
       </div>
 
-      <div className="space-y-4">
-        {settingKeys.map((setting) => (
-          <form
-            key={setting.key}
-            onSubmit={(e) => { e.preventDefault(); handleSave(setting.key, new FormData(e.currentTarget)); }}
-            className="bg-white border border-[#E8E2DA] p-6"
-          >
-            <label className="block text-xs font-medium text-[#8B8178] uppercase tracking-wider mb-1.5">
-              {setting.label}
-            </label>
-            <input
-              name={setting.key}
-              className="w-full border border-[#E8E2DA] px-3 py-2 text-sm focus:outline-none focus:border-[#B8860B]"
-              placeholder={`Enter ${setting.label.toLowerCase()}...`}
-            />
-            <button
-              type="submit"
-              className="mt-3 px-4 py-2 text-sm bg-[#0F1B2D] text-white hover:bg-[#0F1B2D]/90 transition-colors"
-            >
-              Save
-            </button>
-          </form>
-        ))}
-      </div>
+      {sections.map((section) => {
+        const sectionSettings = ALL_SETTING_KEYS.filter(s => s.section === section);
+        if (sectionSettings.length === 0) return null;
+
+        return (
+          <div key={section} className="mb-8">
+            <div className="flex items-center gap-2 mb-4">
+              <span className="text-lg">{sectionIcons[section]}</span>
+              <h2 className="text-lg font-semibold tracking-tight">{section}</h2>
+            </div>
+            <div className="bg-white border border-[#E8E2DA] divide-y divide-[#E8E2DA]">
+              {sectionSettings.map((setting) => {
+                const currentValue = settings[setting.key] ?? setting.defaultValue;
+                const isSaving = savingKey === setting.key;
+                const isSaved = savedKey === setting.key;
+
+                return (
+                  <div key={setting.key} className="p-5 flex items-start gap-4">
+                    <div className="flex-1 min-w-0">
+                      <label className="block text-xs font-medium text-[#8B8178] uppercase tracking-wider mb-1.5">
+                        {setting.label}
+                      </label>
+                      {setting.type === "textarea" ? (
+                        <textarea
+                          defaultValue={currentValue}
+                          rows={3}
+                          className="w-full border border-[#E8E2DA] px-3 py-2 text-sm focus:outline-none focus:border-[#B8860B] transition-colors resize-y"
+                          onBlur={(e) => handleSave(setting.key, e.target.value)}
+                        />
+                      ) : (
+                        <input
+                          type="text"
+                          defaultValue={currentValue}
+                          className="w-full border border-[#E8E2DA] px-3 py-2 text-sm focus:outline-none focus:border-[#B8860B] transition-colors"
+                          onBlur={(e) => handleSave(setting.key, e.target.value)}
+                        />
+                      )}
+                      <p className="text-[10px] text-[#8B8178] mt-1">
+                        Default: "{setting.defaultValue}"
+                      </p>
+                    </div>
+                    <div className="shrink-0 pt-6">
+                      {isSaving ? (
+                        <Loader2 className="h-4 w-4 animate-spin text-[#B8860B]" />
+                      ) : isSaved ? (
+                        <CheckCircle2 className="h-4 w-4 text-green-600" />
+                      ) : (
+                        <button
+                          onClick={() => {
+                            const input = document.querySelector(`[name="${setting.key}"]`) as HTMLInputElement | HTMLTextAreaElement;
+                            if (input) handleSave(setting.key, input.value);
+                          }}
+                          className="text-xs text-[#B8860B] hover:text-[#8B6914] font-medium transition-colors"
+                        >
+                          Save
+                        </button>
+                      )}
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        );
+      })}
     </div>
   );
 }

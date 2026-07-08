@@ -294,10 +294,78 @@ export const deleteTestimonial = mutation({
 
 // ==================== SITE SETTINGS ====================
 
+// All editable site settings with their defaults
+export const ALL_SETTING_KEYS = [
+  // Company
+  { key: "company_name", label: "Company Name", type: "text", defaultValue: "Ability", section: "Company" },
+  { key: "company_tagline", label: "Company Tagline", type: "text", defaultValue: "AI-First Software Company", section: "Company" },
+  { key: "company_description", label: "Company Description", type: "textarea", defaultValue: "We design and develop AI-first websites, mobile apps, SaaS platforms, and enterprise software that transform businesses.", section: "Company" },
+  
+  // Hero
+  { key: "hero_title", label: "Hero Title", type: "text", defaultValue: "We Build the Future of Software", section: "Hero" },
+  { key: "hero_title_accent", label: "Hero Accent Word", type: "text", defaultValue: "Future", section: "Hero" },
+  { key: "hero_subtitle", label: "Hero Subtitle", type: "textarea", defaultValue: "We design and develop AI-first websites, mobile apps, SaaS platforms, and enterprise software that transform businesses.", section: "Hero" },
+  { key: "hero_cta_primary", label: "Hero CTA Primary", type: "text", defaultValue: "Start Your Project", section: "Hero" },
+  { key: "hero_cta_secondary", label: "Hero CTA Secondary", type: "text", defaultValue: "View Our Work", section: "Hero" },
+  { key: "hero_cta_primary_link", label: "Hero CTA Primary Link", type: "text", defaultValue: "/contact", section: "Hero" },
+  { key: "hero_cta_secondary_link", label: "Hero CTA Secondary Link", type: "text", defaultValue: "/portfolio", section: "Hero" },
+  
+  // Trusted Companies (comma-separated)
+  { key: "trusted_companies", label: "Trusted Companies", type: "text", defaultValue: "NexusAI, DataStream, ShopWave, MediView, GreenLife", section: "Social Proof" },
+  
+  // Services
+  { key: "services_title", label: "Services Section Title", type: "text", defaultValue: "What We Build", section: "Services" },
+  { key: "services_subtitle", label: "Services Section Subtitle", type: "textarea", defaultValue: "From AI-powered platforms to elegant websites, we deliver end-to-end digital solutions.", section: "Services" },
+  
+  // Portfolio
+  { key: "portfolio_title", label: "Portfolio Section Title", type: "text", defaultValue: "Featured Projects", section: "Portfolio" },
+  { key: "portfolio_subtitle", label: "Portfolio Section Subtitle", type: "textarea", defaultValue: "Showcasing our best work across industries and technologies.", section: "Portfolio" },
+  
+  // About
+  { key: "about_headline", label: "About Page Headline", type: "text", defaultValue: "We're on a Mission to Redefine Software", section: "About" },
+  { key: "about_story", label: "About Company Story", type: "textarea", defaultValue: "Founded in 2019, Ability has grown from a small team of visionaries into a leading AI-first software company, delivering transformative digital solutions to clients worldwide.", section: "About" },
+  
+  // Contact
+  { key: "contact_email", label: "Contact Email", type: "text", defaultValue: "hello@ability.ai", section: "Contact" },
+  { key: "contact_phone", label: "Contact Phone", type: "text", defaultValue: "+1 (555) 123-4567", section: "Contact" },
+  { key: "office_address", label: "Office Address", type: "textarea", defaultValue: "123 Innovation Drive, San Francisco, CA 94105", section: "Contact" },
+  { key: "social_twitter", label: "Twitter URL", type: "text", defaultValue: "#", section: "Contact" },
+  { key: "social_linkedin", label: "LinkedIn URL", type: "text", defaultValue: "#", section: "Contact" },
+  { key: "social_github", label: "GitHub URL", type: "text", defaultValue: "#", section: "Contact" },
+  { key: "social_instagram", label: "Instagram URL", type: "text", defaultValue: "#", section: "Contact" },
+  
+  // SEO
+  { key: "seo_meta_title", label: "Meta Title", type: "text", defaultValue: "Ability — Premium AI Software Company", section: "SEO" },
+  { key: "seo_meta_description", label: "Meta Description", type: "textarea", defaultValue: "Ability is an AI-first software company building websites, mobile apps, AI solutions, and SaaS platforms that transform businesses.", section: "SEO" },
+  { key: "seo_meta_keywords", label: "Meta Keywords", type: "text", defaultValue: "AI, software development, web development, mobile apps, SaaS", section: "SEO" },
+  
+  // Footer
+  { key: "footer_tagline", label: "Footer Tagline", type: "textarea", defaultValue: "Building the future of software with AI-powered solutions.", section: "Footer" },
+  { key: "footer_copyright", label: "Footer Copyright", type: "text", defaultValue: "© 2026 Ability. All rights reserved.", section: "Footer" },
+];
+
 export const getSiteSetting = query({
   args: { key: v.string() },
   handler: async (ctx, args) => {
     return await ctx.db.query("cms_site_settings").withIndex("by_key", (q) => q.eq("key", args.key)).first();
+  },
+});
+
+// Get all settings as a flat map with defaults
+export const getAllSiteSettings = query({
+  args: {},
+  handler: async (ctx) => {
+    const rows = await ctx.db.query("cms_site_settings").collect();
+    const settings: Record<string, string> = {};
+    // Start with defaults
+    for (const setting of ALL_SETTING_KEYS) {
+      settings[setting.key] = setting.defaultValue;
+    }
+    // Override with any saved values
+    for (const row of rows) {
+      settings[row.key] = row.value;
+    }
+    return settings;
   },
 });
 
@@ -333,6 +401,41 @@ export const getAdminStats = query({
       blogs: blogs.length,
       team: team.length,
       testimonials: testimonials.length,
+    };
+  },
+});
+
+// ==================== ADMIN PROMOTION ====================
+
+// Promote the calling user to admin (only works if no admin exists yet)
+export const promoteToAdmin = mutation({
+  args: {},
+  handler: async (ctx) => {
+    const userId = await getAuthUserId(ctx);
+    if (!userId) throw new Error("Not authenticated");
+    
+    // Check if any admin already exists
+    const allUsers = await ctx.db.query("users").collect();
+    const existingAdmin = allUsers.find(u => u.role === "admin");
+    if (existingAdmin) {
+      throw new Error("An admin already exists. Contact your existing admin to promote new users.");
+    }
+    
+    await ctx.db.patch(userId, { role: "admin" as const });
+    return { success: true };
+  },
+});
+
+// Check if promotion is available (no admin exists yet)
+export const canPromoteToAdmin = query({
+  args: {},
+  handler: async (ctx) => {
+    const allUsers = await ctx.db.query("users").collect();
+    const hasAdmin = allUsers.some(u => u.role === "admin");
+    const userId = await getAuthUserId(ctx);
+    return {
+      canPromote: !hasAdmin && userId !== null,
+      isAuthenticated: userId !== null,
     };
   },
 });
