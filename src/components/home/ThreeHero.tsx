@@ -1,5 +1,9 @@
 import { useEffect, useRef } from "react";
 import * as THREE from "three";
+import { EffectComposer } from "three/examples/jsm/postprocessing/EffectComposer.js";
+import { RenderPass } from "three/examples/jsm/postprocessing/RenderPass.js";
+import { UnrealBloomPass } from "three/examples/jsm/postprocessing/UnrealBloomPass.js";
+import { OutputPass } from "three/examples/jsm/postprocessing/OutputPass.js";
 
 export function ThreeHero() {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -27,7 +31,29 @@ export function ThreeHero() {
     });
     renderer.setSize(width, height);
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    renderer.toneMapping = THREE.ACESFilmicToneMapping;
+    renderer.toneMappingExposure = 1.0;
     container.appendChild(renderer.domElement);
+
+    // Post-processing — subtle bloom/glow
+    const composer = new EffectComposer(renderer);
+    composer.setSize(width, height);
+    composer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+
+    const renderPass = new RenderPass(scene, camera);
+    composer.addPass(renderPass);
+
+    const bloomPass = new UnrealBloomPass(
+      new THREE.Vector2(width, height),
+      0.3, // strength — subtle, editorial
+      0.5, // radius — tight around bright elements
+      0.1  // threshold — glow on moderately bright pixels
+    );
+    composer.addPass(bloomPass);
+
+    // OutputPass handles color-space conversion in newer Three.js
+    const outputPass = new OutputPass();
+    composer.addPass(outputPass);
 
     // Colors matching editorial theme
     const colors = {
@@ -310,7 +336,7 @@ export function ThreeHero() {
       camera.position.y += (mouseY * 0.2 + 1 - camera.position.y) * 0.02;
       camera.lookAt(0, 0, -2);
 
-      renderer.render(scene, camera);
+      composer.render();
     }
 
     animate();
@@ -322,6 +348,7 @@ export function ThreeHero() {
       camera.aspect = w / h;
       camera.updateProjectionMatrix();
       renderer.setSize(w, h);
+      composer.setSize(w, h);
     };
 
     window.addEventListener("resize", handleResize);
@@ -329,6 +356,7 @@ export function ThreeHero() {
 
     return () => {
       disposables.forEach((fn) => fn());
+      composer.dispose();
       renderer.dispose();
       texture.dispose();
       meshGeo.dispose();
