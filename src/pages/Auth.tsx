@@ -16,28 +16,21 @@ import {
 
 import { useAuth } from "@/hooks/use-auth";
 import logo from "@/assets/logo.svg";
-import { ArrowRight, Loader2, Mail, UserX } from "lucide-react";
-import { Suspense, useEffect, useState } from "react";
-import { useNavigate } from "react-router";
+import { ArrowRight, LayoutDashboard, Loader2, LogOut, Mail, UserX } from "lucide-react";
+import { Suspense, useState } from "react";
+import { Link, useNavigate } from "react-router";
 
 interface AuthProps {
   redirectAfterAuth?: string;
 }
 
 function Auth({ redirectAfterAuth }: AuthProps = {}) {
-  const { isLoading: authLoading, isAuthenticated, signIn } = useAuth();
+  const { isLoading: authLoading, isAuthenticated, user, signIn, signOut } = useAuth();
   const navigate = useNavigate();
   const [step, setStep] = useState<"signIn" | { email: string }>("signIn");
   const [otp, setOtp] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-
-  useEffect(() => {
-    if (!authLoading && isAuthenticated) {
-      const redirect = redirectAfterAuth || "/";
-      navigate(redirect);
-    }
-  }, [authLoading, isAuthenticated, navigate, redirectAfterAuth]);
   const handleEmailSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setIsLoading(true);
@@ -97,9 +90,53 @@ function Auth({ redirectAfterAuth }: AuthProps = {}) {
     }
   };
 
+  // If already authenticated, show signed-in state instead of redirecting
+  if (!authLoading && isAuthenticated) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-[#FAF6F1]">
+        <div className="max-w-md w-full mx-4">
+          <div className="bg-white border border-[#E8E2DA] p-8 text-center">
+            <div className="flex justify-center mb-6">
+              <div className="h-16 w-16 rounded-full bg-[#0F1B2D] flex items-center justify-center">
+                <span className="text-2xl font-bold text-white">
+                  {user?.name?.[0] || (user?.email?.[0]?.toUpperCase() || "A")}
+                </span>
+              </div>
+            </div>
+            <h1 className="text-xl font-bold tracking-tight mb-2">Already Signed In</h1>
+            <p className="text-sm text-[#8B8178] mb-6">
+              {user?.email || "You're currently signed in."}
+            </p>
+            <div className="space-y-3">
+              <Link
+                to={redirectAfterAuth || "/"}
+                className="block w-full px-8 py-3 bg-[#0F1B2D] text-white text-sm font-medium hover:bg-[#0F1B2D]/90 transition-colors"
+              >
+                Continue
+              </Link>
+              <button
+                onClick={() => signOut()}
+                className="flex items-center justify-center gap-2 w-full px-8 py-3 border border-[#E8E2DA] text-sm text-[#8B8178] hover:text-[#1A1A1A] transition-colors"
+              >
+                <LogOut className="h-4 w-4" />
+                Sign Out
+              </button>
+              <Link
+                to="/admin"
+                className="flex items-center justify-center gap-2 text-sm text-[#B8860B] hover:text-[#B8860B]/80 transition-colors"
+              >
+                <LayoutDashboard className="h-4 w-4" />
+                Go to Admin Panel
+              </Link>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen flex flex-col">
-
       
       {/* Auth Content */}
       <div className="flex-1 flex items-center justify-center">
