@@ -10,9 +10,20 @@ import {
 } from "lucide-react";
 import { useState } from "react";
 import { Link } from "react-router";
+import { useQuery } from "convex/react";
+import { api } from "../convex/_generated/api";
 
 export default function Contact() {
   const [submitted, setSubmitted] = useState(false);
+  const siteSettings = useQuery(api.cms.getAllSiteSettings);
+  const settings = siteSettings ?? {};
+  
+  const contactEmail = settings.contact_email ?? "hello@ability.ai";
+  const contactPhone = settings.contact_phone ?? "+1 (555) 123-4567";
+  const officeAddress = settings.office_address ?? "123 Innovation Drive, San Francisco, CA 94105";
+  const twitterUrl = settings.social_twitter ?? "#";
+  const linkedinUrl = settings.social_linkedin ?? "#";
+  const githubUrl = settings.social_github ?? "#";
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -69,19 +80,19 @@ export default function Contact() {
                 {
                   icon: Mail,
                   label: "Email",
-                  value: "hello@ability.ai",
-                  href: "mailto:hello@ability.ai",
+                  value: contactEmail,
+                  href: `mailto:${contactEmail}`,
                 },
                 {
                   icon: Phone,
                   label: "Phone",
-                  value: "+1 (234) 567-890",
-                  href: "tel:+1234567890",
+                  value: contactPhone,
+                  href: `tel:${contactPhone.replace(/\D/g, "")}`,
                 },
                 {
                   icon: MapPin,
                   label: "Office",
-                  value: "San Francisco, CA 94105",
+                  value: officeAddress,
                   href: "#",
                 },
                 {
@@ -130,13 +141,19 @@ export default function Contact() {
               >
                 <p className="text-sm font-medium mb-3">Follow Us</p>
                 <div className="flex gap-3">
-                  {["Twitter", "LinkedIn", "GitHub", "Dribbble"].map((social) => (
+                  {[
+                    { label: "Twitter", href: twitterUrl },
+                    { label: "LinkedIn", href: linkedinUrl },
+                    { label: "GitHub", href: githubUrl },
+                  ].map((social) => (
                     <a
-                      key={social}
-                      href="#"
+                      key={social.label}
+                      href={social.href}
+                      target="_blank"
+                      rel="noopener noreferrer"
                       className="rounded-xl bg-white/5 px-4 py-2 text-xs font-medium text-muted-foreground hover:text-foreground hover:bg-white/10 transition-all"
                     >
-                      {social}
+                      {social.label}
                     </a>
                   ))}
                 </div>

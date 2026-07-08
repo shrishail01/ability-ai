@@ -1,5 +1,7 @@
 import { Mail, Phone } from "lucide-react";
 import { Link } from "react-router";
+import { useQuery } from "convex/react";
+import { api } from "../../convex/_generated/api";
 
 const footerLinks = {
   Services: [
@@ -21,11 +23,28 @@ const footerLinks = {
     { label: "Twitter", href: "#" },
     { label: "LinkedIn", href: "#" },
     { label: "GitHub", href: "#" },
-    { label: "Dribbble", href: "#" },
   ],
 };
 
 export function Footer() {
+  const siteSettings = useQuery(api.cms.getAllSiteSettings);
+  const settings = siteSettings ?? {};
+  
+  const companyName = settings.company_name ?? "Ability";
+  const footerTagline = settings.footer_tagline ?? "We design and develop software that transforms businesses.";
+  const footerCopyright = settings.footer_copyright ?? `\u00A9 ${new Date().getFullYear()} Ability. All rights reserved.`;
+  const contactEmail = settings.contact_email ?? "hello@ability.ai";
+  const contactPhone = settings.contact_phone ?? "+1 (555) 123-4567";
+  const twitterUrl = settings.social_twitter ?? "#";
+  const linkedinUrl = settings.social_linkedin ?? "#";
+  const githubUrl = settings.social_github ?? "#";
+
+  const connectLinks = [
+    { label: "Twitter", href: twitterUrl },
+    { label: "LinkedIn", href: linkedinUrl },
+    { label: "GitHub", href: githubUrl },
+  ];
+
   return (
     <footer className="border-t border-border bg-background">
       <div className="mx-auto max-w-7xl px-6 sm:px-8 lg:px-10 py-16 md:py-20">
@@ -34,27 +53,26 @@ export function Footer() {
           <div className="col-span-2 md:col-span-1 lg:col-span-2">
             <Link to="/" className="inline-block mb-6">
               <span className="text-xl font-bold tracking-tight text-foreground">
-                Ability<span className="text-gold">.</span>
+                {companyName}<span className="text-gold">.</span>
               </span>
             </Link>
             <p className="text-sm text-muted-foreground leading-relaxed mb-6 max-w-xs">
-              We design and develop software that transforms businesses. 
-              From AI platforms to elegant websites, we build the future.
+              {footerTagline}
             </p>
             <div className="space-y-2.5">
               <a
-                href="mailto:hello@ability.ai"
+                href={`mailto:${contactEmail}`}
                 className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors"
               >
                 <Mail className="h-3.5 w-3.5" />
-                hello@ability.ai
+                {contactEmail}
               </a>
               <a
-                href="tel:+1234567890"
+                href={`tel:${contactPhone.replace(/\D/g, "")}`}
                 className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors"
               >
                 <Phone className="h-3.5 w-3.5" />
-                +1 (234) 567-890
+                {contactPhone}
               </a>
             </div>
           </div>
@@ -64,7 +82,7 @@ export function Footer() {
             <div key={title}>
               <h3 className="eyebrow mb-5">{title}</h3>
               <ul className="space-y-3">
-                {links.map((link) => (
+                {(title === "Connect" ? connectLinks : links).map((link) => (
                   <li key={link.label}>
                     <Link
                       to={link.href}
@@ -82,7 +100,7 @@ export function Footer() {
         {/* Bottom bar */}
         <div className="mt-16 pt-8 border-t border-border flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
           <p className="text-xs text-muted-foreground">
-            &copy; {new Date().getFullYear()} Ability. All rights reserved.
+            {footerCopyright}
           </p>
           <div className="flex items-center gap-6">
             <a href="#" className="text-xs text-muted-foreground hover:text-foreground transition-colors">

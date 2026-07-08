@@ -78,6 +78,11 @@ const timeline = [
 export default function About() {
   const cmsTeam = useQuery(api.cms.listTeamMembers);
   const teamMembers = (cmsTeam && cmsTeam.length > 0) ? cmsTeam : fallbackTeamMembers;
+  
+  const siteSettings = useQuery(api.cms.getAllSiteSettings);
+  const settings = siteSettings ?? {};
+  const aboutHeadline = settings.about_headline ?? "We're on a Mission to Redefine Software";
+  const aboutStory = settings.about_story ?? "Founded in 2019, Ability has grown from a small team of visionaries into a leading AI-first software company, delivering transformative digital solutions to clients worldwide.";
 
   return (
     <div className="min-h-screen bg-background">
@@ -104,8 +109,15 @@ export default function About() {
             transition={{ duration: 0.5, delay: 0.1 }}
             className="text-4xl md:text-6xl font-bold tracking-tight mb-6"
           >
-            We're on a Mission to{" "}
-            <span className="text-gradient">Redefine Software</span>
+            {aboutHeadline.includes(" ") ? (
+              <>{aboutHeadline.split("to").length > 1 ? (
+                <>{aboutHeadline.split("to")[0]}to <span className="text-gradient">{aboutHeadline.split("to")[1]}</span></>
+              ) : (
+                aboutHeadline
+              )}</>
+            ) : (
+              aboutHeadline
+            )}
           </motion.h1>
           <motion.p
             initial={{ opacity: 0, y: 20 }}
@@ -113,9 +125,7 @@ export default function About() {
             transition={{ duration: 0.5, delay: 0.2 }}
             className="text-muted-foreground max-w-2xl mx-auto text-sm md:text-base leading-relaxed"
           >
-            Founded in 2019, Ability has grown from a small team of visionaries into a 
-            leading AI-first software company, delivering transformative digital solutions 
-            to clients worldwide.
+            {aboutStory}
           </motion.p>
         </div>
       </section>

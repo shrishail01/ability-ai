@@ -86,6 +86,11 @@ export default function Landing() {
   const ctaSecondary = settings.hero_cta_secondary ?? "View Our Work";
   const ctaPrimaryLink = settings.hero_cta_primary_link ?? "/contact";
   const ctaSecondaryLink = settings.hero_cta_secondary_link ?? "/portfolio";
+  const servicesTitle = settings.services_title ?? "What We Build";
+  const servicesSubtitle = settings.services_subtitle ?? "From AI-powered platforms to elegant websites, we deliver end-to-end digital solutions.";
+  const portfolioTitle = settings.portfolio_title ?? "Featured Projects";
+  const portfolioSubtitle = settings.portfolio_subtitle ?? "Showcasing our best work across industries and technologies.";
+  const aboutLink = settings.about_headline ?? "About Us";
   const trustedCompanies = (settings.trusted_companies ?? "NexusAI, DataStream, ShopWave, MediView, GreenLife").split(", ");
 
   return (
@@ -271,9 +276,9 @@ export default function Landing() {
         <div className="mx-auto max-w-7xl px-6 sm:px-8 lg:px-10">
           <div className="max-w-xl mb-16">
             <SectionLabel>Our Services</SectionLabel>
-            <SectionTitle>What We Build</SectionTitle>
+            <SectionTitle>{servicesTitle}</SectionTitle>
             <SectionDescription>
-              From AI-powered platforms to elegant websites, we deliver end-to-end digital solutions.
+              {servicesSubtitle}
             </SectionDescription>
           </div>
 
@@ -408,9 +413,9 @@ export default function Landing() {
         <div className="mx-auto max-w-7xl px-6 sm:px-8 lg:px-10">
           <div className="max-w-xl mb-16">
             <SectionLabel>Portfolio</SectionLabel>
-            <SectionTitle>Featured Projects</SectionTitle>
+            <SectionTitle>{portfolioTitle}</SectionTitle>
             <SectionDescription>
-              Showcasing our best work across industries and technologies.
+              {portfolioSubtitle}
             </SectionDescription>
           </div>
 
