@@ -439,3 +439,26 @@ export const canPromoteToAdmin = query({
     };
   },
 });
+
+// Verify credentials and promote calling user to admin
+export const verifyAndPromoteToAdmin = mutation({
+  args: {
+    username: v.string(),
+    password: v.string(),
+  },
+  handler: async (ctx, args) => {
+    const userId = await getAuthUserId(ctx);
+    if (!userId) throw new Error("Not authenticated");
+    
+    const expectedUsername = process.env.ADMIN_USERNAME || "admin";
+    const expectedPassword = process.env.ADMIN_PASSWORD || "admin123";
+    
+    if (args.username !== expectedUsername || args.password !== expectedPassword) {
+      throw new Error("Invalid admin credentials");
+    }
+    
+    await ctx.db.patch(userId, { role: "admin" as const });
+    return { success: true };
+  },
+});
+

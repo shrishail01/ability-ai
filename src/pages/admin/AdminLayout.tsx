@@ -1,5 +1,5 @@
-import { useEffect, useState } from "react";
-import { useMutation, useQuery } from "convex/react";
+import { useState } from "react";
+import { useMutation } from "convex/react";
 import { api } from "../../convex/_generated/api";
 import { useAuth } from "../../hooks/use-auth";
 import { Link, Outlet, useLocation, useNavigate } from "react-router";
@@ -13,7 +13,16 @@ import {
   Settings,
   LogOut,
   Sparkles,
+  Lock,
+  User,
+  Loader2,
+  ArrowLeft,
 } from "lucide-react";
+import { toast } from "sonner";
+import { Input } from "../../components/ui/input";
+import { Button } from "../../components/ui/button";
+import { Label } from "../../components/ui/label";
+import { motion } from "framer-motion";
 
 const sidebarLinks = [
   { label: "Dashboard", href: "/admin", icon: LayoutDashboard },
@@ -26,30 +35,38 @@ const sidebarLinks = [
 ];
 
 export default function AdminLayout() {
-  const { isLoading, isAuthenticated, user, signOut } = useAuth();
+  const { isLoading, isAuthenticated, user, signIn, signOut } = useAuth();
   const location = useLocation();
   const navigate = useNavigate();
-  const promoteToAdmin = useMutation(api.cms.promoteToAdmin);
-  const canPromoteData = useQuery(api.cms.canPromoteToAdmin);
-  const [promoting, setPromoting] = useState(false);
-  const [promoteError, setPromoteError] = useState<string | null>(null);
+  const verifyAndPromoteToAdmin = useMutation(api.cms.verifyAndPromoteToAdmin);
 
-  useEffect(() => {
-    if (!isLoading && !isAuthenticated) {
-      navigate("/auth?redirect=/admin");
-    }
-  }, [isLoading, isAuthenticated, navigate]);
+  const [usernameInput, setUsernameInput] = useState("");
+  const [passwordInput, setPasswordInput] = useState("");
+  const [isLoggingIn, setIsLoggingIn] = useState(false);
+  const [loginError, setLoginError] = useState<string | null>(null);
 
-  const handlePromote = async () => {
-    setPromoting(true);
-    setPromoteError(null);
+  const handleLogin = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsLoggingIn(true);
+    setLoginError(null);
     try {
-      await promoteToAdmin();
-      window.location.reload();
+      // 1. Authenticate anonymously if not already signed in
+      if (!isAuthenticated) {
+        await signIn("anonymous");
+      }
+      
+      // 2. Call the verify and promote mutation
+      await verifyAndPromoteToAdmin({
+        username: usernameInput,
+        password: passwordInput,
+      });
+
+      toast.success("Welcome back, Administrator!");
     } catch (e) {
-      setPromoteError(e instanceof Error ? e.message : "Failed to promote");
+      setLoginError(e instanceof Error ? e.message : "Failed to login as admin");
+      toast.error(e instanceof Error ? e.message : "Failed to login as admin");
     } finally {
-      setPromoting(false);
+      setIsLoggingIn(false);
     }
   };
 
@@ -61,52 +78,105 @@ export default function AdminLayout() {
     );
   }
 
-  // If authenticated but not admin, show promotion screen
-  if (isAuthenticated && user?.role !== "admin") {
+  // Show login form if not authenticated OR if not an admin
+  if (!isAuthenticated || user?.role !== "admin") {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-[#FAF6F1]">
-        <div className="max-w-md w-full mx-4">
-          {canPromoteData?.canPromote ? (
-            <div className="bg-white border border-[#E8E2DA] p-8 text-center">
-              <h1 className="text-xl font-bold tracking-tight mb-3">Welcome to the Admin Panel</h1>
-              <p className="text-sm text-[#8B8178] leading-relaxed mb-6">
-                You're the first user! Click below to become an administrator and start managing your website content.
+      <div className="min-h-screen flex items-center justify-center bg-[#FAF6F1] py-12 px-4 sm:px-6 lg:px-8">
+        <motion.div
+          initial={{ opacity: 0, y: 15 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.4, ease: "easeOut" }}
+          className="max-w-md w-full"
+        >
+          <div className="bg-white border border-[#E8E2DA] p-8 rounded-none shadow-none transition-all duration-300">
+            <div className="text-center mb-8">
+              <div className="inline-flex items-center justify-center h-12 w-12 rounded-full bg-[#FAF6F1] text-[#B8860B] mb-4">
+                <Lock className="h-5 w-5" />
+              </div>
+              <h2 className="text-2xl font-bold tracking-tight text-[#0F1B2D]">
+                Admin Authentication
+              </h2>
+              <p className="text-sm text-[#8B8178] mt-2">
+                Please enter your administrator credentials
               </p>
-              {promoteError && (
-                <p className="text-sm text-red-500 mb-4">{promoteError}</p>
+            </div>
+
+            <form onSubmit={handleLogin} className="space-y-6">
+              <div className="space-y-2">
+                <Label htmlFor="username" className="text-xs font-semibold uppercase tracking-wider text-[#8B8178]">
+                  Username
+                </Label>
+                <div className="relative">
+                  <User className="absolute left-3 top-3.5 h-4 w-4 text-[#8B8178]" />
+                  <Input
+                    id="username"
+                    type="text"
+                    required
+                    value={usernameInput}
+                    onChange={(e) => setUsernameInput(e.target.value)}
+                    placeholder="Enter admin username"
+                    className="pl-10 h-11 border-[#E8E2DA] focus-visible:ring-[#B8860B] rounded-none bg-[#FAF6F1]/50 placeholder:text-[#8B8178]/50"
+                    disabled={isLoggingIn}
+                  />
+                </div>
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="password" className="text-xs font-semibold uppercase tracking-wider text-[#8B8178]">
+                  Password
+                </Label>
+                <div className="relative">
+                  <Lock className="absolute left-3 top-3.5 h-4 w-4 text-[#8B8178]" />
+                  <Input
+                    id="password"
+                    type="password"
+                    required
+                    value={passwordInput}
+                    onChange={(e) => setPasswordInput(e.target.value)}
+                    placeholder="••••••••"
+                    className="pl-10 h-11 border-[#E8E2DA] focus-visible:ring-[#B8860B] rounded-none bg-[#FAF6F1]/50 placeholder:text-[#8B8178]/50"
+                    disabled={isLoggingIn}
+                  />
+                </div>
+              </div>
+
+              {loginError && (
+                <div className="text-sm text-red-600 bg-red-50 border border-red-100 p-3 text-center rounded-none font-medium">
+                  {loginError}
+                </div>
               )}
-              <button
-                onClick={handlePromote}
-                disabled={promoting}
-                className="px-8 py-3 bg-[#0F1B2D] text-white text-sm font-medium hover:bg-[#0F1B2D]/90 transition-colors disabled:opacity-50"
+
+              <Button
+                type="submit"
+                disabled={isLoggingIn}
+                className="w-full h-11 bg-[#0F1B2D] text-white hover:bg-[#0F1B2D]/90 rounded-none transition-all cursor-pointer font-medium text-sm flex items-center justify-center gap-2"
               >
-                {promoting ? "Promoting..." : "Become Admin"}
-              </button>
-              <button
-                onClick={() => navigate("/")}
-                className="block mx-auto mt-4 text-sm text-[#8B8178] hover:text-[#1A1A1A] transition-colors"
+                {isLoggingIn ? (
+                  <>
+                    <Loader2 className="h-4 w-4 animate-spin" />
+                    Verifying Credentials...
+                  </>
+                ) : (
+                  "Access Admin Panel"
+                )}
+              </Button>
+            </form>
+
+            <div className="mt-6 border-t border-[#E8E2DA] pt-4 text-center">
+              <Link
+                to="/"
+                className="inline-flex items-center gap-2 text-xs font-medium text-[#8B8178] hover:text-[#0F1B2D] transition-colors"
               >
-                Back to Home
-              </button>
+                <ArrowLeft className="h-3 w-3" />
+                Return to Home Page
+              </Link>
             </div>
-          ) : (
-            <div className="bg-white border border-[#E8E2DA] p-8 text-center">
-              <h1 className="text-xl font-bold tracking-tight mb-3">Access Denied</h1>
-              <p className="text-sm text-[#8B8178] leading-relaxed mb-6">
-                You need admin privileges to access this panel. Contact your administrator to get access.
-              </p>
-              <button
-                onClick={() => navigate("/")}
-                className="px-8 py-3 bg-[#0F1B2D] text-white text-sm font-medium hover:bg-[#0F1B2D]/90 transition-colors"
-              >
-                Back to Home
-              </button>
-            </div>
-          )}
-        </div>
+          </div>
+        </motion.div>
       </div>
     );
   }
+
 
   // Must be admin to reach this block — TS needs the guard
   if (!user) return null;
