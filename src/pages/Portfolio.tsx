@@ -5,6 +5,7 @@ import { Link } from "react-router";
 import { useQuery } from "convex/react";
 import { api } from "../convex/_generated/api";
 import { projects as fallbackProjects, projectCategories as fallbackCategories } from "../data/projects";
+import { getImageUrl } from "../lib/utils";
 
 export default function Portfolio() {
   const [activeCategory, setActiveCategory] = useState("All");
@@ -12,14 +13,14 @@ export default function Portfolio() {
 
   const cmsProjects = useQuery(api.cms.listProjects);
   const projects = useMemo(() => {
-    if (cmsProjects && cmsProjects.length > 0) {
+    if (cmsProjects !== undefined) {
       return cmsProjects.map((p: any) => ({ ...p, id: p._id }));
     }
     return fallbackProjects;
   }, [cmsProjects]);
 
   const projectCategories = useMemo(() => {
-    if (cmsProjects && cmsProjects.length > 0) {
+    if (cmsProjects !== undefined) {
       return ["All", ...new Set(cmsProjects.map((p: any) => p.category))];
     }
     return fallbackCategories;
@@ -121,7 +122,7 @@ export default function Portfolio() {
                     <div className="glass-card rounded-2xl overflow-hidden border border-white/5 hover:border-primary/20 transition-all duration-300">
                       <div className="relative overflow-hidden">
                         <img
-                          src={project.image}
+                          src={getImageUrl(project.image)}
                           alt={project.title}
                           className="h-48 w-full object-cover transition-transform duration-700 group-hover:scale-105"
                           loading="lazy"
@@ -175,7 +176,7 @@ export default function Portfolio() {
             >
               <div className="relative overflow-hidden">
                 <img
-                  src={selectedProjectData.image}
+                  src={getImageUrl(selectedProjectData.image)}
                   alt={selectedProjectData.title}
                   className="h-48 w-full object-cover"
                 />

@@ -1,12 +1,12 @@
 import { motion, useScroll, useTransform } from "framer-motion";
 import { ArrowRight, Star, ChevronRight, Loader2 } from "lucide-react";
 import { Link } from "react-router";
-import { services } from "../data/services";
-import { stats } from "../data/stats";
-import { testimonials } from "../data/testimonials";
-import { projects } from "../data/projects";
+import { services as fallbackServices } from "../data/services";
+import { testimonials as fallbackTestimonials } from "../data/testimonials";
+import { projects as fallbackProjects } from "../data/projects";
 import { faqItems } from "../data/faq";
-import { AnimatedCounter } from "../components/shared/AnimatedCounter";
+import { getImageUrl } from "../lib/utils";
+import * as Icons from "lucide-react";
 import { ThreeHero } from "../components/home/ThreeHero";
 import { useQuery } from "convex/react";
 import { api } from "../convex/_generated/api";
@@ -74,9 +74,17 @@ export default function Landing() {
   const { scrollYProgress } = useScroll();
   const heroOpacity = useTransform(scrollYProgress, [0, 0.12], [1, 0]);
   
-  // Load site settings from Convex CMS (with fallback to defaults)
+  // Load site settings and CMS content from Convex CMS (with fallback to defaults)
   const siteSettings = useQuery(api.cms.getAllSiteSettings);
   const settings = siteSettings ?? {};
+
+  const cmsServices = useQuery(api.cms.listServices);
+  const cmsProjects = useQuery(api.cms.listProjects);
+  const cmsTestimonials = useQuery(api.cms.listTestimonials);
+
+  const displayServices = cmsServices !== undefined ? cmsServices : fallbackServices;
+  const displayProjects = cmsProjects !== undefined ? cmsProjects : fallbackProjects;
+  const displayTestimonials = cmsTestimonials !== undefined ? cmsTestimonials : fallbackTestimonials;
   
   const companyTagline = settings.company_tagline ?? "AI-First Software Company";
   const heroTitle = settings.hero_title ?? "We Build the Future of Software";
@@ -222,19 +230,18 @@ export default function Landing() {
       <section className="bg-[#0F1B2D] border-b border-white/5">
         <div className="mx-auto max-w-7xl px-6 sm:px-8 lg:px-10 py-8">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-            {projects.slice(0, 4).map((project) => (
+            {displayProjects.slice(0, 4).map((project: any) => (
               <motion.a
-                key={project.id}
-                href={`/portfolio#${project.id}`}
-                initial={{ opacity: 0, y: 15 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                className="group relative overflow-hidden"
+                key={project._id || project.id}
+                href={project._id ? `/portfolio?project=${project._id}` : project.liveUrl || "#"}
+                className="aspect-[4/5] relative group overflow-hidden border border-white/5 cursor-pointer"
+                whileHover={{ scale: 1.02 }}
+                transition={{ duration: 0.3 }}
               >
                 <img
-                  src={project.image}
+                  src={getImageUrl(project.image)}
                   alt={project.title}
-                  className="w-full h-32 object-cover opacity-60 group-hover:opacity-100 transition-opacity duration-500"
+                  className="w-full h-full object-cover grayscale group-hover:grayscale-0 group-hover:scale-105 transition-all duration-700"
                   loading="lazy"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-[#0F1B2D] to-transparent" />
@@ -247,29 +254,7 @@ export default function Landing() {
         </div>
       </section>
 
-      {/* ===== STATS ===== */}
-      <section className="py-20 md:py-28">
-        <div className="mx-auto max-w-7xl px-6 sm:px-8 lg:px-10">
-          <div className="border border-border p-10 md:p-16">
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-10 md:gap-16">
-              {stats.map((stat, i) => (
-                <motion.div
-                  key={stat.label}
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.6, delay: i * 0.1, ease: [0.25, 0.1, 0.25, 1] }}
-                >
-                  <div className="text-4xl md:text-5xl font-bold tracking-tight text-foreground mb-1.5">
-                    <AnimatedCounter value={stat.value} suffix={stat.suffix} prefix={stat.prefix} />
-                  </div>
-                  <p className="text-xs text-muted-foreground tracking-wide uppercase">{stat.label}</p>
-                </motion.div>
-              ))}
-            </div>
-          </div>
-        </div>
-      </section>
+
 
       {/* ===== SERVICES ===== */}
       <section className="py-20 md:py-28">
@@ -283,18 +268,21 @@ export default function Landing() {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-px bg-border">
-            {services.slice(0, 6).map((service, i) => {
-              const Icon = service.icon;
+            {displayServices.slice(0, 6).map((service: any, i: number) => {
+              const Icon = typeof service.icon === "string"
+                ? (Icons[service.icon as keyof typeof Icons] || Icons.HelpCircle)
+                : service.icon;
+              const serviceId = service._id || service.id;
               return (
                 <motion.div
-                  key={service.id}
+                  key={serviceId}
                   initial={{ opacity: 0, y: 15 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
                   transition={{ duration: 0.6, delay: i * 0.05, ease: [0.25, 0.1, 0.25, 1] }}
                   className="bg-background p-8 md:p-10 group"
                 >
-                  <Link to={`/services#${service.id}`} className="block">
+                  <Link to={`/services#${serviceId}`} className="block">
                     <Icon className="h-6 w-6 text-gold mb-5" />
                     <h3 className="text-lg font-semibold mb-2.5 group-hover:text-gold transition-colors duration-300">
                       {service.title}
@@ -420,42 +408,45 @@ export default function Landing() {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-px bg-border">
-            {projects.slice(0, 6).map((project, i) => (
-              <motion.div
-                key={project.id}
-                initial={{ opacity: 0, y: 15 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.6, delay: i * 0.05, ease: [0.25, 0.1, 0.25, 1] }}
-                className="bg-card p-8 md:p-10 group"
-              >
-                <Link to={`/portfolio#${project.id}`} className="block group">
-                  <div className="relative overflow-hidden mb-5 bg-background/50 border border-border">
-                    <img
-                      src={project.image}
-                      alt={project.title}
-                      className="w-full h-56 object-cover transition-transform duration-700 group-hover:scale-105"
-                      loading="lazy"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-background/80 via-transparent to-transparent" />
-                    <div className="absolute bottom-4 left-4">
-                      <p className="text-sm font-semibold text-white">{project.title}</p>
-                      <p className="text-xs text-white/70 mt-0.5">{project.category}</p>
+            {displayProjects.slice(0, 6).map((project: any, i: number) => {
+              const projectId = project._id || project.id;
+              return (
+                <motion.div
+                  key={projectId}
+                  initial={{ opacity: 0, y: 15 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.6, delay: i * 0.05, ease: [0.25, 0.1, 0.25, 1] }}
+                  className="bg-card p-8 md:p-10 group"
+                >
+                  <Link to={project._id ? `/portfolio?project=${project._id}` : `/portfolio#${project.id}`} className="block group">
+                    <div className="relative overflow-hidden mb-5 bg-background/50 border border-border">
+                      <img
+                        src={getImageUrl(project.image)}
+                        alt={project.title}
+                        className="w-full h-56 object-cover transition-transform duration-700 group-hover:scale-105"
+                        loading="lazy"
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-background/80 via-transparent to-transparent" />
+                      <div className="absolute bottom-4 left-4">
+                        <p className="text-sm font-semibold text-white">{project.title}</p>
+                        <p className="text-xs text-white/70 mt-0.5">{project.category}</p>
+                      </div>
                     </div>
-                  </div>
-                  <p className="text-sm text-muted-foreground leading-relaxed mb-3 line-clamp-2">
-                    {project.description}
-                  </p>
-                  <div className="flex flex-wrap gap-2">
-                    {project.technologies.slice(0, 3).map((tech) => (
-                      <span key={tech} className="text-[11px] text-muted-foreground uppercase tracking-wider">
-                        {tech}
-                      </span>
-                    ))}
-                  </div>
-                </Link>
-              </motion.div>
-            ))}
+                    <p className="text-sm text-muted-foreground leading-relaxed mb-3 line-clamp-2">
+                      {project.description}
+                    </p>
+                    <div className="flex flex-wrap gap-2">
+                      {project.technologies.slice(0, 3).map((tech: string) => (
+                        <span key={tech} className="text-[11px] text-muted-foreground uppercase tracking-wider">
+                          {tech}
+                        </span>
+                      ))}
+                    </div>
+                  </Link>
+                </motion.div>
+              );
+            })}
           </div>
 
           <motion.div
@@ -483,9 +474,9 @@ export default function Landing() {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-px bg-border">
-            {testimonials.slice(0, 3).map((t, i) => (
+            {displayTestimonials.slice(0, 3).map((t: any, i: number) => (
               <motion.div
-                key={t.name}
+                key={t._id || t.name}
                 initial={{ opacity: 0, y: 15 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
@@ -502,7 +493,7 @@ export default function Landing() {
                 </p>
                 <div className="flex items-center gap-3">
                   <img
-                    src={t.avatar}
+                    src={getImageUrl(t.avatar)}
                     alt={t.name}
                     className="w-10 h-10 rounded-full object-cover"
                     loading="lazy"

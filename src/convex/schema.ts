@@ -41,6 +41,7 @@ const schema = defineSchema(
       technologies: v.array(v.string()),
       color: v.string(),
       order: v.number(),
+      image: v.optional(v.string()),
     }).index("by_order", ["order"]),
 
     cms_projects: defineTable({

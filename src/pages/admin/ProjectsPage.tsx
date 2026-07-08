@@ -6,7 +6,7 @@ const fields = [
   { key: "category", label: "Category", type: "text" as const },
   { key: "description", label: "Description", type: "textarea" as const },
   { key: "year", label: "Year", type: "text" as const },
-  { key: "image", label: "Image URL", type: "url" as const },
+  { key: "image", label: "Image", type: "image" as const },
   { key: "color", label: "Color (hex)", type: "text" as const },
   { key: "technologies", label: "Technologies", type: "array" as const },
   { key: "results", label: "Results", type: "array" as const },

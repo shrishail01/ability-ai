@@ -9,7 +9,7 @@ const fields = [
   { key: "authorRole", label: "Author Role", type: "text" as const },
   { key: "date", label: "Date", type: "text" as const },
   { key: "readTime", label: "Read Time", type: "text" as const },
-  { key: "image", label: "Image URL", type: "url" as const },
+  { key: "image", label: "Image", type: "image" as const },
   { key: "tags", label: "Tags", type: "array" as const },
   { key: "featured", label: "Featured", type: "boolean" as const },
   { key: "content", label: "Content", type: "textarea" as const },

@@ -8,6 +8,7 @@ const fields = [
   { key: "color", label: "Color (hex)", type: "text" as const },
   { key: "benefits", label: "Benefits", type: "array" as const },
   { key: "technologies", label: "Technologies", type: "array" as const },
+  { key: "image", label: "Image", type: "image" as const },
 ];
 
 export default function AdminServices() {

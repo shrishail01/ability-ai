@@ -1,13 +1,15 @@
 import { motion } from "framer-motion";
 import { Sparkles, ArrowRight, CheckCircle2 } from "lucide-react";
+import * as Icons from "lucide-react";
 import { Link } from "react-router";
 import { useQuery } from "convex/react";
 import { api } from "../convex/_generated/api";
 import { services as fallbackServices } from "../data/services";
+import { getImageUrl } from "../lib/utils";
 
 export default function Services() {
   const cmsServices = useQuery(api.cms.listServices);
-  const displayServices = (cmsServices && cmsServices.length > 0) ? cmsServices : fallbackServices;
+  const displayServices = cmsServices !== undefined ? cmsServices : fallbackServices;
 
   return (
     <div className="min-h-screen bg-background">
@@ -54,11 +56,14 @@ export default function Services() {
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             {displayServices.map((service: any, i: number) => {
-              const Icon = service.icon;
+              const Icon = typeof service.icon === "string"
+                ? (Icons[service.icon as keyof typeof Icons] || Icons.HelpCircle)
+                : service.icon;
+              const serviceId = service._id || service.id;
               return (
                 <motion.div
-                  key={service.id}
-                  id={service.id}
+                  key={serviceId}
+                  id={serviceId}
                   initial={{ opacity: 0, y: 30 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true, margin: "-100px" }}
@@ -79,6 +84,18 @@ export default function Services() {
                       <p className="text-sm text-muted-foreground leading-relaxed mb-5">
                         {service.description}
                       </p>
+
+                      {/* Service Image */}
+                      {service.image && (
+                        <div className="mb-6 relative overflow-hidden rounded-xl h-48 border border-white/5">
+                          <img
+                            src={getImageUrl(service.image)}
+                            alt={service.title}
+                            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                            loading="lazy"
+                          />
+                        </div>
+                      )}
 
                       {/* Benefits */}
                       <div className="mb-5">
