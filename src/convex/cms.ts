@@ -297,7 +297,7 @@ export const deleteTestimonial = mutation({
 // All editable site settings with their defaults
 export const ALL_SETTING_KEYS = [
   // Company
-  { key: "company_name", label: "Company Name", type: "text", defaultValue: "Ability", section: "Company" },
+  { key: "company_name", label: "Company Name", type: "text", defaultValue: "Aibility", section: "Company" },
   { key: "company_tagline", label: "Company Tagline", type: "text", defaultValue: "AI-First Software Company", section: "Company" },
   { key: "company_description", label: "Company Description", type: "textarea", defaultValue: "We design and develop AI-first websites, mobile apps, SaaS platforms, and enterprise software that transform businesses.", section: "Company" },
   
@@ -323,8 +323,8 @@ export const ALL_SETTING_KEYS = [
   
   // About
   { key: "about_headline", label: "About Page Headline", type: "text", defaultValue: "We're on a Mission to Redefine Software", section: "About" },
-  { key: "about_story", label: "About Company Story", type: "textarea", defaultValue: "Founded in 2019, Ability has grown from a small team of visionaries into a leading AI-first software company, delivering transformative digital solutions to clients worldwide.", section: "About" },
-  
+  { key: "about_story", label: "About Company Story", type: "textarea", defaultValue: "Founded in 2019, Aibility has grown from a small team of visionaries into a leading AI-first software company, delivering transformative digital solutions to clients worldwide.", section: "About" },
+  { key: "timeline_events", label: "Timeline (JSON array of {year, event})", type: "textarea", defaultValue: '[{"year":"2020","event":"Company founded"},{"year":"2022","event":"First major client"},{"year":"2024","event":"Expanded globally"},{"year":"2026","event":"Industry leader"}]', section: "About" },
   // Contact
   { key: "contact_email", label: "Contact Email", type: "text", defaultValue: "hello@ability.ai", section: "Contact" },
   { key: "contact_phone", label: "Contact Phone", type: "text", defaultValue: "+1 (555) 123-4567", section: "Contact" },

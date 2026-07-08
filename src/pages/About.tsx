@@ -14,7 +14,6 @@ import {
 import { Link } from "react-router";
 import { useQuery } from "convex/react";
 import { api } from "../convex/_generated/api";
-import { teamMembers as fallbackTeamMembers } from "../data/team";
 
 const fadeInUp = {
   hidden: { opacity: 0, y: 40 },
@@ -64,25 +63,34 @@ const values = [
   },
 ];
 
-const timeline = [
-  { year: "2019", event: "Ability founded with a vision to build AI-first software" },
-  { year: "2020", event: "Launched first AI-powered SaaS platform for enterprise clients" },
-  { year: "2021", event: "Grew to 20+ team members and opened SF headquarters" },
-  { year: "2022", event: "Delivered 50+ projects across 5 industries" },
-  { year: "2023", event: "Launched AI/ML division, built award-winning AI solutions" },
-  { year: "2024", event: "Expanded to 50+ clients globally with 98% satisfaction rate" },
-  { year: "2025", event: "Named Top AI Development Company by industry publications" },
-  { year: "2026", event: "Pushing boundaries with cutting-edge AI and design innovation" },
+const defaultTimeline = [
+  { year: "2020", event: "Aibility founded" },
+  { year: "2022", event: "First major client project" },
+  { year: "2024", event: "Expanded to global markets" },
+  { year: "2026", event: "Industry recognition" },
 ];
 
 export default function About() {
   const cmsTeam = useQuery(api.cms.listTeamMembers);
-  const teamMembers = (cmsTeam && cmsTeam.length > 0) ? cmsTeam : fallbackTeamMembers;
+  const teamMembers = (cmsTeam && cmsTeam.length > 0) ? cmsTeam : [];
   
   const siteSettings = useQuery(api.cms.getAllSiteSettings);
   const settings = siteSettings ?? {};
   const aboutHeadline = settings.about_headline ?? "We're on a Mission to Redefine Software";
-  const aboutStory = settings.about_story ?? "Founded in 2019, Ability has grown from a small team of visionaries into a leading AI-first software company, delivering transformative digital solutions to clients worldwide.";
+  const aboutStory = settings.about_story ?? "Founded, Aibility has grown from a small team into a leading AI-first software company.";
+  
+  // Parse timeline from CMS settings
+  let timeline = defaultTimeline;
+  try {
+    if (settings.timeline_events) {
+      const parsed = JSON.parse(settings.timeline_events);
+      if (Array.isArray(parsed) && parsed.length > 0) {
+        timeline = parsed;
+      }
+    }
+  } catch (e) {
+    // Use default if JSON is invalid
+  }
 
   return (
     <div className="min-h-screen bg-background">
@@ -343,16 +351,16 @@ export default function About() {
             className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-primary/20 to-purple-500/10 border border-primary/20 p-10 md:p-16 text-center"
           >
             <h2 className="text-3xl md:text-4xl font-bold mb-4">
-              Want to Be Part of Our Story?
+              Ready to Start Your Project?
             </h2>
             <p className="text-muted-foreground mb-8 text-sm">
-              We're always looking for talented people to join our team.
+              Let's build something amazing together. Get in touch today.
             </p>
             <Link
-              to="/careers"
+              to="/contact"
               className="inline-flex items-center gap-2 rounded-2xl bg-primary px-8 py-4 text-sm font-semibold text-white hover:shadow-2xl hover:shadow-primary/30 transition-all"
             >
-              View Open Positions
+              Get in Touch
               <ArrowRight className="h-4 w-4" />
             </Link>
           </motion.div>
