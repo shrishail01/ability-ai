@@ -1,9 +1,14 @@
 import { motion } from "framer-motion";
 import { Sparkles, ArrowRight, CheckCircle2 } from "lucide-react";
 import { Link } from "react-router";
-import { services } from "../data/services";
+import { useQuery } from "convex/react";
+import { api } from "../convex/_generated/api";
+import { services as fallbackServices } from "../data/services";
 
 export default function Services() {
+  const cmsServices = useQuery(api.cms.listServices);
+  const displayServices = (cmsServices && cmsServices.length > 0) ? cmsServices : fallbackServices;
+
   return (
     <div className="min-h-screen bg-background">
       {/* Hero */}
@@ -48,7 +53,7 @@ export default function Services() {
       <section className="py-10">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            {services.map((service, i) => {
+            {displayServices.map((service: any, i: number) => {
               const Icon = service.icon;
               return (
                 <motion.div
@@ -81,7 +86,7 @@ export default function Services() {
                           Key Benefits
                         </p>
                         <ul className="space-y-2">
-                          {service.benefits.map((benefit) => (
+                          {service.benefits.map((benefit: string) => (
                             <li
                               key={benefit}
                               className="flex items-start gap-2 text-sm text-muted-foreground"
@@ -102,7 +107,7 @@ export default function Services() {
                           Technologies
                         </p>
                         <div className="flex flex-wrap gap-2">
-                          {service.technologies.map((tech) => (
+                          {service.technologies.map((tech: string) => (
                             <span
                               key={tech}
                               className="rounded-lg bg-white/5 px-2.5 py-1 text-xs text-muted-foreground"

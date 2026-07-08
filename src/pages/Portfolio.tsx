@@ -1,20 +1,37 @@
 import { motion, AnimatePresence } from "framer-motion";
 import { Sparkles, ExternalLink, Github, ChevronRight, Filter, ArrowRight } from "lucide-react";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { Link } from "react-router";
-import { projects, projectCategories } from "../data/projects";
+import { useQuery } from "convex/react";
+import { api } from "../convex/_generated/api";
+import { projects as fallbackProjects, projectCategories as fallbackCategories } from "../data/projects";
 
 export default function Portfolio() {
   const [activeCategory, setActiveCategory] = useState("All");
   const [selectedProject, setSelectedProject] = useState<string | null>(null);
 
+  const cmsProjects = useQuery(api.cms.listProjects);
+  const projects = useMemo(() => {
+    if (cmsProjects && cmsProjects.length > 0) {
+      return cmsProjects.map((p: any) => ({ ...p, id: p._id }));
+    }
+    return fallbackProjects;
+  }, [cmsProjects]);
+
+  const projectCategories = useMemo(() => {
+    if (cmsProjects && cmsProjects.length > 0) {
+      return ["All", ...new Set(cmsProjects.map((p: any) => p.category))];
+    }
+    return fallbackCategories;
+  }, [cmsProjects]);
+
   const filteredProjects =
     activeCategory === "All"
       ? projects
-      : projects.filter((p) => p.category === activeCategory);
+      : projects.filter((p: any) => p.category === activeCategory);
 
   const selectedProjectData = selectedProject
-    ? projects.find((p) => p.id === selectedProject)
+    ? projects.find((p: any) => p.id === selectedProject)
     : null;
 
   return (
@@ -89,7 +106,7 @@ export default function Portfolio() {
               transition={{ duration: 0.3 }}
               className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
             >
-              {filteredProjects.map((project, i) => (
+              {filteredProjects.map((project: any, i: number) => (
                 <motion.div
                   key={project.id}
                   initial={{ opacity: 0, y: 30 }}
@@ -120,7 +137,7 @@ export default function Portfolio() {
                           {project.description}
                         </p>
                         <div className="flex flex-wrap gap-2 mt-4">
-                          {project.technologies.slice(0, 4).map((tech) => (
+                          {project.technologies.slice(0, 4).map((tech: string) => (
                             <span
                               key={tech}
                               className="rounded-lg bg-white/5 px-2.5 py-1 text-xs text-muted-foreground"
@@ -183,7 +200,7 @@ export default function Portfolio() {
                 <div className="mb-6">
                   <h4 className="text-sm font-semibold mb-3">Key Results</h4>
                   <ul className="space-y-2">
-                    {selectedProjectData.results.map((result) => (
+                    {selectedProjectData.results.map((result: string) => (
                       <li key={result} className="flex items-start gap-2 text-sm text-muted-foreground">
                         <span className="h-1.5 w-1.5 rounded-full bg-primary mt-2 shrink-0" />
                         {result}
@@ -196,7 +213,7 @@ export default function Portfolio() {
                 <div className="mb-8">
                   <h4 className="text-sm font-semibold mb-3">Technologies Used</h4>
                   <div className="flex flex-wrap gap-2">
-                    {selectedProjectData.technologies.map((tech) => (
+                    {selectedProjectData.technologies.map((tech: string) => (
                       <span key={tech} className="rounded-lg bg-white/5 px-3 py-1.5 text-xs text-muted-foreground">
                         {tech}
                       </span>

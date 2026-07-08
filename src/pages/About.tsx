@@ -12,7 +12,9 @@ import {
   ChevronRight,
 } from "lucide-react";
 import { Link } from "react-router";
-import { teamMembers } from "../data/team";
+import { useQuery } from "convex/react";
+import { api } from "../convex/_generated/api";
+import { teamMembers as fallbackTeamMembers } from "../data/team";
 
 const fadeInUp = {
   hidden: { opacity: 0, y: 40 },
@@ -74,6 +76,9 @@ const timeline = [
 ];
 
 export default function About() {
+  const cmsTeam = useQuery(api.cms.listTeamMembers);
+  const teamMembers = (cmsTeam && cmsTeam.length > 0) ? cmsTeam : fallbackTeamMembers;
+
   return (
     <div className="min-h-screen bg-background">
       {/* Hero */}
@@ -270,46 +275,50 @@ export default function About() {
           </motion.div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {teamMembers.map((member, i) => (
-              <motion.div
-                key={member.name}
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.5, delay: i * 0.1 }}
-                whileHover={{ y: -5 }}
-                className="glass-card rounded-2xl p-6 border border-white/5 text-center group"
-              >
-                <div className="mx-auto h-20 w-20 rounded-full overflow-hidden mb-4 transition-transform duration-300 group-hover:scale-110">
-                  <img
-                    src={member.image}
-                    alt={member.name}
-                    className="h-full w-full object-cover"
-                    loading="lazy"
-                  />
-                </div>
-                <h3 className="text-lg font-semibold">{member.name}</h3>
-                <p className="text-sm text-primary mb-3">{member.role}</p>
-                <p className="text-xs text-muted-foreground leading-relaxed">{member.bio}</p>
-                <div className="flex items-center justify-center gap-3 mt-4">
-                  {member.socials.twitter && (
-                    <a href={member.socials.twitter} className="text-muted-foreground hover:text-primary transition-colors text-xs">
-                      Twitter
-                    </a>
-                  )}
-                  {member.socials.linkedin && (
-                    <a href={member.socials.linkedin} className="text-muted-foreground hover:text-primary transition-colors text-xs">
-                      LinkedIn
-                    </a>
-                  )}
-                  {member.socials.github && (
-                    <a href={member.socials.github} className="text-muted-foreground hover:text-primary transition-colors text-xs">
-                      GitHub
-                    </a>
-                  )}
-                </div>
-              </motion.div>
-            ))}
+            {teamMembers.map((member: any, i: number) => {
+              // Normalize CMS and static data shapes
+              const socials = member.socials || { twitter: member.twitter, linkedin: member.linkedin, github: member.github };
+              return (
+                <motion.div
+                  key={member.name}
+                  initial={{ opacity: 0, y: 30 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.5, delay: i * 0.1 }}
+                  whileHover={{ y: -5 }}
+                  className="glass-card rounded-2xl p-6 border border-white/5 text-center group"
+                >
+                  <div className="mx-auto h-20 w-20 rounded-full overflow-hidden mb-4 transition-transform duration-300 group-hover:scale-110">
+                    <img
+                      src={member.image}
+                      alt={member.name}
+                      className="h-full w-full object-cover"
+                      loading="lazy"
+                    />
+                  </div>
+                  <h3 className="text-lg font-semibold">{member.name}</h3>
+                  <p className="text-sm text-primary mb-3">{member.role}</p>
+                  <p className="text-xs text-muted-foreground leading-relaxed">{member.bio}</p>
+                  <div className="flex items-center justify-center gap-3 mt-4">
+                    {socials.twitter && (
+                      <a href={socials.twitter} className="text-muted-foreground hover:text-primary transition-colors text-xs">
+                        Twitter
+                      </a>
+                    )}
+                    {socials.linkedin && (
+                      <a href={socials.linkedin} className="text-muted-foreground hover:text-primary transition-colors text-xs">
+                        LinkedIn
+                      </a>
+                    )}
+                    {socials.github && (
+                      <a href={socials.github} className="text-muted-foreground hover:text-primary transition-colors text-xs">
+                        GitHub
+                      </a>
+                    )}
+                  </div>
+                </motion.div>
+              );
+            })}
           </div>
         </div>
       </section>

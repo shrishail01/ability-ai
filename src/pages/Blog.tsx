@@ -1,12 +1,30 @@
 import { motion, AnimatePresence } from "framer-motion";
 import { Sparkles, Search, Clock, ArrowRight, Calendar } from "lucide-react";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { Link } from "react-router";
-import { blogPosts, blogCategories } from "../data/blog";
+import { useQuery } from "convex/react";
+import { api } from "../convex/_generated/api";
+import { blogPosts as fallbackBlogPosts, blogCategories as fallbackBlogCategories } from "../data/blog";
 
 export default function Blog() {
   const [activeCategory, setActiveCategory] = useState("All");
   const [searchQuery, setSearchQuery] = useState("");
+
+  const cmsPosts = useQuery(api.cms.listBlogPosts);
+  const blogPosts = useMemo(() => {
+    if (cmsPosts && cmsPosts.length > 0) {
+      return cmsPosts.map((p: any) => ({ ...p, id: p._id }));
+    }
+    return fallbackBlogPosts;
+  }, [cmsPosts]);
+
+  const blogCategories = useMemo(() => {
+    if (cmsPosts && cmsPosts.length > 0) {
+      const cats = ["All", ...new Set(cmsPosts.map((p: any) => p.category))];
+      return cats;
+    }
+    return fallbackBlogCategories;
+  }, [cmsPosts]);
 
   const filteredPosts = blogPosts.filter((post) => {
     const matchesCategory =
@@ -14,7 +32,7 @@ export default function Blog() {
     const matchesSearch =
       post.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
       post.excerpt.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      post.tags.some((tag) =>
+      post.tags.some((tag: string) =>
         tag.toLowerCase().includes(searchQuery.toLowerCase()),
       );
     return matchesCategory && matchesSearch;
@@ -142,7 +160,7 @@ export default function Blog() {
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-3">
                       <div className="h-10 w-10 rounded-full bg-primary flex items-center justify-center text-sm font-bold text-white">
-                        {featuredPost.author.split(" ").map(n => n[0]).join("")}
+                        {featuredPost.author.split(" ").map((n: string) => n[0]).join("")}
                       </div>
                       <div>
                         <p className="text-sm font-medium">{featuredPost.author}</p>
@@ -206,7 +224,7 @@ export default function Blog() {
                       <div className="flex items-center justify-between pt-4 border-t border-white/5">
                         <div className="flex items-center gap-2">
                           <div className="h-7 w-7 rounded-full bg-primary/20 flex items-center justify-center text-xs font-bold text-primary">
-                            {post.author.split(" ").map(n => n[0]).join("")}
+                            {post.author.split(" ").map((n: string) => n[0]).join("")}
                           </div>
                           <span className="text-xs text-muted-foreground">{post.date}</span>
                         </div>
