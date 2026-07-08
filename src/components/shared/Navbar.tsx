@@ -48,7 +48,7 @@ export function Navbar() {
             {/* Logo */}
             <Link to="/" className="flex items-center gap-2.5 group">
               <span className="text-lg md:text-xl font-bold tracking-tight text-foreground">
-                Ability<span className="text-gold">.</span>
+                Aibility<span className="text-gold">.</span>
               </span>
             </Link>
 

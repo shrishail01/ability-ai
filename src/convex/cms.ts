@@ -326,7 +326,7 @@ export const ALL_SETTING_KEYS = [
   { key: "about_story", label: "About Company Story", type: "textarea", defaultValue: "Founded in 2019, Aibility has grown from a small team of visionaries into a leading AI-first software company, delivering transformative digital solutions to clients worldwide.", section: "About" },
   { key: "timeline_events", label: "Timeline (JSON array of {year, event})", type: "textarea", defaultValue: '[{"year":"2020","event":"Company founded"},{"year":"2022","event":"First major client"},{"year":"2024","event":"Expanded globally"},{"year":"2026","event":"Industry leader"}]', section: "About" },
   // Contact
-  { key: "contact_email", label: "Contact Email", type: "text", defaultValue: "hello@ability.ai", section: "Contact" },
+  { key: "contact_email", label: "Contact Email", type: "text", defaultValue: "hello@aibility.ai", section: "Contact" },
   { key: "contact_phone", label: "Contact Phone", type: "text", defaultValue: "+1 (555) 123-4567", section: "Contact" },
   { key: "office_address", label: "Office Address", type: "textarea", defaultValue: "123 Innovation Drive, San Francisco, CA 94105", section: "Contact" },
   { key: "social_twitter", label: "Twitter URL", type: "text", defaultValue: "#", section: "Contact" },
@@ -335,13 +335,13 @@ export const ALL_SETTING_KEYS = [
   { key: "social_instagram", label: "Instagram URL", type: "text", defaultValue: "#", section: "Contact" },
   
   // SEO
-  { key: "seo_meta_title", label: "Meta Title", type: "text", defaultValue: "Ability — Premium AI Software Company", section: "SEO" },
-  { key: "seo_meta_description", label: "Meta Description", type: "textarea", defaultValue: "Ability is an AI-first software company building websites, mobile apps, AI solutions, and SaaS platforms that transform businesses.", section: "SEO" },
+  { key: "seo_meta_title", label: "Meta Title", type: "text", defaultValue: "Aibility — Premium AI Software Company", section: "SEO" },
+  { key: "seo_meta_description", label: "Meta Description", type: "textarea", defaultValue: "Aibility is an AI-first software company building websites, mobile apps, AI solutions, and SaaS platforms that transform businesses.", section: "SEO" },
   { key: "seo_meta_keywords", label: "Meta Keywords", type: "text", defaultValue: "AI, software development, web development, mobile apps, SaaS", section: "SEO" },
   
   // Footer
   { key: "footer_tagline", label: "Footer Tagline", type: "textarea", defaultValue: "Building the future of software with AI-powered solutions.", section: "Footer" },
-  { key: "footer_copyright", label: "Footer Copyright", type: "text", defaultValue: "© 2026 Ability. All rights reserved.", section: "Footer" },
+  { key: "footer_copyright", label: "Footer Copyright", type: "text", defaultValue: "© 2026 Aibility. All rights reserved.", section: "Footer" },
 ];
 
 export const getSiteSetting = query({
