@@ -10,6 +10,7 @@ import * as Icons from "lucide-react";
 import { ThreeHero } from "../components/home/ThreeHero";
 import { useQuery } from "convex/react";
 import { api } from "../convex/_generated/api";
+import { TiltCard } from "../components/shared/TiltCard";
 
 const fadeUp = {
   hidden: { opacity: 0, y: 30 },
@@ -260,14 +261,13 @@ export default function Landing() {
                 : Icons.HelpCircle) as any;
               const serviceId = service._id || service.id;
               return (
-                <motion.div
+                <TiltCard
                   key={serviceId}
                   initial={{ opacity: 0, y: 15 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
                   transition={{ duration: 0.6, delay: i * 0.05, ease: [0.25, 0.1, 0.25, 1] }}
-                  whileHover={{ y: -8, scale: 1.02 }}
-                  className="glass-card border border-white/5 p-8 md:p-10 rounded-2xl group transition-all duration-300 hover:border-primary/30 hover:shadow-lg hover:shadow-primary/5"
+                  className="glass-card border border-white/5 p-8 md:p-10 rounded-2xl group transition-all duration-300 hover:border-primary/30 hover:shadow-lg hover:shadow-primary/5 cursor-pointer"
                 >
                   <Link to={`/services#${serviceId}`} className="block">
                     <Icon className="h-6 w-6 text-gold mb-5" />
@@ -281,7 +281,7 @@ export default function Landing() {
                       Learn More <ChevronRight className="h-3 w-3" />
                     </span>
                   </Link>
-                </motion.div>
+                </TiltCard>
               );
             })}
           </div>
@@ -398,14 +398,13 @@ export default function Landing() {
             {displayProjects.slice(0, 6).map((project: any, i: number) => {
               const projectId = project._id || project.id;
               return (
-                <motion.div
+                <TiltCard
                   key={projectId}
                   initial={{ opacity: 0, y: 15 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
                   transition={{ duration: 0.6, delay: i * 0.05, ease: [0.25, 0.1, 0.25, 1] }}
-                  whileHover={{ y: -8, scale: 1.02 }}
-                  className="glass-card border border-white/5 p-8 md:p-10 rounded-2xl group transition-all duration-300 hover:border-primary/30 hover:shadow-lg hover:shadow-primary/5"
+                  className="glass-card border border-white/5 p-8 md:p-10 rounded-2xl group transition-all duration-300 hover:border-primary/30 hover:shadow-lg hover:shadow-primary/5 cursor-pointer"
                 >
                   <Link to={project._id ? `/portfolio?project=${project._id}` : `/portfolio#${project.id}`} className="block group">
                     <div className="relative overflow-hidden mb-5 bg-background/50 border border-border rounded-xl">
@@ -432,7 +431,7 @@ export default function Landing() {
                       ))}
                     </div>
                   </Link>
-                </motion.div>
+                </TiltCard>
               );
             })}
           </div>
@@ -463,14 +462,13 @@ export default function Landing() {
 
           <div className={`grid gap-6 w-full ${displayTestimonials.length === 1 ? 'grid-cols-1 max-w-xl mx-auto' : displayTestimonials.length === 2 ? 'grid-cols-1 md:grid-cols-2 max-w-4xl mx-auto' : 'grid-cols-1 md:grid-cols-3'}`}>
             {displayTestimonials.slice(0, 3).map((t: any, i: number) => (
-              <motion.div
+              <TiltCard
                 key={t._id || t.name}
                 initial={{ opacity: 0, y: 15 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.6, delay: i * 0.1, ease: [0.25, 0.1, 0.25, 1] }}
-                whileHover={{ y: -8, scale: 1.02 }}
-                className="glass-card border border-white/5 p-8 md:p-10 rounded-2xl transition-all duration-300 hover:border-primary/30 hover:shadow-lg hover:shadow-primary/5"
+                className="glass-card border border-white/5 p-8 md:p-10 rounded-2xl transition-all duration-300 hover:border-primary/30 hover:shadow-lg hover:shadow-primary/5 cursor-pointer"
               >
                 <div className="flex gap-0.5 mb-5">
                   {[...Array(t.rating)].map((_, j) => (
@@ -492,7 +490,7 @@ export default function Landing() {
                     <p className="text-xs text-muted-foreground">{t.role}, {t.company}</p>
                   </div>
                 </div>
-              </motion.div>
+              </TiltCard>
             ))}
           </div>
         </div>
