@@ -59,7 +59,7 @@ export function TiltCard({ children, className = "", ...props }: TiltCardProps) 
         rotateY: rotateY,
         transformStyle: "preserve-3d",
       }}
-      className={`relative overflow-hidden ${className}`}
+      className={`relative overflow-hidden will-change-transform ${className}`}
       {...props}
     >
       {/* Glare effect */}
