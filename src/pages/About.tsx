@@ -14,6 +14,7 @@ import {
 import { Link } from "react-router";
 import { useQuery } from "convex/react";
 import { api } from "../convex/_generated/api";
+import { getImageUrl } from "../lib/utils";
 
 const fadeInUp = {
   hidden: { opacity: 0, y: 40 },
@@ -308,7 +309,7 @@ export default function About() {
                 >
                   <div className="mx-auto h-20 w-20 rounded-full overflow-hidden mb-4 transition-transform duration-300 group-hover:scale-110">
                     <img
-                      src={member.image}
+                      src={getImageUrl(member.image)}
                       alt={member.name}
                       className="h-full w-full object-cover"
                       loading="lazy"
