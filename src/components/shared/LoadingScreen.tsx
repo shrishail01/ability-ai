@@ -1,6 +1,6 @@
 import { motion, AnimatePresence } from "framer-motion";
-import { Sparkles } from "lucide-react";
 import { useEffect, useState } from "react";
+import logo from "../../assets/logo.png";
 
 export function LoadingScreen() {
   const [visible, setVisible] = useState(true);
@@ -21,31 +21,34 @@ export function LoadingScreen() {
         >
           <div className="text-center">
             <motion.div
-              initial={{ scale: 0.5, opacity: 0 }}
+              initial={{ scale: 0.8, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
-              transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
-              className="flex flex-col items-center gap-4"
+              transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+              className="flex flex-col items-center gap-6"
             >
               <div className="relative">
-                <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-primary">
-                  <Sparkles className="h-8 w-8 text-white" />
-                </div>
+                <img
+                  src={logo}
+                  alt="Aibility Logo"
+                  className="h-12 md:h-16 w-auto object-contain relative z-10"
+                />
                 <motion.div
                   animate={{
-                    scale: [1, 1.3, 1],
-                    opacity: [0.3, 0.6, 0.3],
+                    scale: [1, 1.2, 1],
+                    opacity: [0.2, 0.4, 0.2],
                   }}
                   transition={{
-                    duration: 1.5,
+                    duration: 2,
                     repeat: Infinity,
                     ease: "easeInOut",
                   }}
-                  className="absolute inset-0 rounded-2xl bg-primary/20 blur-xl"
+                  className="absolute -inset-4 bg-primary/15 blur-xl rounded-full z-0"
                 />
               </div>
               <div>
-                <h2 className="text-2xl font-bold text-gradient">Aibility</h2>
-                <p className="text-sm text-muted-foreground mt-1">Loading...</p>
+                <p className="text-xs tracking-[0.25em] uppercase text-muted-foreground font-semibold animate-pulse">
+                  Loading
+                </p>
               </div>
             </motion.div>
           </div>
