@@ -21,8 +21,31 @@ const sectionIcons: Record<string, string> = {
 export default function AdminSettings() {
   const settings = useQuery(api.cms.getAllSiteSettings);
   const setSetting = useMutation(api.cms.setSiteSetting);
+  const clearCmsData = useMutation(api.cms.clearAllCmsData);
   const [savingKey, setSavingKey] = useState<string | null>(null);
   const [savedKey, setSavedKey] = useState<string | null>(null);
+  const [isClearing, setIsClearing] = useState(false);
+
+  const handleResetDatabase = async () => {
+    if (!confirm("WARNING: Are you absolutely sure you want to delete ALL services, projects, testimonials, and blog posts from the database?\n\nThis action is permanent and cannot be undone.")) {
+      return;
+    }
+    const confirmText = prompt("To confirm deletion, type 'DELETE ALL' below:");
+    if (confirmText !== "DELETE ALL") {
+      alert("Database reset cancelled. Confirmation text did not match.");
+      return;
+    }
+    
+    setIsClearing(true);
+    try {
+      await clearCmsData();
+      alert("Database reset successfully! All default/mock services, projects, blog posts, and testimonials have been removed.");
+    } catch (e) {
+      alert("Error resetting database: " + (e instanceof Error ? e.message : "Unknown error"));
+    } finally {
+      setIsClearing(false);
+    }
+  };
 
   const handleSave = async (key: string, value: string) => {
     if (!value) return;
@@ -118,6 +141,32 @@ export default function AdminSettings() {
           </div>
         );
       })}
+
+      {/* Database Administration */}
+      <div className="mt-12 border border-red-200 bg-red-50/30 p-6">
+        <div className="flex items-center gap-2 mb-3">
+          <span className="text-lg">⚠️</span>
+          <h2 className="text-lg font-semibold tracking-tight text-red-900">Database Administration</h2>
+        </div>
+        <p className="text-sm text-[#8B8178] mb-6">
+          Wipe the database to clean out all default mock data (services, projects, testimonials, and blog posts) and start fresh. Once deleted, the site will render completely fresh and empty.
+        </p>
+        <button
+          onClick={handleResetDatabase}
+          disabled={isClearing}
+          className="px-6 py-2.5 text-sm bg-red-650 hover:bg-red-750 text-white transition-colors disabled:opacity-50 font-medium inline-flex items-center gap-2"
+          style={{ backgroundColor: "#b91c1c" }}
+        >
+          {isClearing ? (
+            <>
+              <Loader2 className="h-4 w-4 animate-spin text-white" />
+              Resetting Database...
+            </>
+          ) : (
+            "Reset Database (Delete All Data)"
+          )}
+        </button>
+      </div>
     </div>
   );
 }

@@ -29,6 +29,7 @@ export const createService = mutation({
     technologies: v.array(v.string()),
     color: v.string(),
     order: v.number(),
+    image: v.optional(v.string()),
   },
   handler: async (ctx, args) => {
     await requireAdmin(ctx);
@@ -46,6 +47,7 @@ export const updateService = mutation({
     technologies: v.optional(v.array(v.string())),
     color: v.optional(v.string()),
     order: v.optional(v.number()),
+    image: v.optional(v.string()),
   },
   handler: async (ctx, args) => {
     await requireAdmin(ctx);
@@ -461,4 +463,48 @@ export const verifyAndPromoteToAdmin = mutation({
     return { success: true };
   },
 });
+
+// Generate file upload URL for Convex storage
+export const generateUploadUrl = mutation({
+  args: {},
+  handler: async (ctx) => {
+    await requireAdmin(ctx);
+    return await ctx.storage.generateUploadUrl();
+  },
+});
+
+// Clear all default/mock CMS data from database
+export const clearAllCmsData = mutation({
+  args: {},
+  handler: async (ctx) => {
+    await requireAdmin(ctx);
+    
+    // Clear services
+    const services = await ctx.db.query("cms_services").collect();
+    for (const item of services) {
+      await ctx.db.delete(item._id);
+    }
+    
+    // Clear projects
+    const projects = await ctx.db.query("cms_projects").collect();
+    for (const item of projects) {
+      await ctx.db.delete(item._id);
+    }
+    
+    // Clear blog posts
+    const blogs = await ctx.db.query("cms_blog_posts").collect();
+    for (const item of blogs) {
+      await ctx.db.delete(item._id);
+    }
+    
+    // Clear testimonials
+    const testimonials = await ctx.db.query("cms_testimonials").collect();
+    for (const item of testimonials) {
+      await ctx.db.delete(item._id);
+    }
+    
+    return { success: true };
+  },
+});
+
 

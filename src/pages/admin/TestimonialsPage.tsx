@@ -6,7 +6,7 @@ const fields = [
   { key: "role", label: "Role", type: "text" as const },
   { key: "company", label: "Company", type: "text" as const },
   { key: "content", label: "Content", type: "textarea" as const },
-  { key: "avatar", label: "Avatar URL", type: "url" as const },
+  { key: "avatar", label: "Avatar", type: "image" as const },
   { key: "rating", label: "Rating (1-5)", type: "number" as const },
 ];
 

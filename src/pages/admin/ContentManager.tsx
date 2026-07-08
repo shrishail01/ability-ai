@@ -1,12 +1,14 @@
 import { useState } from "react";
 import { useMutation, useQuery } from "convex/react";
-import { Plus, Pencil, Trash2 } from "lucide-react";
+import { Plus, Pencil, Trash2, Loader2 } from "lucide-react";
 import { Id } from "../../convex/_generated/dataModel";
+import { api } from "../../convex/_generated/api";
+import { getImageUrl } from "../../lib/utils";
 
 interface Field {
   key: string;
   label: string;
-  type: "text" | "textarea" | "number" | "boolean" | "array" | "url" | "select";
+  type: "text" | "textarea" | "number" | "boolean" | "array" | "url" | "select" | "image";
   options?: string[];
   required?: boolean;
 }
@@ -30,11 +32,33 @@ export function ContentManager({ title, fields, listQuery, createMutation, updat
   const createItem = useMutation(createMutation);
   const updateItem = useMutation(updateMutation);
   const deleteItem = useMutation(deleteMutation);
+  const generateUploadUrl = useMutation(api.cms.generateUploadUrl);
 
   const [editingId, setEditingId] = useState<string | null>(null);
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [form, setForm] = useState<Record<string, any>>({});
   const [showForm, setShowForm] = useState(false);
+  const [uploadingField, setUploadingField] = useState<string | null>(null);
+
+  const handleImageUpload = async (fieldKey: string, file: File) => {
+    setUploadingField(fieldKey);
+    try {
+      const uploadUrl = await generateUploadUrl();
+      const response = await fetch(uploadUrl, {
+        method: "POST",
+        headers: { "Content-Type": file.type },
+        body: file,
+      });
+      if (!response.ok) throw new Error("Upload failed");
+      const { storageId } = await response.json();
+      setForm(prev => ({ ...prev, [fieldKey]: storageId }));
+    } catch (e) {
+      alert("Error uploading image: " + (e instanceof Error ? e.message : "Unknown error"));
+    } finally {
+      setUploadingField(null);
+    }
+  };
+
 
   const resetForm = () => {
     const initial: Record<string, unknown> = {};
@@ -167,6 +191,43 @@ export function ContentManager({ title, fields, listQuery, createMutation, updat
                     <button onClick={() => addArrayField(field.key)} className="text-xs text-[#B8860B] hover:underline">
                       + Add item
                     </button>
+                  </div>
+                ) : field.type === "image" ? (
+                  <div className="space-y-2">
+                    <div className="flex items-center gap-4">
+                      <input
+                        type="file"
+                        accept="image/*"
+                        disabled={uploadingField === field.key}
+                        onChange={(e) => {
+                          const file = e.target.files?.[0];
+                          if (file) handleImageUpload(field.key, file);
+                        }}
+                        className="text-xs text-muted-foreground file:mr-4 file:py-2 file:px-4 file:rounded-none file:border file:border-[#E8E2DA] file:text-xs file:font-semibold file:bg-[#FAF6F1] file:text-[#0F1B2D] hover:file:bg-[#FAF6F1]/80 cursor-pointer"
+                      />
+                      {uploadingField === field.key && (
+                        <span className="text-xs text-[#8B8178] flex items-center gap-1">
+                          <Loader2 className="h-3.5 w-3.5 animate-spin text-[#B8860B]" />
+                          Uploading...
+                        </span>
+                      )}
+                    </div>
+                    {form[field.key] && (
+                      <div className="relative mt-2 w-32 h-20 border border-[#E8E2DA] overflow-hidden">
+                        <img
+                          src={getImageUrl(form[field.key])}
+                          alt="Preview"
+                          className="w-full h-full object-cover"
+                        />
+                        <button
+                          type="button"
+                          onClick={() => setForm(prev => ({ ...prev, [field.key]: "" }))}
+                          className="absolute top-1 right-1 bg-red-500 text-white rounded-full p-1 text-[10px] hover:bg-red-600 leading-none"
+                        >
+                          &times;
+                        </button>
+                      </div>
+                    )}
                   </div>
                 ) : (
                   <input

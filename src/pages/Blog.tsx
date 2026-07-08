@@ -5,6 +5,7 @@ import { Link } from "react-router";
 import { useQuery } from "convex/react";
 import { api } from "../convex/_generated/api";
 import { blogPosts as fallbackBlogPosts, blogCategories as fallbackBlogCategories } from "../data/blog";
+import { getImageUrl } from "../lib/utils";
 
 export default function Blog() {
   const [activeCategory, setActiveCategory] = useState("All");
@@ -12,14 +13,14 @@ export default function Blog() {
 
   const cmsPosts = useQuery(api.cms.listBlogPosts);
   const blogPosts = useMemo(() => {
-    if (cmsPosts && cmsPosts.length > 0) {
+    if (cmsPosts !== undefined) {
       return cmsPosts.map((p: any) => ({ ...p, id: p._id }));
     }
     return fallbackBlogPosts;
   }, [cmsPosts]);
 
   const blogCategories = useMemo(() => {
-    if (cmsPosts && cmsPosts.length > 0) {
+    if (cmsPosts !== undefined) {
       const cats = ["All", ...new Set(cmsPosts.map((p: any) => p.category))];
       return cats;
     }
@@ -130,7 +131,7 @@ export default function Blog() {
               <div className="border border-border overflow-hidden bg-card">
                 <div className="relative h-64 md:h-80">
                   <img
-                    src={featuredPost.image}
+                    src={getImageUrl(featuredPost.image)}
                     alt={featuredPost.title}
                     className="h-full w-full object-cover"
                     loading="lazy"
@@ -201,7 +202,7 @@ export default function Blog() {
                   <div className="border border-border hover:border-gold/30 transition-colors duration-300 group h-full flex flex-col bg-card">
                     <div className="relative overflow-hidden h-44">
                       <img
-                        src={post.image}
+                        src={getImageUrl(post.image)}
                         alt={post.title}
                         className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
                         loading="lazy"
