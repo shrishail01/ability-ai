@@ -138,6 +138,21 @@ export function ThreeHero() {
     // Store original particle positions for reset
     const origParticlePos = new Float32Array(particlePos);
 
+    // ---- INTERACTIVE CONSTELLATION LINES ----
+    const lineCount = 10; // Maximum lines from mouse to particles
+    const lineGeo = new THREE.BufferGeometry();
+    const linePositions = new Float32Array(lineCount * 2 * 3); // 10 lines, 2 points each, X/Y/Z
+    lineGeo.setAttribute("position", new THREE.BufferAttribute(linePositions, 3));
+    
+    const lineMat = new THREE.LineBasicMaterial({
+      color: colors.goldLight,
+      transparent: true,
+      opacity: 0.25,
+      blending: THREE.AdditiveBlending,
+    });
+    const constellationLines = new THREE.LineSegments(lineGeo, lineMat);
+    scene.add(constellationLines);
+
     // ---- GEOMETRIC SHAPES ----
     const shapes: {
       mesh: THREE.Mesh;
@@ -308,7 +323,61 @@ export function ThreeHero() {
         // Mouse parallax on X
         const parallaxOffsetX = mouseX * (0.3 + i * 0.05);
         shape.mesh.position.x = shape.baseX + parallaxOffsetX;
+
+        // Interactive shape hover reaction (magnetic scaling & fast spin)
+        const dx = mouseX * 6.5 - shape.mesh.position.x;
+        const dy = mouseY * 4.5 - shape.mesh.position.y;
+        const dist = Math.sqrt(dx * dx + dy * dy);
+        if (dist < 2.5) {
+          const force = (2.5 - dist) / 2.5; // 0 to 1
+          shape.mesh.scale.setScalar(1 + force * 0.22);
+          shape.mesh.rotation.x += shape.rotSpeed * 0.04 * force;
+          shape.mesh.rotation.y += shape.rotSpeed * 0.04 * force;
+        } else {
+          shape.mesh.scale.setScalar(1);
+        }
       });
+
+      // --- Animate laser constellation lines between cursor and nearest particles ---
+      const mouse3D = new THREE.Vector3(mouseX * 6.5, mouseY * 4.5, -2.5);
+      const distances: { index: number; dist: number }[] = [];
+      const pointsArray = pPos.array as Float32Array;
+
+      for (let i = 0; i < particleCount; i++) {
+        const px = pointsArray[i * 3];
+        const py = pointsArray[i * 3 + 1];
+        const pz = pointsArray[i * 3 + 2];
+        const dx = mouse3D.x - px;
+        const dy = mouse3D.y - py;
+        const dz = mouse3D.z - pz;
+        const dist = Math.sqrt(dx * dx + dy * dy + dz * dz);
+        distances.push({ index: i, dist });
+      }
+
+      distances.sort((a, b) => a.dist - b.dist);
+
+      const lPos = constellationLines.geometry.attributes.position as THREE.BufferAttribute;
+      let lineIdx = 0;
+
+      for (let i = 0; i < lineCount; i++) {
+        const nearIdx = distances[i].index;
+        const px = pointsArray[nearIdx * 3];
+        const py = pointsArray[nearIdx * 3 + 1];
+        const pz = pointsArray[nearIdx * 3 + 2];
+        const dist = distances[i].dist;
+
+        if (dist < 4.5) {
+          lPos.setXYZ(lineIdx * 2, mouse3D.x, mouse3D.y, mouse3D.z);
+          lPos.setXYZ(lineIdx * 2 + 1, px, py, pz);
+          lineIdx++;
+        }
+      }
+
+      for (let i = lineIdx; i < lineCount; i++) {
+        lPos.setXYZ(i * 2, 0, 0, 999);
+        lPos.setXYZ(i * 2 + 1, 0, 0, 999);
+      }
+      lPos.needsUpdate = true;
 
       // Camera slight movement
       camera.position.x += (mouseX * 0.3 - camera.position.x) * 0.02;
@@ -340,6 +409,8 @@ export function ThreeHero() {
       meshMat.dispose();
       particleGeo.dispose();
       particleMat.dispose();
+      lineGeo.dispose();
+      lineMat.dispose();
       shapes.forEach(({ mesh }) => {
         mesh.geometry.dispose();
         if (Array.isArray(mesh.material)) {
