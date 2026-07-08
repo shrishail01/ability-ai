@@ -1,1 +1,0 @@
-import{a as o}from"./api-nwe4K7QV.js";import{u as e,b as r,d as a}from"./index-KfwF44pZ.js";function A(){const{isLoading:t,isAuthenticated:i}=e(),s=r(o.users.currentUser),{signIn:n,signOut:u}=a();return{isLoading:t||s===void 0,isAuthenticated:i,user:s,signIn:n,signOut:u}}export{A as u};
