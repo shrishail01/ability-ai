@@ -71,64 +71,56 @@ function SectionDescription({ children }: { children: string }) {
   );
 }
 
-// Scrambles text randomly on load to look like high-tech AI decryption
-import { useEffect, useState } from "react";
-function TextScramble({ text }: { text: string }) {
-  const [displayText, setDisplayText] = useState(text);
-  const chars = "!<>-_\\/[]{}—=+*^?#________";
-
-  useEffect(() => {
-    let frame = 0;
-    const queue: { from: string; to: string; start: number; end: number; char?: string }[] = [];
-    
-    for (let i = 0; i < text.length; i++) {
-      const from = text[i] === " " ? " " : chars[Math.floor(Math.random() * chars.length)];
-      const to = text[i];
-      const start = Math.floor(Math.random() * 20);
-      const end = start + Math.floor(Math.random() * 30);
-      queue.push({ from, to, start, end });
-    }
-
-    let active = true;
-    const update = () => {
-      let complete = 0;
-      let output = "";
-      
-      for (let i = 0; i < queue.length; i++) {
-        const item = queue[i];
-        if (frame >= item.end) {
-          complete++;
-          output += item.to;
-        } else if (frame >= item.start) {
-          if (!item.char || Math.random() < 0.28) {
-            item.char = chars[Math.floor(Math.random() * chars.length)];
-          }
-          output += item.char;
-        } else {
-          output += item.from;
-        }
+// Reveals text word-by-word with a smooth slide-up mask reveal
+function SmoothRevealText({ text, delay = 0.3 }: { text: string; delay?: number }) {
+  const words = text.split(" ");
+  
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.05,
+        delayChildren: delay,
       }
-
-      setDisplayText(output);
-
-      if (complete === queue.length) {
-        active = false;
-      } else {
-        frame++;
-        requestAnimationFrame(update);
-      }
-    };
-
-    if (active) {
-      requestAnimationFrame(update);
     }
+  };
 
-    return () => {
-      active = false;
-    };
-  }, [text]);
+  const wordVariants = {
+    hidden: { 
+      opacity: 0, 
+      y: 20,
+    },
+    visible: { 
+      opacity: 1, 
+      y: 0,
+      transition: {
+        type: "spring" as const,
+        damping: 20,
+        stiffness: 120,
+      }
+    }
+  };
 
-  return <>{displayText}</>;
+  return (
+    <motion.span
+      variants={containerVariants}
+      initial="hidden"
+      animate="visible"
+      className="inline-block"
+    >
+      {words.map((word, i) => (
+        <span key={i} className="inline-block overflow-hidden mr-[0.25em] py-0.5">
+          <motion.span
+            variants={wordVariants}
+            className="inline-block origin-bottom will-change-transform"
+          >
+            {word}
+          </motion.span>
+        </span>
+      ))}
+    </motion.span>
+  );
 }
 
 export default function Landing() {
@@ -205,15 +197,23 @@ export default function Landing() {
                     const parts = before.split("\n");
                     return (
                       <>
-                        <TextScramble text={parts[0]} />
-                        {parts.length > 1 && <><br /><TextScramble text={parts[1]} /></>}
-                        <span className="text-gold"><TextScramble text={heroAccent} /></span>
-                        <TextScramble text={after} />
+                        <SmoothRevealText text={parts[0]} delay={0.25} />
+                        {parts.length > 1 && (
+                          <>
+                            <br />
+                            <SmoothRevealText text={parts[1]} delay={0.45} />
+                          </>
+                        )}
+                        <span className="text-gold">
+                          {" "}
+                          <SmoothRevealText text={heroAccent} delay={0.65} />
+                        </span>
+                        <SmoothRevealText text={after} delay={0.8} />
                       </>
                     );
                   })()
                 ) : (
-                  <TextScramble text={heroTitle} />
+                  <SmoothRevealText text={heroTitle} delay={0.3} />
                 )}
               </motion.h1>
 
