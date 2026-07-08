@@ -327,11 +327,11 @@ export default function Landing() {
         </div>
       </section>
 
-      {/* ===== WHY ABILITY ===== */}
+      {/* ===== WHY AIBILITY ===== */}
       <section className="py-20 md:py-28 bg-card border-y border-border">
         <div className="mx-auto max-w-7xl px-6 sm:px-8 lg:px-10">
           <div className="max-w-xl mb-16">
-            <SectionLabel>Why Ability</SectionLabel>
+            <SectionLabel>Why Aibility</SectionLabel>
             <SectionTitle>Built Different</SectionTitle>
             <SectionDescription>
               We combine cutting-edge AI with exceptional design to deliver software that stands out.

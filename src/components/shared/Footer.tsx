@@ -29,10 +29,10 @@ export function Footer() {
   const siteSettings = useQuery(api.cms.getAllSiteSettings);
   const settings = siteSettings ?? {};
   
-  const companyName = settings.company_name ?? "Ability";
+  const companyName = settings.company_name ?? "Aibility";
   const footerTagline = settings.footer_tagline ?? "We design and develop software that transforms businesses.";
-  const footerCopyright = settings.footer_copyright ?? `\u00A9 ${new Date().getFullYear()} Ability. All rights reserved.`;
-  const contactEmail = settings.contact_email ?? "hello@ability.ai";
+  const footerCopyright = settings.footer_copyright ?? `\u00A9 ${new Date().getFullYear()} Aibility. All rights reserved.`;
+  const contactEmail = settings.contact_email ?? "hello@aibility.ai";
   const contactPhone = settings.contact_phone ?? "+1 (555) 123-4567";
   const twitterUrl = settings.social_twitter ?? "#";
   const linkedinUrl = settings.social_linkedin ?? "#";

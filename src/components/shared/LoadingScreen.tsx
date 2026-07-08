@@ -44,7 +44,7 @@ export function LoadingScreen() {
                 />
               </div>
               <div>
-                <h2 className="text-2xl font-bold text-gradient">Ability</h2>
+                <h2 className="text-2xl font-bold text-gradient">Aibility</h2>
                 <p className="text-sm text-muted-foreground mt-1">Loading...</p>
               </div>
             </motion.div>

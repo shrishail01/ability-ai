@@ -189,7 +189,7 @@ export default function AdminLayout() {
           <Link to="/" className="flex items-center gap-2">
             <Sparkles className="h-5 w-5 text-[#B8860B]" />
             <span className="font-bold tracking-tight">
-              Ability<span className="text-[#B8860B]">.</span>
+              Aibility<span className="text-[#B8860B]">.</span>
             </span>
           </Link>
           <p className="text-xs text-[#8B8178] mt-1">Admin Panel</p>

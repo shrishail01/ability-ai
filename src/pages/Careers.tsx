@@ -95,7 +95,7 @@ export default function Careers() {
                   transition={{ delay: 0.1 }}
                   className="text-muted-foreground text-sm leading-relaxed"
                 >
-                  At Ability, we believe in the power of collaboration, innovation, and 
+                  At Aibility, we believe in the power of collaboration, innovation, and 
                   continuous learning. We're a diverse team of builders who are passionate 
                   about using technology to solve real problems. We value autonomy, 
                   encourage experimentation, and celebrate wins together.
@@ -171,7 +171,7 @@ export default function Careers() {
           >
             <h2 className="text-3xl md:text-4xl font-bold mb-4">Open Positions</h2>
             <p className="text-muted-foreground text-sm">
-              Find your next challenge at Ability.
+              Find your next challenge at Aibility.
             </p>
           </motion.div>
 
