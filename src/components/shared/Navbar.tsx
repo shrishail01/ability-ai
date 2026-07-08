@@ -51,7 +51,10 @@ export function Navbar() {
               <img
                 src={logo}
                 alt="Aibility Logo"
-                className="h-6 md:h-7 w-auto object-contain transition-all duration-300"
+                className={cn(
+                  "h-6 md:h-7 w-auto object-contain transition-all duration-300",
+                  location.pathname === "/" && !scrolled && "brightness-0 invert"
+                )}
               />
             </Link>
 
