@@ -14,7 +14,6 @@ import { BackToTop } from "./components/shared/BackToTop";
 import { LoadingScreen } from "./components/shared/LoadingScreen";
 import { CookieConsent } from "./components/shared/CookieConsent";
 import { WhatsAppButton } from "./components/shared/WhatsAppButton";
-import { CursorFollower } from "./components/shared/CursorFollower";
 import "./index.css";
 import "./types/global.d.ts";
 
@@ -87,7 +86,6 @@ function Layout({ children }: { children: React.ReactNode }) {
 
   return (
     <>
-      <CursorFollower />
       <Navbar />
       <main>{children}</main>
       <Footer />
