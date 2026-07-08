@@ -56,9 +56,9 @@ export default function Services() {
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             {displayServices.map((service: any, i: number) => {
-              const Icon = typeof service.icon === "string"
+              const Icon = (typeof service.icon === "string"
                 ? (Icons[service.icon as keyof typeof Icons] || Icons.HelpCircle)
-                : service.icon;
+                : Icons.HelpCircle) as any;
               const serviceId = service._id || service.id;
               return (
                 <motion.div

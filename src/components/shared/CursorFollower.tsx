@@ -33,6 +33,10 @@ export function CursorFollower() {
     // Dynamic hover scaling for clickable elements
     const handleMouseOver = (e: MouseEvent) => {
       const target = e.target as HTMLElement;
+      if (!target || typeof target.closest !== "function") {
+        setHovered(false);
+        return;
+      }
       if (
         target.tagName === "A" ||
         target.tagName === "BUTTON" ||

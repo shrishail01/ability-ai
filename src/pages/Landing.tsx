@@ -255,9 +255,9 @@ export default function Landing() {
 
           <div className={`grid gap-6 w-full ${displayServices.length === 1 ? 'grid-cols-1 max-w-xl mx-auto' : displayServices.length === 2 ? 'grid-cols-1 md:grid-cols-2 max-w-4xl mx-auto' : 'grid-cols-1 md:grid-cols-2 lg:grid-cols-3'}`}>
             {displayServices.slice(0, 6).map((service: any, i: number) => {
-              const Icon = typeof service.icon === "string"
+              const Icon = (typeof service.icon === "string"
                 ? (Icons[service.icon as keyof typeof Icons] || Icons.HelpCircle)
-                : service.icon;
+                : Icons.HelpCircle) as any;
               const serviceId = service._id || service.id;
               return (
                 <motion.div
