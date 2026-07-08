@@ -15,6 +15,10 @@ export function CursorFollower() {
   const cursorXSpring = useSpring(cursorX, springConfig);
   const cursorYSpring = useSpring(cursorY, springConfig);
 
+  const dotSpringConfig = { damping: 50, stiffness: 600, mass: 0.2 };
+  const dotXSpring = useSpring(cursorX, dotSpringConfig);
+  const dotYSpring = useSpring(cursorY, dotSpringConfig);
+
   useEffect(() => {
     setMounted(true);
 
@@ -76,8 +80,8 @@ export function CursorFollower() {
       {/* Glow Follower Dot */}
       <motion.div
         style={{
-          x: useSpring(cursorX, { damping: 50, stiffness: 600, mass: 0.2 }),
-          y: useSpring(cursorY, { damping: 50, stiffness: 600, mass: 0.2 }),
+          x: dotXSpring,
+          y: dotYSpring,
         }}
         className="pointer-events-none fixed left-[12px] top-[12px] z-[9999] hidden h-2 w-2 rounded-full bg-primary md:block"
         animate={{
