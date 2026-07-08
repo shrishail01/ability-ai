@@ -186,21 +186,7 @@ export default function Landing() {
                 </Link>
               </motion.div>
 
-              <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ duration: 0.8, delay: 0.8 }}
-                className="mt-20"
-              >
-                <p className="text-xs tracking-[0.15em] uppercase font-semibold text-white/50 mb-6">Trusted By</p>
-                <div className="flex flex-wrap gap-10 md:gap-14">
-                  {trustedCompanies.map((name) => (
-                    <span key={name} className="text-sm font-semibold tracking-wide text-white/40">
-                      {name}
-                    </span>
-                  ))}
-                </div>
-              </motion.div>
+
             </div>
           </div>
         </motion.div>

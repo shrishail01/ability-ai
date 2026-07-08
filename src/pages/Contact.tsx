@@ -14,7 +14,16 @@ import { useQuery } from "convex/react";
 import { api } from "../convex/_generated/api";
 
 export default function Contact() {
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    company: "",
+    service: "",
+    message: "",
+  });
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
+  
   const siteSettings = useQuery(api.cms.getAllSiteSettings);
   const settings = siteSettings ?? {};
   
@@ -25,9 +34,43 @@ export default function Contact() {
   const linkedinUrl = settings.social_linkedin ?? "#";
   const githubUrl = settings.social_github ?? "#";
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>
+  ) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setSubmitted(true);
+    setIsSubmitting(true);
+    try {
+      const response = await fetch(`https://formsubmit.co/ajax/${contactEmail}`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Accept": "application/json",
+        },
+        body: JSON.stringify({
+          _subject: `New Contact Form Submission from ${formData.name}`,
+          Name: formData.name,
+          Email: formData.email,
+          Company: formData.company || "Not specified",
+          "Service Interested In": formData.service || "Not specified",
+          Message: formData.message,
+        }),
+      });
+      if (response.ok) {
+        setSubmitted(true);
+      } else {
+        alert("Failed to send message. Please try again or email us directly.");
+      }
+    } catch (error) {
+      console.error("Error submitting contact form:", error);
+      alert("An error occurred. Please try again later.");
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -197,7 +240,10 @@ export default function Contact() {
                         <label className="block text-sm font-medium mb-1.5">Name</label>
                         <input
                           type="text"
+                          name="name"
                           required
+                          value={formData.name}
+                          onChange={handleChange}
                           className="w-full rounded-xl border border-white/10 bg-white/5 px-4 py-2.5 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/50"
                           placeholder="Your name"
                         />
@@ -206,7 +252,10 @@ export default function Contact() {
                         <label className="block text-sm font-medium mb-1.5">Email</label>
                         <input
                           type="email"
+                          name="email"
                           required
+                          value={formData.email}
+                          onChange={handleChange}
                           className="w-full rounded-xl border border-white/10 bg-white/5 px-4 py-2.5 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/50"
                           placeholder="you@example.com"
                         />
@@ -216,6 +265,9 @@ export default function Contact() {
                       <label className="block text-sm font-medium mb-1.5">Company</label>
                       <input
                         type="text"
+                        name="company"
+                        value={formData.company}
+                        onChange={handleChange}
                         className="w-full rounded-xl border border-white/10 bg-white/5 px-4 py-2.5 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/50"
                         placeholder="Your company (optional)"
                       />
@@ -223,6 +275,9 @@ export default function Contact() {
                     <div>
                       <label className="block text-sm font-medium mb-1.5">Service Interested In</label>
                       <select
+                        name="service"
+                        value={formData.service}
+                        onChange={handleChange}
                         className="w-full rounded-xl border border-white/10 bg-white/5 px-4 py-2.5 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50"
                       >
                         <option value="">Select a service</option>
@@ -235,33 +290,24 @@ export default function Contact() {
                       </select>
                     </div>
                     <div>
-                      <label className="block text-sm font-medium mb-1.5">Budget Range</label>
-                      <select
-                        className="w-full rounded-xl border border-white/10 bg-white/5 px-4 py-2.5 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50"
-                      >
-                        <option value="">Select budget range</option>
-                        <option>$5K - $15K</option>
-                        <option>$15K - $50K</option>
-                        <option>$50K - $100K</option>
-                        <option>$100K+</option>
-                        <option>Not sure yet</option>
-                      </select>
-                    </div>
-                    <div>
                       <label className="block text-sm font-medium mb-1.5">Message</label>
                       <textarea
+                        name="message"
                         rows={5}
                         required
+                        value={formData.message}
+                        onChange={handleChange}
                         className="w-full rounded-xl border border-white/10 bg-white/5 px-4 py-2.5 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 resize-none"
                         placeholder="Tell us about your project..."
                       />
                     </div>
                     <button
                       type="submit"
-                      className="w-full inline-flex items-center justify-center gap-2 rounded-xl bg-primary px-6 py-3 text-sm font-medium text-white hover:shadow-lg hover:shadow-primary/25 transition-all"
+                      disabled={isSubmitting}
+                      className="w-full inline-flex items-center justify-center gap-2 rounded-xl bg-primary px-6 py-3 text-sm font-medium text-white hover:shadow-lg hover:shadow-primary/25 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
                     >
-                      <Send className="h-4 w-4" />
-                      Send Message
+                      {!isSubmitting && <Send className="h-4 w-4" />}
+                      {isSubmitting ? "Sending..." : "Send Message"}
                     </button>
                   </form>
                 )}
@@ -271,23 +317,7 @@ export default function Contact() {
         </div>
       </section>
 
-      {/* Map Placeholder */}
-      <section className="py-20">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="glass-card rounded-3xl overflow-hidden border border-white/5 h-64 md:h-80 flex items-center justify-center"
-          >
-            <div className="text-center">
-              <MapPin className="h-10 w-10 text-primary mx-auto mb-3" />
-              <p className="text-muted-foreground text-sm">San Francisco, CA</p>
-              <p className="text-xs text-muted-foreground mt-1">Interactive map would render here</p>
-            </div>
-          </motion.div>
-        </div>
-      </section>
+
 
       {/* CTA */}
       <section className="py-20">
@@ -305,11 +335,11 @@ export default function Contact() {
               Schedule a free 30-minute consultation to discuss your project.
             </p>
             <a
-              href="tel:+1234567890"
+              href={`tel:${contactPhone.replace(/\D/g, "")}`}
               className="inline-flex items-center gap-2 rounded-2xl bg-primary px-8 py-4 text-sm font-semibold text-white hover:shadow-2xl hover:shadow-primary/30 transition-all"
             >
               <Phone className="h-4 w-4" />
-              +1 (234) 567-890
+              {contactPhone}
             </a>
           </motion.div>
         </div>
