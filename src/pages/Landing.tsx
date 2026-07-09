@@ -427,7 +427,7 @@ export default function Landing() {
         <div className="mx-auto max-w-7xl px-6 sm:px-8 lg:px-10">
           <div className="max-w-xl mb-16">
             <SectionLabel>Projects</SectionLabel>
-            <SectionTitle>{portfolioTitle}</SectionTitle>
+            <SectionTitle>Our Projects</SectionTitle>
             <SectionDescription>
               {portfolioSubtitle}
             </SectionDescription>
