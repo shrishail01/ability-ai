@@ -446,11 +446,11 @@ export default function Landing() {
                   className="glass-card border border-white/5 p-8 md:p-10 rounded-2xl group transition-all duration-300 hover:border-primary/30 hover:shadow-lg hover:shadow-primary/5 cursor-pointer"
                 >
                   <Link to={project._id ? `/portfolio?project=${project._id}` : `/portfolio#${project.id}`} className="block group">
-                    <div className="relative overflow-hidden mb-5 bg-background/50 border border-border rounded-xl h-56 flex items-center justify-center p-2">
+                    <div className="relative overflow-hidden mb-5 bg-background/50 border border-border rounded-xl">
                       <img
                         src={getImageUrl(project.image)}
                         alt={project.title}
-                        className="max-w-full max-h-full w-auto h-auto object-contain transition-transform duration-700 group-hover:scale-102"
+                        className="w-full h-auto object-contain transition-transform duration-700 group-hover:scale-102"
                         loading="lazy"
                       />
                       <div className="absolute inset-0 bg-gradient-to-t from-background/80 via-transparent to-transparent" />
