@@ -98,42 +98,46 @@ export default function Services() {
                       )}
 
                       {/* Benefits */}
-                      <div className="mb-5">
-                        <p className="text-xs font-semibold text-foreground mb-3 uppercase tracking-wider">
-                          Key Benefits
-                        </p>
-                        <ul className="space-y-2">
-                          {service.benefits.map((benefit: string) => (
-                            <li
-                              key={benefit}
-                              className="flex items-start gap-2 text-sm text-muted-foreground"
-                            >
-                              <CheckCircle2
-                                className="h-4 w-4 shrink-0 mt-0.5"
-                                style={{ color: service.color }}
-                              />
-                              {benefit}
-                            </li>
-                          ))}
-                        </ul>
-                      </div>
+                      {service.benefits && service.benefits.filter((b: string) => b && b.trim() !== "").length > 0 && (
+                        <div className="mb-5">
+                          <p className="text-xs font-semibold text-foreground mb-3 uppercase tracking-wider">
+                            Key Benefits
+                          </p>
+                          <ul className="space-y-2">
+                            {service.benefits.filter((b: string) => b && b.trim() !== "").map((benefit: string) => (
+                              <li
+                                key={benefit}
+                                className="flex items-start gap-2 text-sm text-muted-foreground"
+                              >
+                                <CheckCircle2
+                                  className="h-4 w-4 shrink-0 mt-0.5"
+                                  style={{ color: service.color }}
+                                />
+                                {benefit}
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                      )}
 
                       {/* Technologies */}
-                      <div>
-                        <p className="text-xs font-semibold text-foreground mb-3 uppercase tracking-wider">
-                          Technologies
-                        </p>
-                        <div className="flex flex-wrap gap-2">
-                          {service.technologies.map((tech: string) => (
-                            <span
-                              key={tech}
-                              className="rounded-lg bg-white/5 px-2.5 py-1 text-xs text-muted-foreground"
-                            >
-                              {tech}
-                            </span>
-                          ))}
+                      {service.technologies && service.technologies.filter((t: string) => t && t.trim() !== "").length > 0 && (
+                        <div>
+                          <p className="text-xs font-semibold text-foreground mb-3 uppercase tracking-wider">
+                            Technologies
+                          </p>
+                          <div className="flex flex-wrap gap-2">
+                            {service.technologies.filter((t: string) => t && t.trim() !== "").map((tech: string) => (
+                              <span
+                                key={tech}
+                                className="rounded-lg bg-white/5 px-2.5 py-1 text-xs text-muted-foreground"
+                              >
+                                {tech}
+                              </span>
+                            ))}
+                          </div>
                         </div>
-                      </div>
+                      )}
                     </div>
                   </div>
                 </motion.div>
