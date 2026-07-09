@@ -120,11 +120,11 @@ export default function Portfolio() {
                     className="group w-full text-left"
                   >
                     <div className="glass-card rounded-2xl overflow-hidden border border-white/5 hover:border-primary/20 transition-all duration-300">
-                      <div className="relative overflow-hidden bg-black/10">
+                      <div className="relative overflow-hidden bg-black/10 h-56 flex items-center justify-center p-2">
                         <img
                           src={getImageUrl(project.image)}
                           alt={project.title}
-                          className="h-48 w-full object-contain transition-transform duration-700 group-hover:scale-105"
+                          className="max-w-full max-h-full w-auto h-auto object-contain transition-transform duration-700 group-hover:scale-102"
                           loading="lazy"
                         />
                         <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-6">
@@ -174,11 +174,11 @@ export default function Portfolio() {
               onClick={(e) => e.stopPropagation()}
               className="glass-card rounded-3xl max-w-2xl w-full max-h-[85vh] overflow-y-auto border border-white/10 shadow-2xl"
             >
-              <div className="relative overflow-hidden bg-black/20">
+              <div className="relative overflow-hidden bg-black/20 h-64 md:h-80 flex items-center justify-center p-4">
                 <img
                   src={getImageUrl(selectedProjectData.image)}
                   alt={selectedProjectData.title}
-                  className="h-48 w-full object-contain"
+                  className="max-w-full max-h-full w-auto h-auto object-contain"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent" />
                 <div className="absolute bottom-4 left-6">
