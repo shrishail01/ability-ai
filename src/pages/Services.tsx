@@ -87,11 +87,11 @@ export default function Services() {
 
                       {/* Service Image */}
                       {service.image && (
-                        <div className="mb-6 relative overflow-hidden rounded-xl h-48 border border-white/5">
+                        <div className="mb-6 relative overflow-hidden rounded-xl h-48 border border-white/5 bg-black/10">
                           <img
                             src={getImageUrl(service.image)}
                             alt={service.title}
-                            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                            className="w-full h-full object-contain group-hover:scale-105 transition-transform duration-500"
                             loading="lazy"
                           />
                         </div>
