@@ -450,7 +450,7 @@ export default function Landing() {
                       <img
                         src={getImageUrl(project.image)}
                         alt={project.title}
-                        className="w-full h-56 object-cover transition-transform duration-700 group-hover:scale-105"
+                        className="w-full h-56 object-contain bg-black/10 transition-transform duration-700 group-hover:scale-105"
                         loading="lazy"
                       />
                       <div className="absolute inset-0 bg-gradient-to-t from-background/80 via-transparent to-transparent" />
