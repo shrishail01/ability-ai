@@ -60,7 +60,7 @@ export default function Portfolio() {
             transition={{ duration: 0.5, delay: 0.1 }}
             className="text-4xl md:text-6xl font-bold tracking-tight mb-6"
           >
-            Featured{" "}
+            Our{" "}
             <span className="text-gradient">Projects</span>
           </motion.h1>
           <motion.p
