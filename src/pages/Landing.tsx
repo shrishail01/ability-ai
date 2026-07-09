@@ -149,7 +149,7 @@ export default function Landing() {
   const ctaSecondaryLink = settings.hero_cta_secondary_link ?? "/portfolio";
   const servicesTitle = settings.services_title ?? "What We Build";
   const servicesSubtitle = settings.services_subtitle ?? "From AI-powered platforms to elegant websites, we deliver end-to-end digital solutions.";
-  const portfolioTitle = settings.portfolio_title ?? "Projects";
+  const portfolioTitle = settings.portfolio_title ?? "Our Projects";
   const portfolioSubtitle = settings.portfolio_subtitle ?? "Showcasing our best work across industries and technologies.";
   const aboutLink = settings.about_headline ?? "About Us";
   const trustedCompanies = (settings.trusted_companies ?? "NexusAI, DataStream, ShopWave, MediView, GreenLife").split(", ");
