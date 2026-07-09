@@ -198,29 +198,33 @@ export default function Portfolio() {
                 </p>
 
                 {/* Results */}
-                <div className="mb-6">
-                  <h4 className="text-sm font-semibold mb-3">Key Results</h4>
-                  <ul className="space-y-2">
-                    {selectedProjectData.results.map((result: string) => (
-                      <li key={result} className="flex items-start gap-2 text-sm text-muted-foreground">
-                        <span className="h-1.5 w-1.5 rounded-full bg-primary mt-2 shrink-0" />
-                        {result}
-                      </li>
-                    ))}
-                  </ul>
-                </div>
+                {selectedProjectData.results && selectedProjectData.results.filter((r: string) => r && r.trim() !== "").length > 0 && (
+                  <div className="mb-6">
+                    <h4 className="text-sm font-semibold mb-3">Key Results</h4>
+                    <ul className="space-y-2">
+                      {selectedProjectData.results.filter((r: string) => r && r.trim() !== "").map((result: string) => (
+                        <li key={result} className="flex items-start gap-2 text-sm text-muted-foreground">
+                          <span className="h-1.5 w-1.5 rounded-full bg-primary mt-2 shrink-0" />
+                          {result}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
 
                 {/* Technologies */}
-                <div className="mb-8">
-                  <h4 className="text-sm font-semibold mb-3">Technologies Used</h4>
-                  <div className="flex flex-wrap gap-2">
-                    {selectedProjectData.technologies.map((tech: string) => (
-                      <span key={tech} className="rounded-lg bg-white/5 px-3 py-1.5 text-xs text-muted-foreground">
-                        {tech}
-                      </span>
-                    ))}
+                {selectedProjectData.technologies && selectedProjectData.technologies.filter((t: string) => t && t.trim() !== "").length > 0 && (
+                  <div className="mb-8">
+                    <h4 className="text-sm font-semibold mb-3">Technologies Used</h4>
+                    <div className="flex flex-wrap gap-2">
+                      {selectedProjectData.technologies.filter((t: string) => t && t.trim() !== "").map((tech: string) => (
+                        <span key={tech} className="rounded-lg bg-white/5 px-3 py-1.5 text-xs text-muted-foreground">
+                          {tech}
+                        </span>
+                      ))}
+                    </div>
                   </div>
-                </div>
+                )}
 
                 {/* Actions */}
                 <div className="flex items-center gap-3">
