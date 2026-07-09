@@ -175,12 +175,12 @@ export default function Landing() {
 
         <motion.div style={{ opacity: heroOpacity }} className="relative z-10 w-full pt-16 md:pt-20 pb-12 md:pb-16">
           <div className="mx-auto max-w-7xl px-6 sm:px-8 lg:px-10">
-            <div className="max-w-4xl">
+            <div className="max-w-4xl text-left flex flex-col items-start justify-start w-full">
               <motion.p
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, delay: 0.2 }}
-                className="text-xs tracking-[0.15em] uppercase font-semibold text-white/50 mb-6"
+                className="text-xs tracking-[0.15em] uppercase font-semibold text-white/50 mb-6 text-left w-full"
               >
                 {companyTagline}
               </motion.p>
@@ -189,7 +189,7 @@ export default function Landing() {
                 initial={{ opacity: 0, y: 30 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.8, delay: 0.3, ease: [0.25, 0.1, 0.25, 1] }}
-                className="text-editorial-lg mb-8 text-white"
+                className="text-editorial-lg mb-8 text-white text-left w-full"
               >
                 {heroTitle.includes(heroAccent) ? (
                   (() => {
@@ -221,7 +221,7 @@ export default function Landing() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.7, delay: 0.45, ease: [0.25, 0.1, 0.25, 1] }}
-                className="text-white/60 text-base md:text-lg max-w-lg leading-relaxed mb-10"
+                className="text-white/60 text-base md:text-lg max-w-lg leading-relaxed mb-10 text-left"
               >
                 {heroSubtitle}
               </motion.p>
@@ -230,7 +230,7 @@ export default function Landing() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.7, delay: 0.6, ease: [0.25, 0.1, 0.25, 1] }}
-                className="flex flex-col sm:flex-row items-start gap-4"
+                className="flex flex-col sm:flex-row items-start justify-start gap-4 w-full"
               >
                 <Link
                   to={ctaPrimaryLink}
