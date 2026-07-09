@@ -314,7 +314,7 @@ export default function Landing() {
             </SectionDescription>
           </div>
 
-          <div className={`grid gap-6 w-full ${displayServices.length === 1 ? 'grid-cols-1 max-w-xl mx-auto' : displayServices.length === 2 ? 'grid-cols-1 md:grid-cols-2 max-w-4xl mx-auto' : 'grid-cols-1 md:grid-cols-2 lg:grid-cols-3'}`}>
+          <div className="grid gap-6 w-full grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
             {displayServices.slice(0, 6).map((service: any, i: number) => {
               const Icon = (typeof service.icon === "string"
                 ? (Icons[service.icon as keyof typeof Icons] || Icons.HelpCircle)
@@ -443,74 +443,7 @@ export default function Landing() {
         </div>
       </section>
 
-      {/* ===== PROJECTS ===== */}
-      <section className="py-20 md:py-28 bg-card border-y border-border">
-        <div className="mx-auto max-w-7xl px-6 sm:px-8 lg:px-10">
-          <div className="max-w-xl mb-16">
-            <SectionLabel>Portfolio</SectionLabel>
-            <SectionTitle>{portfolioTitle}</SectionTitle>
-            <SectionDescription>
-              {portfolioSubtitle}
-            </SectionDescription>
-          </div>
 
-          <div className={`grid gap-6 w-full ${displayProjects.length === 1 ? 'grid-cols-1 max-w-xl mx-auto' : displayProjects.length === 2 ? 'grid-cols-1 md:grid-cols-2 max-w-4xl mx-auto' : 'grid-cols-1 md:grid-cols-2 lg:grid-cols-3'}`}>
-            {displayProjects.slice(0, 6).map((project: any, i: number) => {
-              const projectId = project._id || project.id;
-              return (
-                <TiltCard
-                  key={projectId}
-                  initial={{ opacity: 0, y: 15 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.6, delay: i * 0.05, ease: [0.25, 0.1, 0.25, 1] }}
-                  className="glass-card border border-white/5 p-8 md:p-10 rounded-2xl group transition-all duration-300 hover:border-primary/30 hover:shadow-lg hover:shadow-primary/5 cursor-pointer"
-                >
-                  <Link to={project._id ? `/portfolio?project=${project._id}` : `/portfolio#${project.id}`} className="block group">
-                    <div className="relative overflow-hidden mb-5 bg-background/50 border border-border rounded-xl">
-                      <img
-                        src={getImageUrl(project.image)}
-                        alt={project.title}
-                        className="w-full h-56 object-cover transition-transform duration-700 group-hover:scale-105"
-                        loading="lazy"
-                      />
-                      <div className="absolute inset-0 bg-gradient-to-t from-background/80 via-transparent to-transparent" />
-                      <div className="absolute bottom-4 left-4">
-                        <p className="text-sm font-semibold text-white">{project.title}</p>
-                        <p className="text-xs text-white/70 mt-0.5">{project.category}</p>
-                      </div>
-                    </div>
-                    <p className="text-sm text-muted-foreground leading-relaxed mb-3 line-clamp-2">
-                      {project.description}
-                    </p>
-                    <div className="flex flex-wrap gap-2">
-                      {project.technologies.slice(0, 3).map((tech: string) => (
-                        <span key={tech} className="text-[11px] text-muted-foreground uppercase tracking-wider">
-                          {tech}
-                        </span>
-                      ))}
-                    </div>
-                  </Link>
-                </TiltCard>
-              );
-            })}
-          </div>
-
-          <motion.div
-            initial={{ opacity: 0, y: 10 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="mt-10"
-          >
-            <Link
-              to="/portfolio"
-              className="inline-flex items-center gap-2 text-sm tracking-wide font-medium text-foreground border-b border-border hover:border-foreground/50 transition-colors duration-300 pb-0.5"
-            >
-              View All Projects <ArrowRight className="h-3.5 w-3.5" />
-            </Link>
-          </motion.div>
-        </div>
-      </section>
 
       {/* ===== TESTIMONIALS ===== */}
       <section className="py-20 md:py-28">
@@ -520,7 +453,7 @@ export default function Landing() {
             <SectionTitle>What Our Clients Say</SectionTitle>
           </div>
 
-          <div className={`grid gap-6 w-full ${displayTestimonials.length === 1 ? 'grid-cols-1 max-w-xl mx-auto' : displayTestimonials.length === 2 ? 'grid-cols-1 md:grid-cols-2 max-w-4xl mx-auto' : 'grid-cols-1 md:grid-cols-3'}`}>
+          <div className="grid gap-6 w-full grid-cols-1 md:grid-cols-3">
             {displayTestimonials.slice(0, 3).map((t: any, i: number) => (
               <TiltCard
                 key={t._id || t.name}
