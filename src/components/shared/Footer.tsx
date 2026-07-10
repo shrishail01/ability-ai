@@ -23,12 +23,27 @@ export function Footer() {
   const twitterUrl = settings.social_twitter ?? "#";
   const linkedinUrl = settings.social_linkedin ?? "#";
   const githubUrl = settings.social_github ?? "#";
+  const instagramUrl = settings.social_instagram ?? "#";
 
-  const connectLinks = [
-    { label: "Twitter", href: twitterUrl },
-    { label: "LinkedIn", href: linkedinUrl },
-    { label: "GitHub", href: githubUrl },
-  ];
+  const connectLinks: { label: string; href: string }[] = [];
+  if (twitterUrl && twitterUrl !== "#" && twitterUrl.trim() !== "") {
+    connectLinks.push({ label: "Twitter", href: twitterUrl });
+  }
+  if (linkedinUrl && linkedinUrl !== "#" && linkedinUrl.trim() !== "") {
+    connectLinks.push({ label: "LinkedIn", href: linkedinUrl });
+  }
+  if (githubUrl && githubUrl !== "#" && githubUrl.trim() !== "") {
+    connectLinks.push({ label: "GitHub", href: githubUrl });
+  }
+  if (instagramUrl && instagramUrl !== "#" && instagramUrl.trim() !== "") {
+    connectLinks.push({ label: "Instagram", href: instagramUrl });
+  }
+
+  // If no links are configured, show contact details
+  if (connectLinks.length === 0) {
+    connectLinks.push({ label: contactEmail, href: `mailto:${contactEmail}` });
+    connectLinks.push({ label: contactPhone, href: `tel:${contactPhone.replace(/\D/g, "")}` });
+  }
 
   const cmsServices = useQuery(api.cms.listServices);
   const servicesLinks = cmsServices !== undefined
@@ -88,16 +103,30 @@ export function Footer() {
               <div key={col.title}>
                 <h3 className="eyebrow mb-5">{col.title}</h3>
                 <ul className="space-y-3">
-                  {col.links.map((link) => (
-                    <li key={link.label}>
-                      <Link
-                        to={link.href}
-                        className="text-sm text-muted-foreground hover:text-foreground transition-colors"
-                      >
-                        {link.label}
-                      </Link>
-                    </li>
-                  ))}
+                  {col.links.map((link) => {
+                    const isExternal = link.href.startsWith("http") || link.href.startsWith("mailto:") || link.href.startsWith("tel:");
+                    return (
+                      <li key={link.label}>
+                        {isExternal ? (
+                          <a
+                            href={link.href}
+                            target={link.href.startsWith("http") ? "_blank" : undefined}
+                            rel={link.href.startsWith("http") ? "noopener noreferrer" : undefined}
+                            className="text-sm text-muted-foreground hover:text-foreground transition-colors break-all"
+                          >
+                            {link.label}
+                          </a>
+                        ) : (
+                          <Link
+                            to={link.href}
+                            className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+                          >
+                            {link.label}
+                          </Link>
+                        )}
+                      </li>
+                    );
+                  })}
                 </ul>
               </div>
             );
