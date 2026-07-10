@@ -28,8 +28,8 @@ export default function Contact() {
   const siteSettings = useQuery(api.cms.getAllSiteSettings);
   const settings = siteSettings ?? {};
   
-  const contactEmail = settings.contact_email ?? "hello@aibility.ai";
-  const contactPhone = settings.contact_phone ?? "+1 (555) 123-4567";
+  const contactEmail = (settings.contact_email ?? "hello@aibility.ai").trim();
+  const contactPhone = (settings.contact_phone ?? "+1 (555) 123-4567").trim();
   const officeAddress = settings.office_address ?? "123 Innovation Drive, San Francisco, CA 94105";
   const twitterUrl = settings.social_twitter ?? "#";
   const linkedinUrl = settings.social_linkedin ?? "#";

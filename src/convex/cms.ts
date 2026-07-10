@@ -427,11 +427,12 @@ export const setSiteSetting = mutation({
   args: { key: v.string(), value: v.string() },
   handler: async (ctx, args) => {
     await requireAdmin(ctx);
+    const trimmedValue = args.value.trim();
     const existing = await ctx.db.query("cms_site_settings").withIndex("by_key", (q) => q.eq("key", args.key)).first();
     if (existing) {
-      await ctx.db.patch(existing._id, { value: args.value });
+      await ctx.db.patch(existing._id, { value: trimmedValue });
     } else {
-      await ctx.db.insert("cms_site_settings", args);
+      await ctx.db.insert("cms_site_settings", { key: args.key, value: trimmedValue });
     }
   },
 });
