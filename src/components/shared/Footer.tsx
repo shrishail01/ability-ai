@@ -104,6 +104,7 @@ export function Footer() {
                 <h3 className="eyebrow mb-5">{col.title}</h3>
                 <ul className="space-y-3">
                   {col.links.map((link) => {
+                    if (!link || typeof link.href !== "string") return null;
                     const isExternal = link.href.startsWith("http") || link.href.startsWith("mailto:") || link.href.startsWith("tel:");
                     return (
                       <li key={link.label}>

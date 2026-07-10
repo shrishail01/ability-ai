@@ -9,7 +9,8 @@ interface ImageSliderProps {
 }
 
 export function ImageSlider({ src, alt, className = "" }: ImageSliderProps) {
-  const images = (src || "").split(",").map((img) => getImageUrl(img.trim())).filter(Boolean);
+  const imageStr = typeof src === "string" ? src : "";
+  const images = imageStr.split(",").map((img) => getImageUrl(img.trim())).filter(Boolean);
 
   if (images.length <= 1) {
     return (
