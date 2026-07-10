@@ -12,8 +12,8 @@ async function requireAdmin(ctx: MutationCtx | QueryCtx) {
 }
 
 // Helper to resolve potential multiple images separated by commas
-async function resolveImageField(ctx: any, fieldValue: string | undefined): Promise<string> {
-  if (!fieldValue) return "";
+async function resolveImageField(ctx: any, fieldValue: any): Promise<string> {
+  if (typeof fieldValue !== "string") return "";
   const parts = fieldValue.split(",");
   const resolvedParts = await Promise.all(
     parts.map(async (part) => {
