@@ -29,7 +29,7 @@ export default function Contact() {
   const siteSettings = useQuery(api.cms.getAllSiteSettings);
   const settings = siteSettings ?? {};
   
-  const contactEmail = (settings.contact_email ?? "hello@aibility.ai").trim();
+  const contactEmail = (settings.contact_email ?? "aibility01@gmail.com").trim();
   const contactPhone = (settings.contact_phone ?? "+1 (555) 123-4567").trim();
   const officeAddress = settings.office_address ?? "123 Innovation Drive, San Francisco, CA 94105";
   const twitterUrl = settings.social_twitter ?? "#";
@@ -64,10 +64,10 @@ export default function Contact() {
           company: formData.company || undefined,
           service: formData.service || undefined,
           message: formData.message,
-          companyEmail: contactEmail,
+          companyEmail: contactEmail || "aibility01@gmail.com",
         });
       } catch (emailError) {
-        // Email failed but message is saved in database — don't block user
+        // Email failed but message is safely saved in admin inbox
         console.warn("Email delivery failed (saved in admin inbox):", emailError);
       }
 
