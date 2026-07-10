@@ -1,5 +1,5 @@
 import { getAuthUserId } from "@convex-dev/auth/server";
-import { mutation, query, MutationCtx, QueryCtx } from "./_generated/server";
+import { mutation, query, action, MutationCtx, QueryCtx } from "./_generated/server";
 import { v } from "convex/values";
 
 // Helper: check if user is admin
@@ -601,3 +601,61 @@ export const deleteContactMessage = mutation({
 });
 
 
+// ==================== SEND EMAIL VIA RESEND ====================
+
+export const sendContactEmail = action({
+  args: {
+    name: v.string(),
+    email: v.string(),
+    company: v.optional(v.string()),
+    service: v.optional(v.string()),
+    message: v.string(),
+    companyEmail: v.string(),
+  },
+  handler: async (_ctx, args) => {
+    const apiKey = process.env.RESEND_API_KEY;
+    if (!apiKey) throw new Error("RESEND_API_KEY is not configured");
+
+    const htmlBody = `
+      <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; background: #f9f9f9;">
+        <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 30px; border-radius: 10px 10px 0 0; text-align: center;">
+          <h1 style="color: white; margin: 0; font-size: 24px;">New Contact Form Submission</h1>
+          <p style="color: rgba(255,255,255,0.85); margin: 8px 0 0;">via Aibility Website</p>
+        </div>
+        <div style="background: white; padding: 30px; border-radius: 0 0 10px 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
+          <table style="width: 100%; border-collapse: collapse;">
+            <tr><td style="padding: 10px 0; border-bottom: 1px solid #eee; font-weight: bold; color: #555; width: 140px;">Name</td><td style="padding: 10px 0; border-bottom: 1px solid #eee; color: #333;">${args.name}</td></tr>
+            <tr><td style="padding: 10px 0; border-bottom: 1px solid #eee; font-weight: bold; color: #555;">Email</td><td style="padding: 10px 0; border-bottom: 1px solid #eee;"><a href="mailto:${args.email}" style="color: #667eea;">${args.email}</a></td></tr>
+            <tr><td style="padding: 10px 0; border-bottom: 1px solid #eee; font-weight: bold; color: #555;">Company</td><td style="padding: 10px 0; border-bottom: 1px solid #eee; color: #333;">${args.company || "Not specified"}</td></tr>
+            <tr><td style="padding: 10px 0; border-bottom: 1px solid #eee; font-weight: bold; color: #555;">Service</td><td style="padding: 10px 0; border-bottom: 1px solid #eee; color: #333;">${args.service || "Not specified"}</td></tr>
+            <tr><td style="padding: 10px 0; font-weight: bold; color: #555; vertical-align: top;">Message</td><td style="padding: 10px 0; color: #333; white-space: pre-wrap;">${args.message}</td></tr>
+          </table>
+          <div style="margin-top: 20px; padding: 15px; background: #f0f4ff; border-radius: 8px; border-left: 4px solid #667eea;">
+            <p style="margin: 0; color: #555; font-size: 13px;">💡 Reply directly to this email to respond to <strong>${args.name}</strong> at <a href="mailto:${args.email}" style="color: #667eea;">${args.email}</a></p>
+          </div>
+        </div>
+      </div>
+    `;
+
+    const response = await fetch("https://api.resend.com/emails", {
+      method: "POST",
+      headers: {
+        "Authorization": `Bearer ${apiKey}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        from: "Aibility Contact Form <onboarding@resend.dev>",
+        to: [args.companyEmail],
+        reply_to: args.email,
+        subject: `New Enquiry from ${args.name} — Aibility`,
+        html: htmlBody,
+      }),
+    });
+
+    const data = await response.json();
+    if (!response.ok) {
+      throw new Error(`Resend API error: ${JSON.stringify(data)}`);
+    }
+    return { success: true, id: (data as any).id };
+  },
+});
