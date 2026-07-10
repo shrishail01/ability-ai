@@ -72,13 +72,14 @@ const defaultTimeline = [
   { year: "2026", event: "Industry recognition" },
 ];
 
-function parseTimeline(value: string | undefined): { year: string; event: string }[] {
-  if (value === undefined) return defaultTimeline;
-  if (value.trim() === "") return [];
+function parseTimeline(value: any): { year: string; event: string }[] {
+  if (typeof value !== "string") return defaultTimeline;
+  const trimmed = value.trim();
+  if (trimmed === "") return [];
   
   // Try JSON first
   try {
-    const parsed = JSON.parse(value);
+    const parsed = JSON.parse(trimmed);
     if (Array.isArray(parsed)) {
       const valid = parsed.every(item => item && typeof item === 'object' && 'year' in item && 'event' in item);
       if (valid) return parsed;
@@ -88,7 +89,7 @@ function parseTimeline(value: string | undefined): { year: string; event: string
   }
 
   // Try line-by-line parsing
-  const lines = value.split("\n").map(l => l.trim()).filter(Boolean);
+  const lines = trimmed.split("\n").map(l => l.trim()).filter(Boolean);
   const parsedEvents: { year: string; event: string }[] = [];
   for (const line of lines) {
     const match = line.match(/^(\d{4})[\s\-.:]+(.*)$/);
