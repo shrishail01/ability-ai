@@ -612,9 +612,11 @@ export const sendContactEmail = action({
     message: v.string(),
     companyEmail: v.string(),
   },
-  handler: async (_ctx, args) => {
+  handler: async (_ctx, args): Promise<{ success: boolean; id: string }> => {
     const apiKey = process.env.RESEND_API_KEY;
     if (!apiKey) throw new Error("RESEND_API_KEY is not configured");
+
+    const companyEmail: string = args.companyEmail.trim() || "aibility01@gmail.com";
 
     const htmlBody = `
       <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; background: #f9f9f9;">
@@ -645,7 +647,7 @@ export const sendContactEmail = action({
       },
       body: JSON.stringify({
         from: "Aibility Contact Form <onboarding@resend.dev>",
-        to: [args.companyEmail],
+        to: [companyEmail],
         reply_to: args.email,
         subject: `New Enquiry from ${args.name} — Aibility`,
         html: htmlBody,
@@ -659,3 +661,4 @@ export const sendContactEmail = action({
     return { success: true, id: (data as any).id };
   },
 });
+
