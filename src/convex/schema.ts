@@ -101,6 +101,15 @@ const schema = defineSchema(
       key: v.string(),
       value: v.string(),
     }).index("by_key", ["key"]),
+
+    cms_contacts: defineTable({
+      name: v.string(),
+      email: v.string(),
+      company: v.optional(v.string()),
+      service: v.optional(v.string()),
+      message: v.string(),
+      createdAt: v.string(),
+    }),
   },
   {
     schemaValidation: false,

@@ -555,7 +555,47 @@ export const clearAllCmsData = mutation({
       await ctx.db.delete(item._id);
     }
     
+    // Clear contacts
+    const contacts = await ctx.db.query("cms_contacts").collect();
+    for (const item of contacts) {
+      await ctx.db.delete(item._id);
+    }
+    
     return { success: true };
+  },
+});
+
+// ==================== CONTACT MESSAGES ====================
+
+export const saveContactMessage = mutation({
+  args: {
+    name: v.string(),
+    email: v.string(),
+    company: v.optional(v.string()),
+    service: v.optional(v.string()),
+    message: v.string(),
+  },
+  handler: async (ctx, args) => {
+    return await ctx.db.insert("cms_contacts", {
+      ...args,
+      createdAt: new Date().toISOString(),
+    });
+  },
+});
+
+export const listContactMessages = query({
+  args: {},
+  handler: async (ctx) => {
+    await requireAdmin(ctx);
+    return await ctx.db.query("cms_contacts").order("desc").collect();
+  },
+});
+
+export const deleteContactMessage = mutation({
+  args: { id: v.id("cms_contacts") },
+  handler: async (ctx, args) => {
+    await requireAdmin(ctx);
+    await ctx.db.delete(args.id);
   },
 });
 

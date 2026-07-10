@@ -10,7 +10,7 @@ import {
 } from "lucide-react";
 import { useState } from "react";
 import { Link } from "react-router";
-import { useQuery } from "convex/react";
+import { useQuery, useMutation } from "convex/react";
 import { api } from "../convex/_generated/api";
 
 export default function Contact() {
@@ -23,6 +23,7 @@ export default function Contact() {
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
+  const saveMessage = useMutation(api.cms.saveContactMessage);
   
   const siteSettings = useQuery(api.cms.getAllSiteSettings);
   const settings = siteSettings ?? {};
@@ -45,28 +46,40 @@ export default function Contact() {
     e.preventDefault();
     setIsSubmitting(true);
     try {
-      const response = await fetch(`https://formsubmit.co/ajax/${contactEmail}`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "Accept": "application/json",
-        },
-        body: JSON.stringify({
-          _subject: `New Contact Form Submission from ${formData.name}`,
-          Name: formData.name,
-          Email: formData.email,
-          Company: formData.company || "Not specified",
-          "Service Interested In": formData.service || "Not specified",
-          Message: formData.message,
-        }),
+      // 1. Always save submission directly to Convex database first
+      await saveMessage({
+        name: formData.name,
+        email: formData.email,
+        company: formData.company || undefined,
+        service: formData.service || undefined,
+        message: formData.message,
       });
-      if (response.ok) {
-        setSubmitted(true);
-      } else {
-        alert("Failed to send message. Please try again or email us directly.");
+
+      // 2. Try sending email to FormSubmit in the background.
+      // If FormSubmit fails or is blocked by an adblocker, we ignore it since it is safely stored in Convex!
+      try {
+        await fetch(`https://formsubmit.co/ajax/${contactEmail}`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "Accept": "application/json",
+          },
+          body: JSON.stringify({
+            _subject: `New Contact Form Submission from ${formData.name}`,
+            Name: formData.name,
+            Email: formData.email,
+            Company: formData.company || "Not specified",
+            "Service Interested In": formData.service || "Not specified",
+            Message: formData.message,
+          }),
+        });
+      } catch (emailError) {
+        console.warn("FormSubmit email forwarding failed (likely blocked by browser adblocker):", emailError);
       }
+
+      setSubmitted(true);
     } catch (error) {
-      console.error("Error submitting contact form:", error);
+      console.error("Error submitting contact form to database:", error);
       alert("An error occurred. Please try again later.");
     } finally {
       setIsSubmitting(false);
