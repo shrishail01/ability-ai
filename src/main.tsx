@@ -16,6 +16,7 @@ import { CookieConsent } from "./components/shared/CookieConsent";
 import { WhatsAppButton } from "./components/shared/WhatsAppButton";
 import "./index.css";
 import "./types/global.d.ts";
+import { ErrorBoundary } from "./components/shared/ErrorBoundary";
 
 // Lazy load route components for better code splitting
 const Landing = lazy(() => import("./pages/Landing.tsx"));
@@ -102,34 +103,36 @@ createRoot(document.getElementById("root")!).render(
     <InstrumentationProvider>
       <ConvexAuthProvider client={convex}>
         <ThemeProvider>
-          <BrowserRouter>
-            <LoadingScreen />
-            <Suspense fallback={<RouteLoading />}>
-              <Routes>
-                <Route path="/" element={<Layout><Landing /></Layout>} />
-                <Route path="/about" element={<Layout><About /></Layout>} />
-                <Route path="/services" element={<Layout><Services /></Layout>} />
-                <Route path="/portfolio" element={<Layout><Portfolio /></Layout>} />
-                <Route path="/blog" element={<Layout><Blog /></Layout>} />
+          <ErrorBoundary>
+            <BrowserRouter>
+              <LoadingScreen />
+              <Suspense fallback={<RouteLoading />}>
+                <Routes>
+                  <Route path="/" element={<Layout><Landing /></Layout>} />
+                  <Route path="/about" element={<Layout><About /></Layout>} />
+                  <Route path="/services" element={<Layout><Services /></Layout>} />
+                  <Route path="/portfolio" element={<Layout><Portfolio /></Layout>} />
+                  <Route path="/blog" element={<Layout><Blog /></Layout>} />
 
-                <Route path="/contact" element={<Layout><Contact /></Layout>} />
-                <Route path="/auth" element={<AuthPage redirectAfterAuth="/" />} />
-                
-                {/* Admin Routes */}
-                <Route path="/admin" element={<AdminLayout />}>
-                  <Route index element={<AdminDashboard />} />
-                  <Route path="services" element={<AdminServices />} />
-                  <Route path="projects" element={<AdminProjects />} />
-                  <Route path="blog" element={<AdminBlog />} />
-                  <Route path="team" element={<AdminTeam />} />
-                  <Route path="testimonials" element={<AdminTestimonials />} />
-                  <Route path="settings" element={<AdminSettings />} />
-                </Route>
+                  <Route path="/contact" element={<Layout><Contact /></Layout>} />
+                  <Route path="/auth" element={<AuthPage redirectAfterAuth="/" />} />
+                  
+                  {/* Admin Routes */}
+                  <Route path="/admin" element={<AdminLayout />}>
+                    <Route index element={<AdminDashboard />} />
+                    <Route path="services" element={<AdminServices />} />
+                    <Route path="projects" element={<AdminProjects />} />
+                    <Route path="blog" element={<AdminBlog />} />
+                    <Route path="team" element={<AdminTeam />} />
+                    <Route path="testimonials" element={<AdminTestimonials />} />
+                    <Route path="settings" element={<AdminSettings />} />
+                  </Route>
 
-                <Route path="*" element={<Layout><NotFound /></Layout>} />
-              </Routes>
-            </Suspense>
-          </BrowserRouter>
+                  <Route path="*" element={<Layout><NotFound /></Layout>} />
+                </Routes>
+              </Suspense>
+            </BrowserRouter>
+          </ErrorBoundary>
           <Toaster />
         </ThemeProvider>
       </ConvexAuthProvider>
