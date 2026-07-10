@@ -6,6 +6,7 @@ import { useQuery } from "convex/react";
 import { api } from "../convex/_generated/api";
 import { services as fallbackServices } from "../data/services";
 import { getImageUrl } from "../lib/utils";
+import { ImageSlider } from "../components/shared/ImageSlider";
 
 export default function Services() {
   const cmsServices = useQuery(api.cms.listServices);
@@ -97,11 +98,10 @@ export default function Services() {
                       {/* Service Image */}
                       {service.image && (
                         <div className="mb-6 relative overflow-hidden rounded-xl border border-white/5 bg-black/5 w-full">
-                          <img
-                            src={getImageUrl(service.image)}
+                          <ImageSlider
+                            src={service.image}
                             alt={service.title}
                             className="w-full h-auto object-contain group-hover:scale-102 transition-all duration-500"
-                            loading="lazy"
                           />
                         </div>
                       )}

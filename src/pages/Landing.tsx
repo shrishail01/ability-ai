@@ -11,6 +11,7 @@ import { ThreeHero } from "../components/home/ThreeHero";
 import { useQuery } from "convex/react";
 import { api } from "../convex/_generated/api";
 import { TiltCard } from "../components/shared/TiltCard";
+import { ImageSlider } from "../components/shared/ImageSlider";
 
 const fadeUp = {
   hidden: { opacity: 0, y: 30 },
@@ -458,11 +459,10 @@ export default function Landing() {
                   >
                     <Link to={project._id ? `/portfolio?project=${project._id}` : `/portfolio#${project.id}`} className="block group">
                       <div className="relative overflow-hidden mb-5 bg-background/50 border border-border rounded-xl">
-                        <img
-                          src={getImageUrl(project.image)}
+                        <ImageSlider
+                          src={project.image}
                           alt={project.title}
                           className="w-full h-auto object-contain transition-transform duration-700 group-hover:scale-102"
-                          loading="lazy"
                         />
                         <div className="absolute inset-0 bg-gradient-to-t from-background/80 via-transparent to-transparent" />
                         <div className="absolute bottom-4 left-4">

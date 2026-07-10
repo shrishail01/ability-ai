@@ -6,6 +6,7 @@ import { useQuery } from "convex/react";
 import { api } from "../convex/_generated/api";
 import { blogPosts as fallbackBlogPosts, blogCategories as fallbackBlogCategories } from "../data/blog";
 import { getImageUrl } from "../lib/utils";
+import { ImageSlider } from "../components/shared/ImageSlider";
 
 export default function Blog() {
   const [activeCategory, setActiveCategory] = useState("All");
@@ -128,11 +129,10 @@ export default function Blog() {
               </p>
               <div className="border border-border overflow-hidden bg-card">
                 <div className="relative h-64 md:h-80">
-                  <img
-                    src={getImageUrl(featuredPost.image)}
+                  <ImageSlider
+                    src={featuredPost.image}
                     alt={featuredPost.title}
                     className="h-full w-full object-cover"
-                    loading="lazy"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-card via-card/40 to-transparent" />
                 </div>
@@ -199,11 +199,10 @@ export default function Blog() {
                 >
                   <div className="border border-border hover:border-gold/30 transition-colors duration-300 group h-full flex flex-col bg-card">
                     <div className="relative overflow-hidden h-44">
-                      <img
-                        src={getImageUrl(post.image)}
+                      <ImageSlider
+                        src={post.image}
                         alt={post.title}
                         className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
-                        loading="lazy"
                       />
                       <div className="absolute inset-0 bg-gradient-to-t from-card/60 to-transparent" />
                     </div>

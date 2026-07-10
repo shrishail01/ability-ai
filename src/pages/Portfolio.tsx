@@ -6,6 +6,7 @@ import { useQuery } from "convex/react";
 import { api } from "../convex/_generated/api";
 import { projects as fallbackProjects, projectCategories as fallbackCategories } from "../data/projects";
 import { getImageUrl } from "../lib/utils";
+import { ImageSlider } from "../components/shared/ImageSlider";
 
 export default function Portfolio() {
   const [activeCategory, setActiveCategory] = useState("All");
@@ -120,11 +121,10 @@ export default function Portfolio() {
                   >
                     <div className="glass-card rounded-2xl overflow-hidden border border-white/5 hover:border-primary/20 transition-all duration-300">
                       <div className="relative overflow-hidden bg-black/5">
-                        <img
-                          src={getImageUrl(project.image)}
+                        <ImageSlider
+                          src={project.image}
                           alt={project.title}
                           className="w-full h-auto object-contain transition-transform duration-700 group-hover:scale-102"
-                          loading="lazy"
                         />
                         <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-6">
                           <span className="text-white text-sm font-medium flex items-center gap-1">
@@ -174,8 +174,8 @@ export default function Portfolio() {
               className="glass-card rounded-3xl max-w-2xl w-full max-h-[85vh] overflow-y-auto border border-white/10 shadow-2xl"
             >
               <div className="relative overflow-hidden bg-black/10">
-                <img
-                  src={getImageUrl(selectedProjectData.image)}
+                <ImageSlider
+                  src={selectedProjectData.image}
                   alt={selectedProjectData.title}
                   className="w-full h-auto object-contain"
                 />

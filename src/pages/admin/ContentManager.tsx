@@ -40,20 +40,28 @@ export function ContentManager({ title, fields, listQuery, createMutation, updat
   const [showForm, setShowForm] = useState(false);
   const [uploadingField, setUploadingField] = useState<string | null>(null);
 
-  const handleImageUpload = async (fieldKey: string, file: File) => {
+  const handleImageUpload = async (fieldKey: string, files: FileList) => {
     setUploadingField(fieldKey);
     try {
-      const uploadUrl = await generateUploadUrl();
-      const response = await fetch(uploadUrl, {
-        method: "POST",
-        headers: { "Content-Type": file.type },
-        body: file,
+      const uploadPromises = Array.from(files).map(async (file) => {
+        const uploadUrl = await generateUploadUrl();
+        const response = await fetch(uploadUrl, {
+          method: "POST",
+          headers: { "Content-Type": file.type },
+          body: file,
+        });
+        if (!response.ok) throw new Error("Upload failed");
+        const { storageId } = await response.json();
+        return storageId;
       });
-      if (!response.ok) throw new Error("Upload failed");
-      const { storageId } = await response.json();
-      setForm(prev => ({ ...prev, [fieldKey]: storageId }));
+      const storageIds = await Promise.all(uploadPromises);
+      
+      const currentVal = form[fieldKey] ? String(form[fieldKey]).split(",") : [];
+      const newVal = [...currentVal, ...storageIds].filter(Boolean).join(",");
+      
+      setForm(prev => ({ ...prev, [fieldKey]: newVal }));
     } catch (e) {
-      alert("Error uploading image: " + (e instanceof Error ? e.message : "Unknown error"));
+      alert("Error uploading images: " + (e instanceof Error ? e.message : "Unknown error"));
     } finally {
       setUploadingField(null);
     }
@@ -198,10 +206,11 @@ export function ContentManager({ title, fields, listQuery, createMutation, updat
                       <input
                         type="file"
                         accept="image/*"
+                        multiple
                         disabled={uploadingField === field.key}
                         onChange={(e) => {
-                          const file = e.target.files?.[0];
-                          if (file) handleImageUpload(field.key, file);
+                          const files = e.target.files;
+                          if (files && files.length > 0) handleImageUpload(field.key, files);
                         }}
                         className="text-xs text-muted-foreground file:mr-4 file:py-2 file:px-4 file:rounded-none file:border file:border-[#E8E2DA] file:text-xs file:font-semibold file:bg-[#FAF6F1] file:text-[#0F1B2D] hover:file:bg-[#FAF6F1]/80 cursor-pointer"
                       />
@@ -213,19 +222,30 @@ export function ContentManager({ title, fields, listQuery, createMutation, updat
                       )}
                     </div>
                     {form[field.key] && (
-                      <div className="relative mt-2 w-32 h-20 border border-[#E8E2DA] overflow-hidden">
-                        <img
-                          src={getImageUrl(form[field.key])}
-                          alt="Preview"
-                          className="w-full h-full object-cover"
-                        />
-                        <button
-                          type="button"
-                          onClick={() => setForm(prev => ({ ...prev, [field.key]: "" }))}
-                          className="absolute top-1 right-1 bg-red-500 text-white rounded-full p-1 text-[10px] hover:bg-red-600 leading-none"
-                        >
-                          &times;
-                        </button>
+                      <div className="flex flex-wrap gap-3 mt-2">
+                        {String(form[field.key]).split(",").map((imgId, idx) => {
+                          if (!imgId.trim()) return null;
+                          return (
+                            <div key={idx} className="relative w-24 h-20 border border-[#E8E2DA] overflow-hidden">
+                              <img
+                                src={imgId.startsWith("http") || imgId.startsWith("/") ? imgId : getImageUrl(imgId.trim())}
+                                alt={`Preview ${idx + 1}`}
+                                className="w-full h-full object-cover"
+                              />
+                              <button
+                                type="button"
+                                onClick={() => {
+                                  const list = String(form[field.key]).split(",");
+                                  list.splice(idx, 1);
+                                  setForm(prev => ({ ...prev, [field.key]: list.filter(Boolean).join(",") }));
+                                }}
+                                className="absolute top-1 right-1 bg-red-500 text-white rounded-full p-1 text-[10px] hover:bg-red-600 leading-none"
+                              >
+                                &times;
+                              </button>
+                            </div>
+                          );
+                        })}
                       </div>
                     )}
                   </div>
@@ -283,7 +303,25 @@ export function ContentManager({ title, fields, listQuery, createMutation, updat
                 <tr key={item._id} className="border-b border-[#E8E2DA] hover:bg-[#FAF6F1]">
                   {fields.slice(0, 4).map((f) => (
                     <td key={f.key} className="px-4 py-3 text-sm truncate max-w-[200px]">
-                      {f.type === "array" ? (item[f.key] as string[])?.join(", ") : String(item[f.key] ?? "")}
+                      {f.type === "array" ? (
+                        (item[f.key] as string[])?.join(", ")
+                      ) : f.type === "image" ? (
+                        <div className="flex gap-1 overflow-hidden">
+                          {String(item[f.key] ?? "").split(",").map((imgUrl, idx) => {
+                            if (!imgUrl.trim()) return null;
+                            return (
+                              <img
+                                key={idx}
+                                src={imgUrl.startsWith("http") || imgUrl.startsWith("/") || imgUrl.startsWith("data:") ? imgUrl : getImageUrl(imgUrl)}
+                                alt=""
+                                className="w-8 h-8 object-cover border border-[#E8E2DA]"
+                              />
+                            );
+                          })}
+                        </div>
+                      ) : (
+                        String(item[f.key] ?? "")
+                      )}
                     </td>
                   ))}
                   <td className="px-4 py-3 text-right">

@@ -11,6 +11,28 @@ async function requireAdmin(ctx: MutationCtx | QueryCtx) {
   return userId;
 }
 
+// Helper to resolve potential multiple images separated by commas
+async function resolveImageField(ctx: any, fieldValue: string | undefined): Promise<string> {
+  if (!fieldValue) return "";
+  const parts = fieldValue.split(",");
+  const resolvedParts = await Promise.all(
+    parts.map(async (part) => {
+      const trimmed = part.trim();
+      if (!trimmed) return "";
+      if (trimmed.startsWith("http") || trimmed.startsWith("/") || trimmed.startsWith("data:")) {
+        return trimmed;
+      }
+      try {
+        const url = await ctx.storage.getUrl(trimmed);
+        return url || trimmed;
+      } catch (e) {
+        return trimmed;
+      }
+    })
+  );
+  return resolvedParts.filter(Boolean).join(",");
+}
+
 // ==================== SERVICES ====================
 
 export const listServices = query({
@@ -19,10 +41,7 @@ export const listServices = query({
     const services = await ctx.db.query("cms_services").order("asc").collect();
     return await Promise.all(
       services.map(async (service) => {
-        let imageUrl = service.image;
-        if (imageUrl && !imageUrl.startsWith("http") && !imageUrl.startsWith("/") && !imageUrl.startsWith("data:")) {
-          imageUrl = (await ctx.storage.getUrl(imageUrl)) || imageUrl;
-        }
+        const imageUrl = await resolveImageField(ctx, service.image);
         return { ...service, image: imageUrl };
       })
     );
@@ -81,10 +100,7 @@ export const listProjects = query({
     const projects = await ctx.db.query("cms_projects").order("asc").collect();
     return await Promise.all(
       projects.map(async (project) => {
-        let imageUrl = project.image;
-        if (imageUrl && !imageUrl.startsWith("http") && !imageUrl.startsWith("/") && !imageUrl.startsWith("data:")) {
-          imageUrl = (await ctx.storage.getUrl(imageUrl)) || imageUrl;
-        }
+        const imageUrl = await resolveImageField(ctx, project.image);
         return { ...project, image: imageUrl };
       })
     );
@@ -153,10 +169,7 @@ export const listBlogPosts = query({
     const posts = await ctx.db.query("cms_blog_posts").order("asc").collect();
     return await Promise.all(
       posts.map(async (post) => {
-        let imageUrl = post.image;
-        if (imageUrl && !imageUrl.startsWith("http") && !imageUrl.startsWith("/") && !imageUrl.startsWith("data:")) {
-          imageUrl = (await ctx.storage.getUrl(imageUrl)) || imageUrl;
-        }
+        const imageUrl = await resolveImageField(ctx, post.image);
         return { ...post, image: imageUrl };
       })
     );
@@ -223,10 +236,7 @@ export const listTeamMembers = query({
     const members = await ctx.db.query("cms_team_members").order("asc").collect();
     return await Promise.all(
       members.map(async (member) => {
-        let imageUrl = member.image;
-        if (imageUrl && !imageUrl.startsWith("http") && !imageUrl.startsWith("/") && !imageUrl.startsWith("data:")) {
-          imageUrl = (await ctx.storage.getUrl(imageUrl)) || imageUrl;
-        }
+        const imageUrl = await resolveImageField(ctx, member.image);
         return { ...member, image: imageUrl };
       })
     );
@@ -287,10 +297,7 @@ export const listTestimonials = query({
     const testimonials = await ctx.db.query("cms_testimonials").order("asc").collect();
     return await Promise.all(
       testimonials.map(async (testimonial) => {
-        let avatarUrl = testimonial.avatar;
-        if (avatarUrl && !avatarUrl.startsWith("http") && !avatarUrl.startsWith("/") && !avatarUrl.startsWith("data:")) {
-          avatarUrl = (await ctx.storage.getUrl(avatarUrl)) || avatarUrl;
-        }
+        const avatarUrl = await resolveImageField(ctx, testimonial.avatar);
         return { ...testimonial, avatar: avatarUrl };
       })
     );
