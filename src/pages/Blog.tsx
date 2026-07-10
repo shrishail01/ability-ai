@@ -1,5 +1,5 @@
 import { motion, AnimatePresence } from "framer-motion";
-import { Sparkles, Search, Clock, ArrowRight, Calendar } from "lucide-react";
+import { Sparkles, Search, Clock, ArrowRight, Calendar, Loader2 } from "lucide-react";
 import { useMemo, useState } from "react";
 import { Link } from "react-router";
 import { useQuery } from "convex/react";
@@ -12,20 +12,18 @@ export default function Blog() {
   const [searchQuery, setSearchQuery] = useState("");
 
   const cmsPosts = useQuery(api.cms.listBlogPosts);
-  const blogPosts = useMemo(() => {
-    if (cmsPosts !== undefined) {
-      return cmsPosts.map((p: any) => ({ ...p, id: p._id }));
-    }
-    return fallbackBlogPosts;
-  }, [cmsPosts]);
 
-  const blogCategories = useMemo(() => {
-    if (cmsPosts !== undefined) {
-      const cats = ["All", ...new Set(cmsPosts.map((p: any) => p.category))];
-      return cats;
-    }
-    return fallbackBlogCategories;
-  }, [cmsPosts]);
+  if (cmsPosts === undefined) {
+    return (
+      <div className="min-h-screen bg-[#0B0F19] flex items-center justify-center">
+        <Loader2 className="h-8 w-8 animate-spin text-[#B8860B]" />
+      </div>
+    );
+  }
+
+  const blogPosts = cmsPosts.map((p: any) => ({ ...p, id: p._id }));
+
+  const blogCategories = ["All", ...new Set(cmsPosts.map((p: any) => p.category))];
 
   const filteredPosts = blogPosts.filter((post) => {
     const matchesCategory =

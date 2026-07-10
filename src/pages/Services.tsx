@@ -9,7 +9,16 @@ import { getImageUrl } from "../lib/utils";
 
 export default function Services() {
   const cmsServices = useQuery(api.cms.listServices);
-  const displayServices = cmsServices !== undefined ? cmsServices : fallbackServices;
+
+  if (cmsServices === undefined) {
+    return (
+      <div className="min-h-screen bg-[#0B0F19] flex items-center justify-center">
+        <Icons.Loader2 className="h-8 w-8 animate-spin text-[#B8860B]" />
+      </div>
+    );
+  }
+
+  const displayServices = cmsServices;
 
   return (
     <div className="min-h-screen bg-background">

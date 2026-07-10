@@ -10,6 +10,7 @@ import {
   Users,
   Globe,
   ChevronRight,
+  Loader2,
 } from "lucide-react";
 import { Link } from "react-router";
 import { useQuery } from "convex/react";
@@ -101,10 +102,18 @@ function parseTimeline(value: string | undefined): { year: string; event: string
 
 export default function About() {
   const cmsTeam = useQuery(api.cms.listTeamMembers);
-  const teamMembers = (cmsTeam && cmsTeam.length > 0) ? cmsTeam : [];
-  
   const siteSettings = useQuery(api.cms.getAllSiteSettings);
-  const settings = siteSettings ?? {};
+  
+  if (cmsTeam === undefined || siteSettings === undefined) {
+    return (
+      <div className="min-h-screen bg-[#0B0F19] flex items-center justify-center">
+        <Loader2 className="h-8 w-8 animate-spin text-[#B8860B]" />
+      </div>
+    );
+  }
+
+  const teamMembers = cmsTeam;
+  const settings = siteSettings;
   const aboutHeadline = settings.about_headline ?? "We're on a Mission to Redefine Software";
   const aboutStory = settings.about_story ?? "Founded, Aibility has grown from a small team into a leading AI-first software company.";
   
