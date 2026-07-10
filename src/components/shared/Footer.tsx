@@ -4,27 +4,12 @@ import { useQuery } from "convex/react";
 import { api } from "../../convex/_generated/api";
 import logo from "../../assets/logo.png";
 
-const footerLinks = {
-  Services: [
-    { label: "Website Development", href: "/services#web-development" },
-    { label: "Mobile App Development", href: "/services#mobile-development" },
-    { label: "AI Solutions", href: "/services#ai-solutions" },
-    { label: "SaaS Development", href: "/services#saas-development" },
-    { label: "UI/UX Design", href: "/services#ui-ux-design" },
-    { label: "E-commerce", href: "/services#ecommerce" },
-  ],
-  Company: [
-    { label: "About", href: "/about" },
-    { label: "Portfolio", href: "/portfolio" },
-    { label: "Blog", href: "/blog" },
-    { label: "Contact", href: "/contact" },
-  ],
-  Connect: [
-    { label: "Twitter", href: "#" },
-    { label: "LinkedIn", href: "#" },
-    { label: "GitHub", href: "#" },
-  ],
-};
+const companyLinks = [
+  { label: "About", href: "/about" },
+  { label: "Portfolio", href: "/portfolio" },
+  { label: "Blog", href: "/blog" },
+  { label: "Contact", href: "/contact" },
+];
 
 export function Footer() {
   const siteSettings = useQuery(api.cms.getAllSiteSettings);
@@ -43,6 +28,27 @@ export function Footer() {
     { label: "Twitter", href: twitterUrl },
     { label: "LinkedIn", href: linkedinUrl },
     { label: "GitHub", href: githubUrl },
+  ];
+
+  const cmsServices = useQuery(api.cms.listServices);
+  const servicesLinks = cmsServices !== undefined
+    ? cmsServices.map((s: any) => ({
+        label: s.title,
+        href: `/services#${s._id || s.id}`
+      }))
+    : [
+        { label: "Website Development", href: "/services#web-development" },
+        { label: "Mobile App Development", href: "/services#mobile-development" },
+        { label: "AI Solutions", href: "/services#ai-solutions" },
+        { label: "SaaS Development", href: "/services#saas-development" },
+        { label: "UI/UX Design", href: "/services#ui-ux-design" },
+        { label: "E-commerce", href: "/services#ecommerce" },
+      ];
+
+  const columns = [
+    { title: "Services", links: servicesLinks },
+    { title: "Company", links: companyLinks },
+    { title: "Connect", links: connectLinks },
   ];
 
   return (
@@ -76,23 +82,26 @@ export function Footer() {
           </div>
 
           {/* Link columns */}
-          {Object.entries(footerLinks).map(([title, links]) => (
-            <div key={title}>
-              <h3 className="eyebrow mb-5">{title}</h3>
-              <ul className="space-y-3">
-                {(title === "Connect" ? connectLinks : links).map((link) => (
-                  <li key={link.label}>
-                    <Link
-                      to={link.href}
-                      className="text-sm text-muted-foreground hover:text-foreground transition-colors"
-                    >
-                      {link.label}
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          ))}
+          {columns.map((col) => {
+            if (col.links.length === 0) return null;
+            return (
+              <div key={col.title}>
+                <h3 className="eyebrow mb-5">{col.title}</h3>
+                <ul className="space-y-3">
+                  {col.links.map((link) => (
+                    <li key={link.label}>
+                      <Link
+                        to={link.href}
+                        className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+                      >
+                        {link.label}
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            );
+          })}
         </div>
 
         {/* Bottom bar */}

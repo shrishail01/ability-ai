@@ -100,6 +100,7 @@ export default function AdminSettings() {
                       </label>
                       {setting.type === "textarea" ? (
                         <textarea
+                          name={setting.key}
                           defaultValue={currentValue}
                           rows={3}
                           className="w-full border border-[#E8E2DA] px-3 py-2 text-sm focus:outline-none focus:border-[#B8860B] transition-colors resize-y"
@@ -107,6 +108,7 @@ export default function AdminSettings() {
                         />
                       ) : (
                         <input
+                          name={setting.key}
                           type="text"
                           defaultValue={currentValue}
                           className="w-full border border-[#E8E2DA] px-3 py-2 text-sm focus:outline-none focus:border-[#B8860B] transition-colors"

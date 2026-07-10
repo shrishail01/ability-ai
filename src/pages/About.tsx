@@ -71,6 +71,34 @@ const defaultTimeline = [
   { year: "2026", event: "Industry recognition" },
 ];
 
+function parseTimeline(value: string | undefined): { year: string; event: string }[] {
+  if (value === undefined) return defaultTimeline;
+  if (value.trim() === "") return [];
+  
+  // Try JSON first
+  try {
+    const parsed = JSON.parse(value);
+    if (Array.isArray(parsed)) {
+      const valid = parsed.every(item => item && typeof item === 'object' && 'year' in item && 'event' in item);
+      if (valid) return parsed;
+    }
+  } catch (e) {
+    // Ignore JSON error
+  }
+
+  // Try line-by-line parsing
+  const lines = value.split("\n").map(l => l.trim()).filter(Boolean);
+  const parsedEvents: { year: string; event: string }[] = [];
+  for (const line of lines) {
+    const match = line.match(/^(\d{4})[\s\-.:]+(.*)$/);
+    if (match) {
+      parsedEvents.push({ year: match[1].trim(), event: match[2].trim() });
+    }
+  }
+
+  return parsedEvents;
+}
+
 export default function About() {
   const cmsTeam = useQuery(api.cms.listTeamMembers);
   const teamMembers = (cmsTeam && cmsTeam.length > 0) ? cmsTeam : [];
@@ -80,18 +108,7 @@ export default function About() {
   const aboutHeadline = settings.about_headline ?? "We're on a Mission to Redefine Software";
   const aboutStory = settings.about_story ?? "Founded, Aibility has grown from a small team into a leading AI-first software company.";
   
-  // Parse timeline from CMS settings
-  let timeline = defaultTimeline;
-  try {
-    if (settings.timeline_events) {
-      const parsed = JSON.parse(settings.timeline_events);
-      if (Array.isArray(parsed) && parsed.length > 0) {
-        timeline = parsed;
-      }
-    }
-  } catch (e) {
-    // Use default if JSON is invalid
-  }
+  const timeline = parseTimeline(settings.timeline_events);
 
   return (
     <div className="min-h-screen bg-background">
@@ -232,115 +249,119 @@ export default function About() {
       </section>
 
       {/* Timeline */}
-      <section className="py-20">
-        <div className="mx-auto max-w-3xl px-4 sm:px-6 lg:px-8">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="text-center mb-16"
-          >
-            <h2 className="text-3xl md:text-5xl font-bold mb-4">Our Journey</h2>
-            <p className="text-muted-foreground text-sm">
-              From startup to industry leader — our story so far.
-            </p>
-          </motion.div>
+      {timeline && timeline.length > 0 && (
+        <section className="py-20">
+          <div className="mx-auto max-w-3xl px-4 sm:px-6 lg:px-8">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              className="text-center mb-16"
+            >
+              <h2 className="text-3xl md:text-5xl font-bold mb-4">Our Journey</h2>
+              <p className="text-muted-foreground text-sm">
+                From startup to industry leader — our story so far.
+              </p>
+            </motion.div>
 
-          <div className="relative">
-            {/* Vertical line */}
-            <div className="absolute left-4 md:left-1/2 top-0 bottom-0 w-[1px] bg-gradient-to-b from-primary via-purple-500 to-transparent" />
+            <div className="relative">
+              {/* Vertical line */}
+              <div className="absolute left-4 md:left-1/2 top-0 bottom-0 w-[1px] bg-gradient-to-b from-primary via-purple-500 to-transparent" />
 
-            <div className="space-y-12">
-              {timeline.map((item, i) => (
-                <motion.div
-                  key={item.year}
-                  initial={{ opacity: 0, x: i % 2 === 0 ? -30 : 30 }}
-                  whileInView={{ opacity: 1, x: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.5, delay: i * 0.1 }}
-                  className={`relative flex items-start gap-6 ${
-                    i % 2 === 0 ? "md:flex-row" : "md:flex-row-reverse"
-                  }`}
-                >
-                  {/* Dot */}
-                  <div className="absolute left-4 md:left-1/2 -translate-x-1/2 w-3 h-3 rounded-full bg-primary shadow-lg shadow-primary/50" />
+              <div className="space-y-12">
+                {timeline.map((item, i) => (
+                  <motion.div
+                    key={item.year}
+                    initial={{ opacity: 0, x: i % 2 === 0 ? -30 : 30 }}
+                    whileInView={{ opacity: 1, x: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ duration: 0.5, delay: i * 0.1 }}
+                    className={`relative flex items-start gap-6 ${
+                      i % 2 === 0 ? "md:flex-row" : "md:flex-row-reverse"
+                    }`}
+                  >
+                    {/* Dot */}
+                    <div className="absolute left-4 md:left-1/2 -translate-x-1/2 w-3 h-3 rounded-full bg-primary shadow-lg shadow-primary/50" />
 
-                  {/* Content */}
-                  <div className={`ml-10 md:ml-0 md:w-[calc(50%-2rem)] ${i % 2 === 0 ? "md:text-right md:pr-8" : "md:pl-8"}`}>
-                    <span className="text-xs font-bold text-primary">{item.year}</span>
-                    <p className="text-sm text-muted-foreground mt-1">{item.event}</p>
-                  </div>
-                  <div className="hidden md:block md:w-1/2" />
-                </motion.div>
-              ))}
+                    {/* Content */}
+                    <div className={`ml-10 md:ml-0 md:w-[calc(50%-2rem)] ${i % 2 === 0 ? "md:text-right md:pr-8" : "md:pl-8"}`}>
+                      <span className="text-xs font-bold text-primary">{item.year}</span>
+                      <p className="text-sm text-muted-foreground mt-1">{item.event}</p>
+                    </div>
+                    <div className="hidden md:block md:w-1/2" />
+                  </motion.div>
+                ))}
+              </div>
             </div>
           </div>
-        </div>
-      </section>
+        </section>
+      )}
 
       {/* Team */}
-      <section className="py-20">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="text-center mb-16"
-          >
-            <h2 className="text-3xl md:text-5xl font-bold mb-4">Meet the Team</h2>
-            <p className="text-muted-foreground text-sm">
-              Talented people building the future of software.
-            </p>
-          </motion.div>
+      {teamMembers && teamMembers.length > 0 && (
+        <section className="py-20">
+          <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              className="text-center mb-16"
+            >
+              <h2 className="text-3xl md:text-5xl font-bold mb-4">Meet the Team</h2>
+              <p className="text-muted-foreground text-sm">
+                Talented people building the future of software.
+              </p>
+            </motion.div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {teamMembers.map((member: any, i: number) => {
-              // Normalize CMS and static data shapes
-              const socials = member.socials || { twitter: member.twitter, linkedin: member.linkedin, github: member.github };
-              return (
-                <motion.div
-                  key={member.name}
-                  initial={{ opacity: 0, y: 30 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.5, delay: i * 0.1 }}
-                  whileHover={{ y: -5 }}
-                  className="glass-card rounded-2xl p-6 border border-white/5 text-center group"
-                >
-                  <div className="mx-auto h-20 w-20 rounded-full overflow-hidden mb-4 transition-transform duration-300 group-hover:scale-110">
-                    <img
-                      src={getImageUrl(member.image)}
-                      alt={member.name}
-                      className="h-full w-full object-cover"
-                      loading="lazy"
-                    />
-                  </div>
-                  <h3 className="text-lg font-semibold">{member.name}</h3>
-                  <p className="text-sm text-primary mb-3">{member.role}</p>
-                  <p className="text-xs text-muted-foreground leading-relaxed">{member.bio}</p>
-                  <div className="flex items-center justify-center gap-3 mt-4">
-                    {socials.twitter && (
-                      <a href={socials.twitter} className="text-muted-foreground hover:text-primary transition-colors text-xs">
-                        Twitter
-                      </a>
-                    )}
-                    {socials.linkedin && (
-                      <a href={socials.linkedin} className="text-muted-foreground hover:text-primary transition-colors text-xs">
-                        LinkedIn
-                      </a>
-                    )}
-                    {socials.github && (
-                      <a href={socials.github} className="text-muted-foreground hover:text-primary transition-colors text-xs">
-                        GitHub
-                      </a>
-                    )}
-                  </div>
-                </motion.div>
-              );
-            })}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {teamMembers.map((member: any, i: number) => {
+                // Normalize CMS and static data shapes
+                const socials = member.socials || { twitter: member.twitter, linkedin: member.linkedin, github: member.github };
+                return (
+                  <motion.div
+                    key={member.name}
+                    initial={{ opacity: 0, y: 30 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ duration: 0.5, delay: i * 0.1 }}
+                    whileHover={{ y: -5 }}
+                    className="glass-card rounded-2xl p-6 border border-white/5 text-center group"
+                  >
+                    <div className="mx-auto h-20 w-20 rounded-full overflow-hidden mb-4 transition-transform duration-300 group-hover:scale-110">
+                      <img
+                        src={getImageUrl(member.image)}
+                        alt={member.name}
+                        className="h-full w-full object-cover"
+                        loading="lazy"
+                      />
+                    </div>
+                    <h3 className="text-lg font-semibold">{member.name}</h3>
+                    <p className="text-sm text-primary mb-3">{member.role}</p>
+                    <p className="text-xs text-muted-foreground leading-relaxed">{member.bio}</p>
+                    <div className="flex items-center justify-center gap-3 mt-4">
+                      {socials.twitter && (
+                        <a href={socials.twitter} className="text-muted-foreground hover:text-primary transition-colors text-xs">
+                          Twitter
+                        </a>
+                      )}
+                      {socials.linkedin && (
+                        <a href={socials.linkedin} className="text-muted-foreground hover:text-primary transition-colors text-xs">
+                          LinkedIn
+                        </a>
+                      )}
+                      {socials.github && (
+                        <a href={socials.github} className="text-muted-foreground hover:text-primary transition-colors text-xs">
+                          GitHub
+                        </a>
+                      )}
+                    </div>
+                  </motion.div>
+                );
+              })}
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
+      )}
 
       {/* CTA */}
       <section className="py-20">
