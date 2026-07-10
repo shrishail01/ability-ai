@@ -110,7 +110,7 @@ function SmoothRevealText({ text, delay = 0.3 }: { text: string; delay?: number 
       className="inline-block"
     >
       {words.map((word, i) => (
-        <span key={i} className="inline-block overflow-hidden mr-[0.25em] py-0.5">
+        <span key={i} className="inline-block overflow-hidden mr-[0.25em] pt-1 pb-4 -mb-4">
           <motion.span
             variants={wordVariants}
             className="inline-block origin-bottom will-change-transform"
