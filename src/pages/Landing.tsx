@@ -135,9 +135,17 @@ export default function Landing() {
   const cmsProjects = useQuery(api.cms.listProjects);
   const cmsTestimonials = useQuery(api.cms.listTestimonials);
 
-  const displayServices = cmsServices !== undefined ? cmsServices : fallbackServices;
-  const displayProjects = cmsProjects !== undefined ? cmsProjects : fallbackProjects;
-  const displayTestimonials = cmsTestimonials !== undefined ? cmsTestimonials : fallbackTestimonials;
+  if (siteSettings === undefined || cmsServices === undefined || cmsProjects === undefined || cmsTestimonials === undefined) {
+    return (
+      <div className="min-h-screen bg-[#0B0F19] flex items-center justify-center">
+        <Loader2 className="h-8 w-8 animate-spin text-[#B8860B]" />
+      </div>
+    );
+  }
+
+  const displayServices = cmsServices;
+  const displayProjects = cmsProjects;
+  const displayTestimonials = cmsTestimonials;
   
   const companyTagline = settings.company_tagline ?? "AI-First Software Company";
   const heroTitle = settings.hero_title ?? "We Build the Future of Software";

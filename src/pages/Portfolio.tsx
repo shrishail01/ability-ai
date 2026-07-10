@@ -1,5 +1,5 @@
 import { motion, AnimatePresence } from "framer-motion";
-import { Sparkles, ExternalLink, Github, ChevronRight, Filter, ArrowRight } from "lucide-react";
+import { Sparkles, ExternalLink, Github, ChevronRight, Filter, ArrowRight, Loader2 } from "lucide-react";
 import { useMemo, useState } from "react";
 import { Link } from "react-router";
 import { useQuery } from "convex/react";
@@ -12,19 +12,18 @@ export default function Portfolio() {
   const [selectedProject, setSelectedProject] = useState<string | null>(null);
 
   const cmsProjects = useQuery(api.cms.listProjects);
-  const projects = useMemo(() => {
-    if (cmsProjects !== undefined) {
-      return cmsProjects.map((p: any) => ({ ...p, id: p._id }));
-    }
-    return fallbackProjects;
-  }, [cmsProjects]);
 
-  const projectCategories = useMemo(() => {
-    if (cmsProjects !== undefined) {
-      return ["All", ...new Set(cmsProjects.map((p: any) => p.category))];
-    }
-    return fallbackCategories;
-  }, [cmsProjects]);
+  if (cmsProjects === undefined) {
+    return (
+      <div className="min-h-screen bg-[#0B0F19] flex items-center justify-center">
+        <Loader2 className="h-8 w-8 animate-spin text-[#B8860B]" />
+      </div>
+    );
+  }
+
+  const projects = cmsProjects.map((p: any) => ({ ...p, id: p._id }));
+
+  const projectCategories = ["All", ...new Set(cmsProjects.map((p: any) => p.category))];
 
   const filteredProjects =
     activeCategory === "All"
