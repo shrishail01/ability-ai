@@ -17,6 +17,7 @@ import {
   User,
   Loader2,
   ArrowLeft,
+  Mail,
 } from "lucide-react";
 import { toast } from "sonner";
 import { Input } from "../../components/ui/input";
@@ -31,6 +32,7 @@ const sidebarLinks = [
   { label: "Blog Posts", href: "/admin/blog", icon: FileText },
   { label: "Team", href: "/admin/team", icon: Users },
   { label: "Testimonials", href: "/admin/testimonials", icon: MessageSquare },
+  { label: "Messages", href: "/admin/messages", icon: Mail },
   { label: "Settings", href: "/admin/settings", icon: Settings },
 ];
 

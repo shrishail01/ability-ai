@@ -38,6 +38,7 @@ const AdminBlog = lazy(() => import("./pages/admin/BlogPage.tsx"));
 const AdminTeam = lazy(() => import("./pages/admin/TeamPage.tsx"));
 const AdminTestimonials = lazy(() => import("./pages/admin/TestimonialsPage.tsx"));
 const AdminSettings = lazy(() => import("./pages/admin/SettingsPage.tsx"));
+const AdminMessages = lazy(() => import("./pages/admin/MessagesPage.tsx"));
 
 // Simple loading fallback for route transitions
 function RouteLoading() {
@@ -125,6 +126,7 @@ createRoot(document.getElementById("root")!).render(
                     <Route path="blog" element={<AdminBlog />} />
                     <Route path="team" element={<AdminTeam />} />
                     <Route path="testimonials" element={<AdminTestimonials />} />
+                    <Route path="messages" element={<AdminMessages />} />
                     <Route path="settings" element={<AdminSettings />} />
                   </Route>
 
