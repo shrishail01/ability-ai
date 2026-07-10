@@ -304,7 +304,7 @@ export function ContentManager({ title, fields, listQuery, createMutation, updat
                   {fields.slice(0, 4).map((f) => (
                     <td key={f.key} className="px-4 py-3 text-sm truncate max-w-[200px]">
                       {f.type === "array" ? (
-                        (item[f.key] as string[])?.join(", ")
+                        Array.isArray(item[f.key]) ? (item[f.key] as string[])?.join(", ") : String(item[f.key] ?? "")
                       ) : f.type === "image" ? (
                         <div className="flex gap-1 overflow-hidden">
                           {String(item[f.key] ?? "").split(",").map((imgUrl, idx) => {
