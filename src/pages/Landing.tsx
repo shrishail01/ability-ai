@@ -278,63 +278,65 @@ export default function Landing() {
 
 
       {/* ===== SERVICES ===== */}
-      <section className="py-20 md:py-28">
-        <div className="mx-auto max-w-7xl px-6 sm:px-8 lg:px-10">
-          <div className="max-w-xl mb-16">
-            <SectionLabel>Our Services</SectionLabel>
-            <SectionTitle>{servicesTitle}</SectionTitle>
-            <SectionDescription>
-              {servicesSubtitle}
-            </SectionDescription>
-          </div>
+      {displayServices && displayServices.length > 0 && (
+        <section className="py-20 md:py-28">
+          <div className="mx-auto max-w-7xl px-6 sm:px-8 lg:px-10">
+            <div className="max-w-xl mb-16">
+              <SectionLabel>Our Services</SectionLabel>
+              <SectionTitle>{servicesTitle}</SectionTitle>
+              <SectionDescription>
+                {servicesSubtitle}
+              </SectionDescription>
+            </div>
 
-          <div className="grid gap-6 w-full grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
-            {displayServices.slice(0, 6).map((service: any, i: number) => {
-              const Icon = (typeof service.icon === "string"
-                ? (Icons[service.icon as keyof typeof Icons] || Icons.HelpCircle)
-                : Icons.HelpCircle) as any;
-              const serviceId = service._id || service.id;
-              return (
-                <TiltCard
-                  key={serviceId}
-                  initial={{ opacity: 0, y: 15 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.6, delay: i * 0.05, ease: [0.25, 0.1, 0.25, 1] }}
-                  className="glass-card border border-white/5 p-8 md:p-10 rounded-2xl group transition-all duration-300 hover:border-primary/30 hover:shadow-lg hover:shadow-primary/5 cursor-pointer"
-                >
-                  <Link to={`/services#${serviceId}`} className="block">
-                    <Icon className="h-6 w-6 text-gold mb-5" />
-                    <h3 className="text-lg font-semibold mb-2.5 group-hover:text-gold transition-colors duration-300">
-                      {service.title}
-                    </h3>
-                    <p className="text-sm text-muted-foreground leading-relaxed mb-4">
-                      {service.description}
-                    </p>
-                    <span className="text-xs tracking-wider uppercase text-muted-foreground group-hover:text-gold transition-colors duration-300 flex items-center gap-1">
-                      Learn More <ChevronRight className="h-3 w-3" />
-                    </span>
-                  </Link>
-                </TiltCard>
-              );
-            })}
-          </div>
+            <div className="grid gap-6 w-full grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
+              {displayServices.slice(0, 6).map((service: any, i: number) => {
+                const Icon = (typeof service.icon === "string"
+                  ? (Icons[service.icon as keyof typeof Icons] || Icons.HelpCircle)
+                  : Icons.HelpCircle) as any;
+                const serviceId = service._id || service.id;
+                return (
+                  <TiltCard
+                    key={serviceId}
+                    initial={{ opacity: 0, y: 15 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ duration: 0.6, delay: i * 0.05, ease: [0.25, 0.1, 0.25, 1] }}
+                    className="glass-card border border-white/5 p-8 md:p-10 rounded-2xl group transition-all duration-300 hover:border-primary/30 hover:shadow-lg hover:shadow-primary/5 cursor-pointer"
+                  >
+                    <Link to={`/services#${serviceId}`} className="block">
+                      <Icon className="h-6 w-6 text-gold mb-5" />
+                      <h3 className="text-lg font-semibold mb-2.5 group-hover:text-gold transition-colors duration-300">
+                        {service.title}
+                      </h3>
+                      <p className="text-sm text-muted-foreground leading-relaxed mb-4">
+                        {service.description}
+                      </p>
+                      <span className="text-xs tracking-wider uppercase text-muted-foreground group-hover:text-gold transition-colors duration-300 flex items-center gap-1">
+                        Learn More <ChevronRight className="h-3 w-3" />
+                      </span>
+                    </Link>
+                  </TiltCard>
+                );
+              })}
+            </div>
 
-          <motion.div
-            initial={{ opacity: 0, y: 10 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="mt-10"
-          >
-            <Link
-              to="/services"
-              className="inline-flex items-center gap-2 text-sm tracking-wide font-medium text-foreground border-b border-border hover:border-foreground/50 transition-colors duration-300 pb-0.5"
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              className="mt-10"
             >
-              View All Services <ArrowRight className="h-3.5 w-3.5" />
-            </Link>
-          </motion.div>
-        </div>
-      </section>
+              <Link
+                to="/services"
+                className="inline-flex items-center gap-2 text-sm tracking-wide font-medium text-foreground border-b border-border hover:border-foreground/50 transition-colors duration-300 pb-0.5"
+              >
+                View All Services <ArrowRight className="h-3.5 w-3.5" />
+              </Link>
+            </motion.div>
+          </div>
+        </section>
+      )}
 
       {/* ===== WHY AIBILITY ===== */}
       <section className="py-20 md:py-28 bg-card border-y border-border">
@@ -423,117 +425,121 @@ export default function Landing() {
 
 
       {/* ===== PROJECTS ===== */}
-      <section className="py-20 md:py-28 bg-card border-y border-border">
-        <div className="mx-auto max-w-7xl px-6 sm:px-8 lg:px-10">
-          <div className="max-w-xl mb-16">
-            <SectionLabel>Projects</SectionLabel>
-            <SectionTitle>Our Projects</SectionTitle>
-            <SectionDescription>
-              {portfolioSubtitle}
-            </SectionDescription>
-          </div>
+      {displayProjects && displayProjects.length > 0 && (
+        <section className="py-20 md:py-28 bg-card border-y border-border">
+          <div className="mx-auto max-w-7xl px-6 sm:px-8 lg:px-10">
+            <div className="max-w-xl mb-16">
+              <SectionLabel>Projects</SectionLabel>
+              <SectionTitle>Our Projects</SectionTitle>
+              <SectionDescription>
+                {portfolioSubtitle}
+              </SectionDescription>
+            </div>
 
-          <div className="grid gap-6 w-full grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
-            {displayProjects.slice(0, 6).map((project: any, i: number) => {
-              const projectId = project._id || project.id;
-              return (
+            <div className="grid gap-6 w-full grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
+              {displayProjects.slice(0, 6).map((project: any, i: number) => {
+                const projectId = project._id || project.id;
+                return (
+                  <TiltCard
+                    key={projectId}
+                    initial={{ opacity: 0, y: 15 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ duration: 0.6, delay: i * 0.05, ease: [0.25, 0.1, 0.25, 1] }}
+                    className="glass-card border border-white/5 p-8 md:p-10 rounded-2xl group transition-all duration-300 hover:border-primary/30 hover:shadow-lg hover:shadow-primary/5 cursor-pointer"
+                  >
+                    <Link to={project._id ? `/portfolio?project=${project._id}` : `/portfolio#${project.id}`} className="block group">
+                      <div className="relative overflow-hidden mb-5 bg-background/50 border border-border rounded-xl">
+                        <img
+                          src={getImageUrl(project.image)}
+                          alt={project.title}
+                          className="w-full h-auto object-contain transition-transform duration-700 group-hover:scale-102"
+                          loading="lazy"
+                        />
+                        <div className="absolute inset-0 bg-gradient-to-t from-background/80 via-transparent to-transparent" />
+                        <div className="absolute bottom-4 left-4">
+                          <p className="text-sm font-semibold text-white">{project.title}</p>
+                          <p className="text-xs text-white/70 mt-0.5">{project.category}</p>
+                        </div>
+                      </div>
+                      <p className="text-sm text-muted-foreground leading-relaxed mb-3 line-clamp-2">
+                        {project.description}
+                      </p>
+                      <div className="flex flex-wrap gap-2">
+                        {project.technologies.slice(0, 3).map((tech: string) => (
+                          <span key={tech} className="text-[11px] text-muted-foreground uppercase tracking-wider">
+                            {tech}
+                          </span>
+                        ))}
+                      </div>
+                    </Link>
+                  </TiltCard>
+                );
+              })}
+            </div>
+
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              className="mt-10"
+            >
+              <Link
+                to="/portfolio"
+                className="inline-flex items-center gap-2 text-sm tracking-wide font-medium text-foreground border-b border-border hover:border-foreground/50 transition-colors duration-300 pb-0.5"
+              >
+                View All Projects <ArrowRight className="h-3.5 w-3.5" />
+              </Link>
+            </motion.div>
+          </div>
+        </section>
+      )}
+
+      {/* ===== TESTIMONIALS ===== */}
+      {displayTestimonials && displayTestimonials.length > 0 && (
+        <section className="py-20 md:py-28">
+          <div className="mx-auto max-w-7xl px-6 sm:px-8 lg:px-10">
+            <div className="max-w-xl mb-16">
+              <SectionLabel>Testimonials</SectionLabel>
+              <SectionTitle>What Our Clients Say</SectionTitle>
+            </div>
+
+            <div className="grid gap-6 w-full grid-cols-1 md:grid-cols-3">
+              {displayTestimonials.slice(0, 3).map((t: any, i: number) => (
                 <TiltCard
-                  key={projectId}
+                  key={t._id || t.name}
                   initial={{ opacity: 0, y: 15 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
-                  transition={{ duration: 0.6, delay: i * 0.05, ease: [0.25, 0.1, 0.25, 1] }}
-                  className="glass-card border border-white/5 p-8 md:p-10 rounded-2xl group transition-all duration-300 hover:border-primary/30 hover:shadow-lg hover:shadow-primary/5 cursor-pointer"
+                  transition={{ duration: 0.6, delay: i * 0.1, ease: [0.25, 0.1, 0.25, 1] }}
+                  className="glass-card border border-white/5 p-8 md:p-10 rounded-2xl transition-all duration-300 hover:border-primary/30 hover:shadow-lg hover:shadow-primary/5 cursor-pointer"
                 >
-                  <Link to={project._id ? `/portfolio?project=${project._id}` : `/portfolio#${project.id}`} className="block group">
-                    <div className="relative overflow-hidden mb-5 bg-background/50 border border-border rounded-xl">
-                      <img
-                        src={getImageUrl(project.image)}
-                        alt={project.title}
-                        className="w-full h-auto object-contain transition-transform duration-700 group-hover:scale-102"
-                        loading="lazy"
-                      />
-                      <div className="absolute inset-0 bg-gradient-to-t from-background/80 via-transparent to-transparent" />
-                      <div className="absolute bottom-4 left-4">
-                        <p className="text-sm font-semibold text-white">{project.title}</p>
-                        <p className="text-xs text-white/70 mt-0.5">{project.category}</p>
-                      </div>
-                    </div>
-                    <p className="text-sm text-muted-foreground leading-relaxed mb-3 line-clamp-2">
-                      {project.description}
-                    </p>
-                    <div className="flex flex-wrap gap-2">
-                      {project.technologies.slice(0, 3).map((tech: string) => (
-                        <span key={tech} className="text-[11px] text-muted-foreground uppercase tracking-wider">
-                          {tech}
-                        </span>
-                      ))}
-                    </div>
-                  </Link>
-                </TiltCard>
-              );
-            })}
-          </div>
-
-          <motion.div
-            initial={{ opacity: 0, y: 10 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="mt-10"
-          >
-            <Link
-              to="/portfolio"
-              className="inline-flex items-center gap-2 text-sm tracking-wide font-medium text-foreground border-b border-border hover:border-foreground/50 transition-colors duration-300 pb-0.5"
-            >
-              View All Projects <ArrowRight className="h-3.5 w-3.5" />
-            </Link>
-          </motion.div>
-        </div>
-      </section>
-
-      {/* ===== TESTIMONIALS ===== */}
-      <section className="py-20 md:py-28">
-        <div className="mx-auto max-w-7xl px-6 sm:px-8 lg:px-10">
-          <div className="max-w-xl mb-16">
-            <SectionLabel>Testimonials</SectionLabel>
-            <SectionTitle>What Our Clients Say</SectionTitle>
-          </div>
-
-          <div className="grid gap-6 w-full grid-cols-1 md:grid-cols-3">
-            {displayTestimonials.slice(0, 3).map((t: any, i: number) => (
-              <TiltCard
-                key={t._id || t.name}
-                initial={{ opacity: 0, y: 15 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.6, delay: i * 0.1, ease: [0.25, 0.1, 0.25, 1] }}
-                className="glass-card border border-white/5 p-8 md:p-10 rounded-2xl transition-all duration-300 hover:border-primary/30 hover:shadow-lg hover:shadow-primary/5 cursor-pointer"
-              >
-                <div className="flex gap-0.5 mb-5">
-                  {[...Array(t.rating)].map((_, j) => (
-                    <Star key={j} className="h-3.5 w-3.5 fill-gold text-gold" />
-                  ))}
-                </div>
-                <p className="text-sm text-foreground/80 leading-relaxed mb-6">
-                  &ldquo;{t.content}&rdquo;
-                </p>
-                <div className="flex items-center gap-3">
-                  <img
-                    src={getImageUrl(t.avatar)}
-                    alt={t.name}
-                    className="w-10 h-10 rounded-full object-cover border border-white/10"
-                    loading="lazy"
-                  />
-                  <div>
-                    <p className="text-sm font-medium">{t.name}</p>
-                    <p className="text-xs text-muted-foreground">{t.role}, {t.company}</p>
+                  <div className="flex gap-0.5 mb-5">
+                    {[...Array(t.rating)].map((_, j) => (
+                      <Star key={j} className="h-3.5 w-3.5 fill-gold text-gold" />
+                    ))}
                   </div>
-                </div>
-              </TiltCard>
-            ))}
+                  <p className="text-sm text-foreground/80 leading-relaxed mb-6">
+                    &ldquo;{t.content}&rdquo;
+                  </p>
+                  <div className="flex items-center gap-3">
+                    <img
+                      src={getImageUrl(t.avatar)}
+                      alt={t.name}
+                      className="w-10 h-10 rounded-full object-cover border border-white/10"
+                      loading="lazy"
+                    />
+                    <div>
+                      <p className="text-sm font-medium">{t.name}</p>
+                      <p className="text-xs text-muted-foreground">{t.role}, {t.company}</p>
+                    </div>
+                  </div>
+                </TiltCard>
+              ))}
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
+      )}
 
       {/* ===== FAQ ===== */}
       <section id="faq" className="py-20 md:py-28 bg-card border-y border-border">
