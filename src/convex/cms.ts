@@ -616,7 +616,7 @@ export const sendContactEmail = action({
     const apiKey = process.env.RESEND_API_KEY;
     if (!apiKey) throw new Error("RESEND_API_KEY is not configured");
 
-    const companyEmail: string = args.companyEmail.trim() || "aibility01@gmail.com";
+    const companyEmail: string = args.companyEmail.trim() || "support@aibility.co.in";
 
     const htmlBody = `
       <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; background: #f9f9f9;">
@@ -646,7 +646,7 @@ export const sendContactEmail = action({
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        from: "Aibility <noreply@aibility.co.in>",
+        from: "Aibility <support@aibility.co.in>",
         to: [companyEmail],
         reply_to: args.email,
         subject: `New Enquiry from ${args.name} — Aibility`,
