@@ -646,7 +646,7 @@ export const sendContactEmail = action({
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        from: "Aibility Contact Form <onboarding@resend.dev>",
+        from: "Aibility <noreply@aibility.co.in>",
         to: [companyEmail],
         reply_to: args.email,
         subject: `New Enquiry from ${args.name} — Aibility`,
