@@ -496,7 +496,7 @@ export default function Landing() {
                 to="/portfolio"
                 className="inline-flex items-center gap-2 text-sm tracking-wide font-medium text-foreground border-b border-border hover:border-foreground/50 transition-colors duration-300 pb-0.5"
               >
-                View All Projects <ArrowRight className="h-3.5 w-3.5" />
+                View Our Work <ArrowRight className="h-3.5 w-3.5" />
               </Link>
             </motion.div>
           </div>
