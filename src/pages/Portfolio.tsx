@@ -61,7 +61,7 @@ export default function Portfolio() {
             className="text-4xl md:text-6xl font-bold tracking-tight mb-6"
           >
             Our{" "}
-            <span className="text-gradient">Projects</span>
+            <span className="text-gradient">Work</span>
           </motion.h1>
           <motion.p
             initial={{ opacity: 0, y: 20 }}
