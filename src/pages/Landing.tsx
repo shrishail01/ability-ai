@@ -158,7 +158,7 @@ export default function Landing() {
   const ctaSecondaryLink = settings.hero_cta_secondary_link ?? "/portfolio";
   const servicesTitle = settings.services_title ?? "What We Build";
   const servicesSubtitle = settings.services_subtitle ?? "From AI-powered platforms to elegant websites, we deliver end-to-end digital solutions.";
-  const portfolioTitle = settings.portfolio_title ?? "Our Projects";
+  const portfolioTitle = settings.portfolio_title ?? "Our Work";
   const portfolioSubtitle = settings.portfolio_subtitle ?? "Showcasing our best work across industries and technologies.";
   const aboutLink = settings.about_headline ?? "About Us";
   const trustedCompanies = (settings.trusted_companies ?? "NexusAI, DataStream, ShopWave, MediView, GreenLife").split(", ");
@@ -438,8 +438,8 @@ export default function Landing() {
         <section className="py-20 md:py-28 bg-card border-y border-border">
           <div className="mx-auto max-w-7xl px-6 sm:px-8 lg:px-10">
             <div className="max-w-xl mb-16">
-              <SectionLabel>Projects</SectionLabel>
-              <SectionTitle>Our Projects</SectionTitle>
+              <SectionLabel>Our Work</SectionLabel>
+              <SectionTitle>{portfolioTitle}</SectionTitle>
               <SectionDescription>
                 {portfolioSubtitle}
               </SectionDescription>
