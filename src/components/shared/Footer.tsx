@@ -5,6 +5,7 @@ import { api } from "../../convex/_generated/api";
 import logo from "../../assets/logo.png";
 
 const companyLinks = [
+  { label: "Hackathon Cohort", href: "/hackathon-cohort" },
   { label: "About", href: "/about" },
   { label: "Portfolio", href: "/portfolio" },
   { label: "Blog", href: "/blog" },

@@ -8,6 +8,7 @@ import logo from "../../assets/logo.png";
 const navLinks = [
   { label: "Home", href: "/" },
   { label: "Services", href: "/services" },
+  { label: "Hackathon Cohort", href: "/hackathon-cohort" },
   { label: "Portfolio", href: "/portfolio" },
   { label: "About", href: "/about" },
   { label: "Blog", href: "/blog" },

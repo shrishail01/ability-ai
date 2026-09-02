@@ -24,6 +24,7 @@ const About = lazy(() => import("./pages/About.tsx"));
 const Services = lazy(() => import("./pages/Services.tsx"));
 const Portfolio = lazy(() => import("./pages/Portfolio.tsx"));
 const Blog = lazy(() => import("./pages/Blog.tsx"));
+const HackathonCohort = lazy(() => import("./pages/HackathonCohort.tsx"));
 // Careers page removed
 const Contact = lazy(() => import("./pages/Contact.tsx"));
 const AuthPage = lazy(() => import("./pages/Auth.tsx"));
@@ -113,6 +114,7 @@ createRoot(document.getElementById("root")!).render(
                   <Route path="/about" element={<Layout><About /></Layout>} />
                   <Route path="/services" element={<Layout><Services /></Layout>} />
                   <Route path="/portfolio" element={<Layout><Portfolio /></Layout>} />
+                  <Route path="/hackathon-cohort" element={<Layout><HackathonCohort /></Layout>} />
                   <Route path="/blog" element={<Layout><Blog /></Layout>} />
 
                   <Route path="/contact" element={<Layout><Contact /></Layout>} />
