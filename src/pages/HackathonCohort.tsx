@@ -66,13 +66,9 @@ export interface RoadmapStageData {
   title: string;
   subtitle: string;
   icon: any;
-  color: string;
-  accentColor: string;
-  badgeColor: string;
   learnings: string[];
   takeaway: string;
   centerProgress: number;
-  desktopAlign: "left" | "right";
 }
 
 const journeyStages: RoadmapStageData[] = [
@@ -82,9 +78,6 @@ const journeyStages: RoadmapStageData[] = [
     title: "DISCOVER",
     subtitle: "Understand the challenge.",
     icon: Search,
-    color: "from-blue-500/20 to-indigo-500/20",
-    accentColor: "text-blue-600 dark:text-blue-400",
-    badgeColor: "bg-blue-500/10 text-blue-600 dark:text-blue-400 border-blue-500/30",
     learnings: [
       "How to read a hackathon problem statement",
       "How to identify the real problem",
@@ -94,7 +87,6 @@ const journeyStages: RoadmapStageData[] = [
     ],
     takeaway: "A clear understanding of what needs to be solved.",
     centerProgress: 0.08,
-    desktopAlign: "left",
   },
   {
     id: "02",
@@ -102,9 +94,6 @@ const journeyStages: RoadmapStageData[] = [
     title: "IDEATE",
     subtitle: "Turn problems into possibilities.",
     icon: Lightbulb,
-    color: "from-amber-500/20 to-yellow-500/20",
-    accentColor: "text-amber-600 dark:text-amber-400",
-    badgeColor: "bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/30",
     learnings: [
       "Brainstorm solution ideas",
       "Think beyond obvious solutions",
@@ -114,7 +103,6 @@ const journeyStages: RoadmapStageData[] = [
     ],
     takeaway: "A focused solution worth building.",
     centerProgress: 0.25,
-    desktopAlign: "right",
   },
   {
     id: "03",
@@ -122,9 +110,6 @@ const journeyStages: RoadmapStageData[] = [
     title: "BUILD",
     subtitle: "Turn the idea into something real.",
     icon: Code2,
-    color: "from-emerald-500/20 to-teal-500/20",
-    accentColor: "text-emerald-600 dark:text-emerald-400",
-    badgeColor: "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/30",
     learnings: [
       "Plan the product",
       "Choose the right technology",
@@ -135,7 +120,6 @@ const journeyStages: RoadmapStageData[] = [
     ],
     takeaway: "A functional prototype you can demonstrate.",
     centerProgress: 0.42,
-    desktopAlign: "left",
   },
   {
     id: "04",
@@ -143,9 +127,6 @@ const journeyStages: RoadmapStageData[] = [
     title: "VALIDATE",
     subtitle: "Test, improve and strengthen the solution.",
     icon: Shield,
-    color: "from-purple-500/20 to-indigo-500/20",
-    accentColor: "text-purple-600 dark:text-purple-400",
-    badgeColor: "bg-purple-500/10 text-purple-600 dark:text-purple-400 border-purple-500/30",
     learnings: [
       "Test the product with users",
       "Fix bugs and refine performance",
@@ -155,7 +136,6 @@ const journeyStages: RoadmapStageData[] = [
     ],
     takeaway: "A battle-tested MVP ready for evaluation.",
     centerProgress: 0.59,
-    desktopAlign: "right",
   },
   {
     id: "05",
@@ -163,9 +143,6 @@ const journeyStages: RoadmapStageData[] = [
     title: "SHOWCASE",
     subtitle: "Make people understand why your solution matters.",
     icon: Presentation,
-    color: "from-rose-500/20 to-pink-500/20",
-    accentColor: "text-rose-600 dark:text-rose-400",
-    badgeColor: "bg-rose-500/10 text-rose-600 dark:text-rose-400 border-rose-500/30",
     learnings: [
       "Structure your story",
       "Explain the problem clearly",
@@ -176,7 +153,6 @@ const journeyStages: RoadmapStageData[] = [
     ],
     takeaway: "A clear story that judges can remember.",
     centerProgress: 0.76,
-    desktopAlign: "left",
   },
   {
     id: "06",
@@ -184,9 +160,6 @@ const journeyStages: RoadmapStageData[] = [
     title: "FINISH",
     subtitle: "Walk into the competition prepared.",
     icon: Trophy,
-    color: "from-amber-500/30 to-yellow-500/30",
-    accentColor: "text-amber-500 dark:text-amber-400",
-    badgeColor: "bg-amber-500/20 text-amber-500 border-amber-500/40",
     learnings: [
       "Handle judge questions",
       "Explain technical decisions",
@@ -197,7 +170,6 @@ const journeyStages: RoadmapStageData[] = [
     ],
     takeaway: "A team ready to compete with confidence.",
     centerProgress: 0.93,
-    desktopAlign: "right",
   },
 ];
 
@@ -274,187 +246,137 @@ const cohortPrograms = [
 ];
 
 // ============================================================================
-// CONTINUOUS SCROLL-DRIVEN STAGE CONTENT CARD
+// CONTINUOUS SCROLL-DRIVEN STAGE ITEM (NO BOX CARDS!)
 // ============================================================================
-function ContinuousStageCard({
+function StageContentDirect({
   stage,
   smoothProgress,
 }: {
   stage: RoadmapStageData;
   smoothProgress: any;
 }) {
-  const IconComp = stage.icon;
   const p = stage.centerProgress;
 
-  // Continuous interpolation: opacity, translateY, scale
+  // Continuous interpolated transforms: opacity, translateY, scale
   const opacity = useTransform(
     smoothProgress,
-    [p - 0.14, p - 0.04, p + 0.04, p + 0.14],
+    [p - 0.12, p - 0.03, p + 0.03, p + 0.12],
     [0, 1, 1, 0]
   );
 
   const translateY = useTransform(
     smoothProgress,
-    [p - 0.14, p, p + 0.14],
-    [35, 0, -35]
+    [p - 0.12, p, p + 0.12],
+    [30, 0, -30]
   );
 
   const scale = useTransform(
     smoothProgress,
-    [p - 0.14, p, p + 0.14],
-    [0.93, 1, 0.93]
-  );
-
-  const borderGlow = useTransform(
-    smoothProgress,
-    [p - 0.08, p, p + 0.08],
-    [0, 1, 0]
+    [p - 0.12, p, p + 0.12],
+    [0.95, 1, 0.95]
   );
 
   return (
     <motion.div
       style={{ opacity, y: translateY, scale }}
-      className={`p-7 rounded-2xl border border-border bg-card/90 backdrop-blur-xl shadow-2xl space-y-4 max-w-md w-full relative transition-colors ${
-        stage.desktopAlign === "left" ? "mr-auto text-left" : "ml-auto text-left"
-      }`}
+      className="space-y-6 max-w-xl text-left"
     >
-      {/* Glow highlight */}
-      <motion.div
-        style={{ opacity: borderGlow }}
-        className="absolute -inset-px rounded-2xl border-2 border-primary pointer-events-none shadow-[0_0_25px_rgba(15,27,45,0.4)]"
-      />
-
-      <div className="flex items-center justify-between pb-3 border-b border-border/60">
+      {/* Stage Header */}
+      <div className="space-y-2">
         <div className="flex items-center gap-3">
-          <span className={`px-2.5 py-0.5 rounded text-xs font-mono font-bold border ${stage.badgeColor}`}>
+          <span className="font-mono text-sm font-bold text-amber-500 tracking-wider">
             STAGE {stage.id}
           </span>
-          <h3 className="text-xl font-bold text-foreground tracking-wide">
-            {stage.title}
-          </h3>
+          <div className="h-px flex-1 bg-border/60" />
         </div>
-        <div className="p-2 rounded-xl bg-primary/10 text-primary">
-          <IconComp className="h-5 w-5" />
-        </div>
+        <h3 className="text-3xl sm:text-4xl font-extrabold tracking-tight text-foreground uppercase">
+          {stage.title}
+        </h3>
+        <p className="text-base font-medium text-muted-foreground italic">
+          "{stage.subtitle}"
+        </p>
       </div>
 
-      <p className="text-sm font-medium text-muted-foreground italic">
-        "{stage.subtitle}"
-      </p>
-
-      <div className="space-y-2">
-        <div className="text-[11px] font-bold uppercase tracking-wider text-foreground">
+      {/* What You'll Learn (Clean typography & border list, NO card containers!) */}
+      <div className="space-y-3">
+        <div className="text-xs font-mono font-bold uppercase tracking-widest text-foreground">
           WHAT YOU'LL LEARN:
         </div>
-        <ul className="space-y-2">
+        <div className="space-y-2.5">
           {stage.learnings.map((item, idx) => (
-            <li
+            <div
               key={idx}
-              className="flex items-center gap-2 text-xs text-foreground/90 bg-background/80 p-2.5 rounded-lg border border-border/60"
+              className="flex items-start gap-3 py-1.5 border-b border-border/40 text-sm text-foreground/90"
             >
-              <CheckCircle2 className="h-3.5 w-3.5 text-emerald-500 shrink-0" />
+              <CheckCircle2 className="h-4 w-4 text-emerald-500 shrink-0 mt-0.5" />
               <span>{item}</span>
-            </li>
+            </div>
           ))}
-        </ul>
+        </div>
       </div>
 
-      <div className="p-3.5 rounded-xl border border-amber-500/30 bg-amber-500/10">
-        <div className="text-[10px] font-bold text-amber-700 dark:text-amber-400 uppercase tracking-wider mb-0.5">
+      {/* Takeaway tag */}
+      <div className="pt-2 flex items-center gap-3 text-xs font-bold">
+        <span className="px-2 py-0.5 rounded bg-amber-500/10 text-amber-600 dark:text-amber-400 font-mono">
           TAKEAWAY
-        </div>
-        <div className="text-xs font-bold text-foreground">
-          {stage.takeaway}
-        </div>
+        </span>
+        <span className="text-foreground">{stage.takeaway}</span>
       </div>
     </motion.div>
   );
 }
 
 // ============================================================================
-// MAIN SCROLL-DRIVEN HACKATHON ROADMAP COMPONENT (600VH STICKY VIEWPORT)
+// NO-GAP SCROLL-DRIVEN ROADMAP COMPONENT
 // ============================================================================
 function ScrollDrivenJourneyRoadmap({ onOpenModal }: { onOpenModal: () => void }) {
   const containerRef = useRef<HTMLDivElement>(null);
   const shouldReduceMotion = useReducedMotion();
 
-  // Outer Scroll Area (600vh distance for generous continuous scroll range)
+  // Tight outer scroll distance (220vh so there is zero empty gap!)
   const { scrollYProgress } = useScroll({
     target: containerRef,
     offset: ["start start", "end end"],
   });
 
-  // Spring physics
+  // Spring physics for continuous scroll
   const smoothProgress = useSpring(scrollYProgress, {
-    stiffness: 90,
+    stiffness: 100,
     damping: 24,
     restDelta: 0.001,
   });
 
-  // Active Index tracker
-  const [activeIdx, setActiveIdx] = useState(0);
-
-  useEffect(() => {
-    const unsub = smoothProgress.on("change", (val) => {
-      let current = 0;
-      if (val >= 0.85) current = 5;
-      else if (val >= 0.69) current = 4;
-      else if (val >= 0.52) current = 3;
-      else if (val >= 0.35) current = 2;
-      else if (val >= 0.18) current = 1;
-      else current = 0;
-
-      if (current !== activeIdx) {
-        setActiveIdx(current);
-      }
-    });
-    return () => unsub();
-  }, [smoothProgress, activeIdx]);
-
-  // Marker Y transform along path (10% to 90%)
-  const markerYPercent = useTransform(smoothProgress, [0, 1], [10, 90]);
-
-  // Release CTA opacity near end (progress > 0.85)
-  const finalCtaOpacity = useTransform(smoothProgress, [0.85, 0.95], [0, 1]);
-  const finalCtaY = useTransform(smoothProgress, [0.85, 0.95], [20, 0]);
+  // Animated marker Y position along vertical path (12% to 88%)
+  const markerYPercent = useTransform(smoothProgress, [0, 1], [12, 88]);
 
   if (shouldReduceMotion) {
     return (
       <section className="py-20 bg-background border-b border-border">
         <div className="mx-auto max-w-7xl px-6 sm:px-8 lg:px-10 space-y-10">
           <div className="text-center max-w-3xl mx-auto space-y-3">
-            <span className="eyebrow text-primary">THE HACKATHON ROADMAP</span>
-            <h2 className="text-3xl font-bold">THE HACKATHON JOURNEY</h2>
+            <span className="eyebrow text-amber-500 font-mono">THE HACKATHON ROADMAP</span>
+            <h2 className="text-3xl font-bold uppercase">THE HACKATHON JOURNEY</h2>
             <p className="text-muted-foreground text-sm">
               From the first problem statement to the final pitch.
             </p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {journeyStages.map((stg) => {
-              const IconComponent = stg.icon;
-              return (
-                <div key={stg.id} className="p-6 rounded-2xl border border-border bg-card space-y-4">
-                  <div className="flex items-center justify-between border-b border-border pb-3">
-                    <span className="font-mono text-xs font-bold text-primary">STAGE {stg.id}</span>
-                    <h3 className="font-bold text-lg">{stg.title}</h3>
-                    <IconComponent className="h-5 w-5 text-primary" />
-                  </div>
-                  <p className="text-xs text-muted-foreground italic">"{stg.subtitle}"</p>
-                  <ul className="space-y-2">
-                    {stg.learnings.map((l, i) => (
-                      <li key={i} className="flex items-center gap-2 text-xs text-foreground/90 bg-background p-2 rounded border border-border">
-                        <CheckCircle2 className="h-3.5 w-3.5 text-emerald-500" />
-                        <span>{l}</span>
-                      </li>
-                    ))}
-                  </ul>
-                  <div className="p-3 rounded-lg bg-amber-500/10 border border-amber-500/30 text-xs font-bold">
-                    TAKEAWAY: {stg.takeaway}
-                  </div>
-                </div>
-              );
-            })}
+            {journeyStages.map((stg) => (
+              <div key={stg.id} className="space-y-3 p-6 border-l-2 border-amber-500 text-left">
+                <span className="font-mono text-xs text-amber-500">STAGE {stg.id}</span>
+                <h3 className="font-bold text-lg uppercase">{stg.title}</h3>
+                <p className="text-xs text-muted-foreground italic">"{stg.subtitle}"</p>
+                <ul className="space-y-1.5 text-xs text-foreground">
+                  {stg.learnings.map((l, i) => (
+                    <li key={i} className="flex items-center gap-2">
+                      <CheckCircle2 className="h-3.5 w-3.5 text-emerald-500 shrink-0" />
+                      <span>{l}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ))}
           </div>
         </div>
       </section>
@@ -465,16 +387,16 @@ function ScrollDrivenJourneyRoadmap({ onOpenModal }: { onOpenModal: () => void }
     <section
       id="hackathon-journey-roadmap"
       ref={containerRef}
-      className="relative min-h-[600vh] bg-background border-b border-border/60"
+      className="relative min-h-[220vh] bg-background border-b border-border/60"
     >
-      {/* Sticky Viewport Frame */}
-      <div className="sticky top-0 h-screen overflow-hidden flex flex-col justify-between py-6 px-4 sm:px-8 lg:px-12 bg-background/95 backdrop-blur-sm z-10">
+      {/* Sticky Viewport Frame (No awkward gap, clean flex composition) */}
+      <div className="sticky top-0 h-screen overflow-hidden flex flex-col justify-between py-8 px-6 sm:px-10 lg:px-16 bg-background/95 backdrop-blur-sm z-10">
         {/* SECTION HEADER */}
-        <div className="text-center max-w-3xl mx-auto space-y-1.5 z-30 shrink-0 pt-2">
-          <span className="eyebrow text-amber-600 dark:text-amber-400 font-mono font-bold tracking-widest text-xs uppercase">
+        <div className="text-center max-w-3xl mx-auto space-y-2 z-30 shrink-0">
+          <span className="eyebrow text-amber-500 font-mono font-bold tracking-widest text-xs uppercase">
             THE HACKATHON ROADMAP
           </span>
-          <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold tracking-tight text-foreground uppercase">
+          <h2 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold tracking-tight text-foreground uppercase">
             THE HACKATHON JOURNEY
           </h2>
           <p className="text-xs sm:text-sm text-muted-foreground max-w-xl mx-auto">
@@ -483,297 +405,71 @@ function ScrollDrivenJourneyRoadmap({ onOpenModal }: { onOpenModal: () => void }
         </div>
 
         {/* ========================================================================= */}
-        {/* DESKTOP VISUAL ROADMAP (PATH + NODES + CONTINUOUS STAGE CARD) */}
+        {/* CONTINUOUS SCROLL COMPOSITION (NO BOX CARDS!) */}
         {/* ========================================================================= */}
-        <div className="hidden lg:grid grid-cols-12 gap-8 items-center h-full max-w-7xl mx-auto w-full py-4 relative z-20">
-          {/* Left / Right Active Content Card Display */}
-          <div className="col-span-5 flex flex-col justify-center space-y-4 pr-4">
-            <AnimatePresence mode="wait">
-              <motion.div
-                key={journeyStages[activeIdx].id}
-                initial={{ opacity: 0, x: -25, scale: 0.95 }}
-                animate={{ opacity: 1, x: 0, scale: 1 }}
-                exit={{ opacity: 0, x: 25, scale: 0.95 }}
-                transition={{ duration: 0.3 }}
-                className="p-7 rounded-2xl border border-primary/40 bg-card shadow-2xl space-y-5 relative overflow-hidden"
-              >
-                <div className="flex items-center justify-between pb-3 border-b border-border/60">
-                  <div className="flex items-center gap-3">
-                    <span className={`px-2.5 py-0.5 rounded text-xs font-mono font-bold border ${journeyStages[activeIdx].badgeColor}`}>
-                      STAGE {journeyStages[activeIdx].id}
-                    </span>
-                    <h3 className="text-xl font-bold text-foreground tracking-wide">
-                      {journeyStages[activeIdx].title}
-                    </h3>
-                  </div>
-                  {journeyStages[activeIdx].id === "06" ? (
-                    <Trophy className="h-5 w-5 text-amber-500" />
-                  ) : (
-                    <Search className="h-5 w-5 text-primary" />
-                  )}
+        <div className="flex-1 grid grid-cols-12 gap-8 items-center max-w-7xl mx-auto w-full py-4 relative z-20">
+          {/* Left Column: Direct Stage Content Typography */}
+          <div className="col-span-12 md:col-span-7 relative h-full flex items-center pr-4">
+            {journeyStages.map((stage) => (
+              <div key={stage.id} className="absolute inset-0 flex items-center pointer-events-none">
+                <div className="w-full pointer-events-auto">
+                  <StageContentDirect stage={stage} smoothProgress={smoothProgress} />
                 </div>
-
-                <p className="text-sm font-semibold text-muted-foreground italic">
-                  "{journeyStages[activeIdx].subtitle}"
-                </p>
-
-                <div className="space-y-2">
-                  <h4 className="text-[11px] font-bold uppercase tracking-wider text-foreground">
-                    WHAT YOU'LL LEARN:
-                  </h4>
-                  <ul className="space-y-2">
-                    {journeyStages[activeIdx].learnings.map((item, idx) => (
-                      <li
-                        key={idx}
-                        className="flex items-start gap-2.5 text-xs text-foreground/90 bg-background/80 p-2.5 rounded-lg border border-border/60"
-                      >
-                        <CheckCircle2 className="h-3.5 w-3.5 text-emerald-500 shrink-0 mt-0.5" />
-                        <span>{item}</span>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-
-                <div className="p-3.5 rounded-xl border border-amber-500/30 bg-amber-500/10">
-                  <div className="text-[10px] font-bold text-amber-700 dark:text-amber-400 uppercase tracking-wider mb-0.5">
-                    TAKEAWAY
-                  </div>
-                  <div className="text-xs font-bold text-foreground">
-                    {journeyStages[activeIdx].takeaway}
-                  </div>
-                </div>
-              </motion.div>
-            </AnimatePresence>
+              </div>
+            ))}
           </div>
 
-          {/* Center Column: Animated Glowing Path & Nodes */}
-          <div className="col-span-2 relative h-full flex flex-col items-center justify-between py-8">
-            {/* Background Path Line */}
-            <div className="absolute top-8 bottom-8 w-1.5 bg-border/60 rounded-full" />
+          {/* Right Column: Animated Vertical Road & Stage Node Indicators */}
+          <div className="hidden md:flex col-span-5 relative h-full flex-col justify-between py-6 items-center pl-8 border-l border-border/40">
+            {/* Vertical Road Line */}
+            <div className="absolute top-6 bottom-6 left-1/2 -translate-x-1/2 w-1 bg-border/60 rounded-full pointer-events-none" />
 
-            {/* Scroll-Driven Progress Line */}
+            {/* Scroll-Driven Animated Line Fill */}
             <motion.div
               style={{ scaleY: smoothProgress, transformOrigin: "top" }}
-              className="absolute top-8 bottom-8 w-1.5 bg-gradient-to-b from-blue-500 via-amber-500 to-emerald-500 rounded-full shadow-[0_0_15px_rgba(15,27,45,0.5)]"
+              className="absolute top-6 bottom-6 left-1/2 -translate-x-1/2 w-1 bg-gradient-to-b from-blue-500 via-amber-500 to-emerald-500 rounded-full shadow-[0_0_12px_rgba(245,158,11,0.5)] pointer-events-none"
             />
 
-            {/* 6 Destination Nodes along the Path */}
+            {/* Glowing Marker Orb */}
+            <motion.div
+              style={{ top: `${markerYPercent.get()}%` }}
+              className="absolute left-1/2 -translate-x-1/2 -translate-y-1/2 h-5 w-5 rounded-full bg-amber-400 ring-4 ring-amber-500/30 shadow-lg pointer-events-none z-30"
+            >
+              <div className="h-2 w-2 rounded-full bg-slate-950 animate-ping m-1" />
+            </motion.div>
+
+            {/* Node Labels along the path */}
             {journeyStages.map((stg, idx) => {
-              const isActive = activeIdx === idx;
-              const isPassed = activeIdx >= idx;
               const DestIcon = stg.icon;
-
               return (
-                <button
+                <div
                   key={stg.id}
-                  onClick={() => setActiveIdx(idx)}
-                  className={`relative z-20 flex flex-col items-center group transition-transform duration-300 ${
-                    isActive ? "scale-125" : "scale-100"
-                  }`}
+                  className="relative z-20 flex items-center gap-3 w-full max-w-xs justify-center"
                 >
-                  <div
-                    className={`h-11 w-11 rounded-full flex items-center justify-center border-2 transition-all shadow-md ${
-                      isActive
-                        ? "bg-primary text-primary-foreground border-amber-500 ring-4 ring-amber-500/20 shadow-lg"
-                        : isPassed
-                        ? "bg-card text-foreground border-primary"
-                        : "bg-card text-muted-foreground border-border"
-                    }`}
-                  >
-                    {idx === 5 ? (
-                      <Trophy className="h-5 w-5 text-amber-400" />
-                    ) : (
-                      <DestIcon className="h-5 w-5" />
-                    )}
+                  <div className="h-9 w-9 rounded-full bg-card border border-border flex items-center justify-center text-foreground font-mono text-xs font-bold shadow-sm">
+                    {stg.id}
                   </div>
-                  <span
-                    className={`mt-1 font-mono text-[10px] font-bold tracking-wider uppercase px-2 py-0.5 rounded transition-all ${
-                      isActive
-                        ? "bg-amber-500 text-slate-950 font-extrabold shadow-sm"
-                        : "bg-background text-muted-foreground border border-border"
-                    }`}
-                  >
-                    {stg.id} {stg.title}
-                  </span>
-                </button>
-              );
-            })}
-          </div>
-
-          {/* Right Column: Stage Trail Overview & Status */}
-          <div className="col-span-5 flex flex-col justify-center space-y-4 pl-4">
-            <div className="p-6 rounded-2xl border border-border bg-card/80 backdrop-blur-md space-y-3">
-              <div className="flex items-center justify-between pb-3 border-b border-border/60">
-                <span className="text-xs font-mono font-bold text-muted-foreground uppercase">
-                  HACKATHON JOURNEY // STAGE {journeyStages[activeIdx].id} OF 06
-                </span>
-                <span className="text-xs font-semibold px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-600 dark:text-emerald-400">
-                  SCROLL ACTIVE
-                </span>
-              </div>
-
-              <div className="space-y-2">
-                {journeyStages.map((stg, i) => {
-                  const isCurrent = activeIdx === i;
-                  const isDone = activeIdx > i;
-                  return (
-                    <div
-                      key={stg.id}
-                      onClick={() => setActiveIdx(i)}
-                      className={`p-3 rounded-xl border flex items-center justify-between cursor-pointer transition-all ${
-                        isCurrent
-                          ? "border-amber-500/60 bg-amber-500/10 shadow-sm"
-                          : isDone
-                          ? "border-border bg-background/50 text-foreground"
-                          : "border-border/40 bg-background/20 text-muted-foreground opacity-60"
-                      }`}
-                    >
-                      <div className="flex items-center gap-3">
-                        <span className="font-mono text-xs font-bold text-amber-600 dark:text-amber-400">
-                          {stg.id}
-                        </span>
-                        <div>
-                          <div className="font-bold text-xs text-foreground">{stg.title}</div>
-                          <div className="text-[10px] text-muted-foreground">{stg.subtitle}</div>
-                        </div>
-                      </div>
-                      {isDone ? (
-                        <CheckCircle2 className="h-4 w-4 text-emerald-500" />
-                      ) : isCurrent ? (
-                        <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-primary text-primary-foreground">
-                          ACTIVE
-                        </span>
-                      ) : (
-                        <span className="text-[10px] font-mono text-muted-foreground">NEXT</span>
-                      )}
+                  <div className="text-left">
+                    <div className="text-xs font-bold uppercase tracking-wider text-foreground">
+                      {stg.title}
                     </div>
-                  );
-                })}
-              </div>
-
-              {/* Release Banner at STAGE 06 (FINISH) */}
-              {activeIdx === 5 && (
-                <motion.div
-                  initial={{ opacity: 0, scale: 0.95 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  className="p-4 rounded-xl border border-amber-500/40 bg-gradient-to-br from-amber-500/20 to-primary/20 text-center space-y-2 mt-3"
-                >
-                  <div className="inline-flex p-2 rounded-full bg-amber-500/20 text-amber-400">
-                    <Trophy className="h-5 w-5 animate-bounce" />
-                  </div>
-                  <h4 className="font-bold text-sm text-foreground uppercase">
-                    READY TO COMPETE.
-                  </h4>
-                  <p className="text-xs text-muted-foreground">
-                    Build smarter. Pitch better. Compete with confidence.
-                  </p>
-                  <button
-                    onClick={onOpenModal}
-                    className="w-full py-2.5 rounded-lg text-xs font-bold text-slate-950 bg-amber-400 hover:bg-amber-300 transition-colors shadow-md"
-                  >
-                    JOIN THE COHORT &rarr;
-                  </button>
-                </motion.div>
-              )}
-            </div>
-          </div>
-        </div>
-
-        {/* ========================================================================= */}
-        {/* MOBILE LAYOUT (VERTICAL TIMELINE & EXPANDING CARDS) */}
-        {/* ========================================================================= */}
-        <div className="lg:hidden flex-1 overflow-y-auto py-4 px-2 space-y-4 z-20">
-          <div className="relative border-l-2 border-primary/40 pl-6 space-y-5">
-            {journeyStages.map((stage, idx) => {
-              const isActive = activeIdx === idx;
-              const StageIcon = stage.icon;
-              return (
-                <div key={stage.id} className="relative">
-                  {/* Node Circle */}
-                  <div
-                    onClick={() => setActiveIdx(idx)}
-                    className={`absolute -left-[31px] top-0 h-8 w-8 rounded-full border-2 flex items-center justify-center cursor-pointer transition-all ${
-                      isActive
-                        ? "bg-primary text-primary-foreground border-amber-500 ring-2 ring-amber-500/20"
-                        : "bg-card text-muted-foreground border-border"
-                    }`}
-                  >
-                    {idx === 5 ? <Trophy className="h-4 w-4 text-amber-400" /> : <StageIcon className="h-4 w-4" />}
-                  </div>
-
-                  {/* Stage Card */}
-                  <div
-                    onClick={() => setActiveIdx(idx)}
-                    className={`p-4 rounded-xl border transition-all ${
-                      isActive
-                        ? "border-primary bg-card shadow-md"
-                        : "border-border bg-card/60"
-                    }`}
-                  >
-                    <div className="flex items-center justify-between mb-1">
-                      <span className="font-mono text-xs font-bold text-amber-600 dark:text-amber-400">
-                        STAGE {stage.id}
-                      </span>
-                      <span className="font-bold text-sm text-foreground">{stage.title}</span>
-                    </div>
-                    <div className="text-xs text-muted-foreground mb-2">{stage.subtitle}</div>
-
-                    {isActive && (
-                      <motion.div
-                        initial={{ opacity: 0, height: 0 }}
-                        animate={{ opacity: 1, height: "auto" }}
-                        className="space-y-3 pt-2 border-t border-border/60"
-                      >
-                        <div className="space-y-1.5">
-                          <div className="text-[10px] font-bold uppercase tracking-wider text-foreground">
-                            WHAT YOU'LL LEARN:
-                          </div>
-                          {stage.learnings.map((item, i) => (
-                            <div key={i} className="flex items-center gap-2 text-xs text-muted-foreground bg-background/60 p-2 rounded border border-border/40">
-                              <CheckCircle2 className="h-3.5 w-3.5 text-emerald-500 shrink-0 mt-0.5" />
-                              <span>{item}</span>
-                            </div>
-                          ))}
-                        </div>
-
-                        <div className="p-3 rounded-lg bg-amber-500/10 border border-amber-500/30">
-                          <div className="text-[10px] font-bold text-amber-600 dark:text-amber-400 uppercase tracking-wider">
-                            TAKEAWAY
-                          </div>
-                          <div className="text-xs font-bold text-foreground">
-                            {stage.takeaway}
-                          </div>
-                        </div>
-                      </motion.div>
-                    )}
+                    <div className="text-[10px] text-muted-foreground">{stg.subtitle}</div>
                   </div>
                 </div>
               );
             })}
           </div>
-
-          {/* Mobile Final CTA */}
-          <div className="p-5 rounded-2xl border border-amber-500/40 bg-gradient-to-br from-amber-500/10 to-primary/10 text-center space-y-3 mt-4">
-            <Trophy className="h-7 w-7 text-amber-500 mx-auto" />
-            <h3 className="font-bold text-base text-foreground uppercase">
-              READY TO COMPETE.
-            </h3>
-            <p className="text-xs text-muted-foreground">
-              Build smarter. Pitch better. Compete with confidence.
-            </p>
-            <button
-              onClick={onOpenModal}
-              className="w-full py-3 rounded-xl font-bold text-slate-950 bg-amber-400 hover:bg-amber-300 transition-colors shadow-md"
-            >
-              JOIN THE COHORT
-            </button>
-          </div>
         </div>
 
-        {/* Scroll Helper Prompt */}
-        <div className="text-center text-[11px] font-mono text-muted-foreground shrink-0 flex items-center justify-center gap-2 pt-2 z-20">
-          <span>SCROLL DOWN TO ADVANCE ROADMAP</span>
-          <ChevronDown className="h-3.5 w-3.5 animate-bounce text-amber-500" />
+        {/* BOTTOM RELEASE CTA AT STAGE 06 */}
+        <div className="text-center pt-2 pb-2 shrink-0 z-30">
+          <button
+            onClick={onOpenModal}
+            className="inline-flex items-center gap-2 px-6 py-2.5 rounded-full text-xs font-bold tracking-wider text-slate-950 bg-amber-400 hover:bg-amber-300 shadow-md transition-all"
+          >
+            JOIN THE COHORT NOW
+            <ArrowRight className="h-3.5 w-3.5" />
+          </button>
         </div>
       </div>
     </section>
@@ -1059,7 +755,7 @@ ${formData.message || "No additional message provided."}`;
       </section>
 
       {/* ========================================================================= */}
-      {/* 03. ANIMATED ROADMAP & STAGE EXPERIENCES (600VH CONTINUOUS STICKY VIEWPORT) */}
+      {/* 03. NO-GAP SCROLL ROADMAP (DIRECT TYPOGRAPHY, NO CARD BOXES!) */}
       {/* ========================================================================= */}
       <ScrollDrivenJourneyRoadmap onOpenModal={() => setIsModalOpen(true)} />
 
@@ -1087,7 +783,7 @@ ${formData.message || "No additional message provided."}`;
                       : "border-border bg-card shadow-sm"
                   }`}
                 >
-                  <div className="space-y-3">
+                  <div className="space-y-3 text-left">
                     <span className="text-xs font-mono font-bold text-amber-600 dark:text-amber-400 uppercase">
                       {prog.level}
                     </span>
@@ -1124,7 +820,7 @@ ${formData.message || "No additional message provided."}`;
               {hackathonTargets.map((target) => (
                 <div
                   key={target.name}
-                  className="p-6 rounded-2xl border border-border bg-card shadow-sm space-y-3"
+                  className="p-6 rounded-2xl border border-border bg-card shadow-sm space-y-3 text-left"
                 >
                   <div className="flex items-center justify-between">
                     <span className="text-[10px] font-bold uppercase tracking-wider px-2.5 py-0.5 rounded bg-primary/10 text-primary border border-primary/20">
@@ -1152,7 +848,7 @@ ${formData.message || "No additional message provided."}`;
       <section className="py-24 bg-card/30 relative border-b border-border/60">
         <div className="mx-auto max-w-7xl px-6 sm:px-8 lg:px-10">
           <div className="rounded-3xl border border-amber-500/30 bg-gradient-to-r from-slate-900 via-primary to-slate-900 text-primary-foreground p-8 sm:p-12 lg:p-16 shadow-2xl relative overflow-hidden">
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center relative z-10">
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center relative z-10 text-left">
               <div className="lg:col-span-8 space-y-6">
                 <span className="inline-flex items-center gap-2 rounded-full border border-amber-400/40 bg-amber-400/10 px-3.5 py-1 text-xs font-mono font-semibold text-amber-300 uppercase">
                   <Flame className="h-3.5 w-3.5" />
@@ -1267,7 +963,7 @@ ${formData.message || "No additional message provided."}`;
                 </div>
               ) : (
                 <div>
-                  <div className="mb-6 space-y-1">
+                  <div className="mb-6 space-y-1 text-left">
                     <span className="text-xs font-mono font-bold text-amber-600 dark:text-amber-400 uppercase">
                       ENROLLMENT & INQUIRY
                     </span>
