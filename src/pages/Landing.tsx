@@ -8,7 +8,6 @@ import { faqItems } from "../data/faq";
 import { getImageUrl } from "../lib/utils";
 import * as Icons from "lucide-react";
 import { ThreeHero } from "../components/home/ThreeHero";
-import { ExploreRoadmap } from "../components/home/ExploreRoadmap";
 import { useQuery } from "convex/react";
 import { api } from "../convex/_generated/api";
 import { TiltCard } from "../components/shared/TiltCard";
@@ -394,8 +393,7 @@ export default function Landing() {
         </div>
       </section>
 
-      {/* ===== EXPLORE ROADMAP ===== */}
-      <ExploreRoadmap />
+
 
 
 
