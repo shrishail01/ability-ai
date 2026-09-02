@@ -15,6 +15,7 @@ import {
   Lightbulb,
   Clock,
   ChevronRight,
+  ChevronDown,
   Layers,
   Flame,
   Award,
@@ -24,6 +25,10 @@ import {
   X,
   Send,
   Loader2,
+  Search,
+  Compass,
+  FileCheck,
+  Cpu,
 } from "lucide-react";
 import { useState } from "react";
 import { Link } from "react-router";
@@ -47,87 +52,219 @@ const stagger = {
   },
 };
 
-// Configurable Cohort Timeline Data (Easily expandable/modifiable)
-const cohortTimeline = [
+// ============================================================================
+// 10 HACKATHON ROADMAP PHASES (REPLACES WEEK-BY-WEEK TIMELINE)
+// ============================================================================
+export interface RoadmapPhase {
+  id: string;
+  num: number;
+  name: string;
+  tagline: string;
+  icon: any;
+  color: string;
+  borderColor: string;
+  accentColor: string;
+  activities: string[];
+  message?: string;
+  output: string;
+}
+
+const roadmapPhases: RoadmapPhase[] = [
   {
-    weeks: "Week 01 - 02",
-    phase: "Phase 1: Discovery & Alignment",
-    title: "Foundation, Team Alignment & Hackathon Selection",
-    icon: Users,
+    id: "01",
+    num: 1,
+    name: "DISCOVER",
+    tagline: "Understand the Challenge",
+    icon: Search,
     color: "from-blue-500/20 to-indigo-500/20",
     borderColor: "border-blue-500/30",
     accentColor: "text-blue-600 dark:text-blue-400",
-    description: "Understand hackathon dynamics, form cross-functional teams, choose target competitions (SIH, Global, AI), and decode winning problem statements.",
-    milestones: [
-      "Hackathon ecosystem overview & judging mechanics",
-      "Skill mapping & team matching (Dev + UI + AI + Pitch)",
-      "Problem statement selection matrix & market validation",
-      "Goal setting & target hackathon roadmap creation",
+    activities: [
+      "Decode the problem statement",
+      "Understand the requirements",
+      "Research the domain",
+      "Identify users and stakeholders",
+      "Understand constraints",
+      "Study judging criteria",
     ],
+    output: "A clear understanding of the challenge.",
   },
   {
-    weeks: "Week 03 - 04",
-    phase: "Phase 2: Ideation & System Design",
-    title: "Ideation, Problem Refinement & Tech Architecture",
-    icon: Brain,
+    id: "02",
+    num: 2,
+    name: "DEFINE",
+    tagline: "Find the Right Problem",
+    icon: Target,
+    color: "from-cyan-500/20 to-blue-500/20",
+    borderColor: "border-cyan-500/30",
+    accentColor: "text-cyan-600 dark:text-cyan-400",
+    activities: [
+      "Identify the core problem",
+      "Validate the problem",
+      "Understand user pain points",
+      "Define the scope",
+      "Identify what actually needs to be solved",
+    ],
+    output: "A focused problem statement.",
+  },
+  {
+    id: "03",
+    num: 3,
+    name: "IDEATE",
+    tagline: "Turn Problems Into Solutions",
+    icon: Lightbulb,
+    color: "from-amber-500/20 to-yellow-500/20",
+    borderColor: "border-amber-500/30",
+    accentColor: "text-amber-600 dark:text-amber-400",
+    activities: [
+      "Brainstorm solutions",
+      "Explore multiple approaches",
+      "Compare ideas",
+      "Evaluate feasibility",
+      "Identify innovation opportunities",
+      "Select the strongest concept",
+    ],
+    output: "A clear and validated solution idea.",
+  },
+  {
+    id: "04",
+    num: 4,
+    name: "STRATEGIZE",
+    tagline: "Build the Game Plan",
+    icon: Compass,
     color: "from-purple-500/20 to-pink-500/20",
     borderColor: "border-purple-500/30",
     accentColor: "text-purple-600 dark:text-purple-400",
-    description: "Transform raw ideas into high-scoring problem formulations. Design system architecture, component schemas, and define your Unique Value Proposition (UVP).",
-    milestones: [
-      "10x innovation framing & UVP definition",
-      "System architecture & tech stack selection (AI/Web/Mobile)",
-      "Database schema & API contract design",
-      "Feasibility testing & MVP scope boundary setting",
+    activities: [
+      "Form the team",
+      "Assign responsibilities",
+      "Choose the technology stack",
+      "Break the project into tasks",
+      "Prioritize features",
+      "Plan development around the deadline",
     ],
+    output: "A realistic execution plan.",
   },
   {
-    weeks: "Week 05 - 06",
-    phase: "Phase 3: Rapid Execution",
-    title: "Rapid Prototyping, AI-First Building & MVP Development",
-    icon: Zap,
-    color: "from-amber-500/20 to-orange-500/20",
-    borderColor: "border-amber-500/30",
-    accentColor: "text-amber-600 dark:text-amber-400",
-    description: "Build 5x faster using modern AI-assisted coding tools, component libraries, pre-built backend integrations, and clean user interfaces.",
-    milestones: [
-      "AI-assisted code generation & rapid scaffolding",
-      "Core MVP feature development & API integrations",
-      "Polished UI/UX design & micro-interactions",
-      "Deployment to live staging URLs with zero downtime",
-    ],
-  },
-  {
-    weeks: "Week 07",
-    phase: "Phase 4: Pitch & Storytelling",
-    title: "Presentation, PPT/Demo Creation & Storytelling",
-    icon: Presentation,
+    id: "05",
+    num: 5,
+    name: "BUILD",
+    tagline: "Turn Ideas Into Reality",
+    icon: Code2,
     color: "from-emerald-500/20 to-teal-500/20",
     borderColor: "border-emerald-500/30",
     accentColor: "text-emerald-600 dark:text-emerald-400",
-    description: "Craft judge-ready 3-minute pitch decks, compelling video walkthroughs, and high-impact demo scripts that captivate juries instantly.",
-    milestones: [
-      "Judge-aligned 10-slide deck design",
-      "The 3-minute high-converting pitch narrative formula",
-      "Screen recording, video editing & demo walkthroughs",
-      "Interactive prototype polish & backup fail-safes",
+    activities: [
+      "Design the architecture",
+      "Develop the core product",
+      "Build the frontend",
+      "Build the backend",
+      "Integrate required services",
+      "Create the MVP",
+      "Connect the complete workflow",
     ],
+    output: "A functional prototype.",
   },
   {
-    weeks: "Week 08",
-    phase: "Phase 5: Competition Readiness",
-    title: "Mock Hackathon Simulation & Jury Review",
+    id: "06",
+    num: 6,
+    name: "ACCELERATE",
+    tagline: "Work Smarter",
+    icon: Zap,
+    color: "from-indigo-500/20 to-purple-500/20",
+    borderColor: "border-indigo-500/30",
+    accentColor: "text-indigo-600 dark:text-indigo-400",
+    activities: [
+      "Research assistance",
+      "Faster ideation",
+      "Coding assistance",
+      "Debugging",
+      "Design exploration",
+      "Documentation",
+      "Productivity workflows",
+    ],
+    message: "Use the right tools to move faster without compromising your own thinking.",
+    output: "Faster iteration and better productivity.",
+  },
+  {
+    id: "07",
+    num: 7,
+    name: "REFINE",
+    tagline: "Make It Competition-Ready",
+    icon: Shield,
+    color: "from-orange-500/20 to-amber-500/20",
+    borderColor: "border-orange-500/30",
+    accentColor: "text-orange-600 dark:text-orange-400",
+    activities: [
+      "Test the product",
+      "Fix bugs",
+      "Improve usability",
+      "Improve UI/UX",
+      "Validate the solution",
+      "Gather feedback",
+      "Remove unnecessary features",
+      "Strengthen the core experience",
+    ],
+    output: "A polished and reliable prototype.",
+  },
+  {
+    id: "08",
+    num: 8,
+    name: "PITCH",
+    tagline: "Tell the Story",
+    icon: Presentation,
+    color: "from-rose-500/20 to-pink-500/20",
+    borderColor: "border-rose-500/30",
+    accentColor: "text-rose-600 dark:text-rose-400",
+    activities: [
+      "Define the problem",
+      "Explain the solution",
+      "Explain the innovation",
+      "Show the impact",
+      "Explain the technology",
+      "Create the pitch deck",
+      "Practice the presentation",
+    ],
+    output: "A clear and memorable pitch.",
+  },
+  {
+    id: "09",
+    num: 9,
+    name: "DEMO",
+    tagline: "Show What You Built",
+    icon: Flame,
+    color: "from-violet-500/20 to-indigo-500/20",
+    borderColor: "border-violet-500/30",
+    accentColor: "text-violet-600 dark:text-violet-400",
+    activities: [
+      "Create the demo flow",
+      "Prepare the product walkthrough",
+      "Practice the live demonstration",
+      "Prepare backup plans",
+      "Handle technical issues",
+      "Practice likely questions",
+    ],
+    output: "A confident product demonstration.",
+  },
+  {
+    id: "10",
+    num: 10,
+    name: "COMPETE",
+    tagline: "Face the Judges",
     icon: Trophy,
     color: "from-amber-500/20 to-yellow-500/20",
     borderColor: "border-amber-500/30",
     accentColor: "text-amber-600 dark:text-amber-400",
-    description: "Experience a 24-hour mock hackathon under clock pressure. Present live to expert mentors, defend tech choices under grilling Q&A, and finalize submission.",
-    milestones: [
-      "Timed 24-hour mock hackathon simulation",
-      "Live presentation to external mentor jury panel",
-      "Technical defense Q&A grilling session",
-      "Final submission package (GitHub + README + Deck + Video)",
+    activities: [
+      "Understand evaluation criteria",
+      "Prepare for questions",
+      "Defend technical decisions",
+      "Explain impact",
+      "Handle pressure",
+      "Complete final submission",
+      "Prepare the final checklist",
     ],
+    output: "A team ready for the competition.",
   },
 ];
 
@@ -143,30 +280,30 @@ const learningModules = [
   {
     id: 2,
     title: "Ideation & UVP",
-    desc: "Develop 10x solutions using novelty matrices and market gap analysis so your project stands out immediately.",
+    desc: "Develop viable solutions using novelty matrices and market gap analysis so your project stands out immediately.",
     icon: Lightbulb,
     badge: "Innovation",
   },
   {
     id: 3,
     title: "Team Strategy & Role Allocation",
-    desc: "Structure roles cleanly across tech lead, frontend builder, AI developer, and pitch presenter for maximum output.",
+    desc: "Structure roles cleanly across tech lead, frontend builder, full-stack developer, and pitch presenter for maximum output.",
     icon: Users,
     badge: "Leadership",
   },
   {
     id: 4,
     title: "Rapid Prototyping & Architecture",
-    desc: "Design scalable system architectures and working MVPs that can be coded cleanly in under 24-48 hours.",
+    desc: "Design scalable system architectures and working MVPs that can be coded cleanly under competition deadlines.",
     icon: Layers,
     badge: "Engineering",
   },
   {
     id: 5,
-    title: "AI-Powered Speed Development",
-    desc: "Leverage LLMs, code assistance tools, and automated backend generators to build 5x faster than traditional teams.",
+    title: "Smart Workflows & Rapid Building",
+    desc: "Utilize modern developer tools, API integrations, and rapid scaffolding to build faster without compromising quality.",
     icon: Zap,
-    badge: "AI Native",
+    badge: "Productivity",
   },
   {
     id: 6,
@@ -224,28 +361,28 @@ const hackathonTargets = [
   {
     name: "Google Solution Challenge",
     tag: "UN SDGs & Cloud",
-    desc: "Build solutions for UN Sustainable Development Goals using Google Cloud, Firebase, and AI technologies.",
+    desc: "Build solutions for UN Sustainable Development Goals using Google Cloud and web technologies.",
     color: "from-emerald-600/10 to-teal-600/10 border-emerald-500/20",
     badge: "Global",
   },
   {
     name: "Microsoft Imagine Cup",
-    tag: "AI & Azure Innovation",
-    desc: "Transform startup ideas across Earth, Green Tech, Healthcare, and Education using Azure AI.",
+    tag: "Cloud & Global Innovation",
+    desc: "Transform startup ideas across Earth, Green Tech, Healthcare, and Education.",
     color: "from-purple-600/10 to-pink-600/10 border-purple-500/20",
     badge: "Global",
   },
   {
-    name: "AI & Open-Source Hackathons",
-    tag: "Agentic AI & LLMs",
-    desc: "Compete in cutting-edge AI builder hackathons, model fine-tuning competitions, and agentic challenges.",
+    name: "Open Innovation & Tech Hackathons",
+    tag: "Emerging Tech & Web",
+    desc: "Compete in cutting-edge builder hackathons, open-source challenges, and innovation sprints.",
     color: "from-amber-600/10 to-orange-600/10 border-amber-500/20",
-    badge: "AI Native",
+    badge: "Open Tech",
   },
   {
     name: "College & Corporate Hackathons",
     tag: "Campus & Industry",
-    desc: "Dominate tech fest hackathons at top IITs, NITs, universities, and corporate innovation hackathons.",
+    desc: "Dominate tech fest hackathons at top IITs, NITs, universities, and corporate innovation challenges.",
     color: "from-rose-600/10 to-red-600/10 border-rose-500/20",
     badge: "Campus & Corporate",
   },
@@ -255,7 +392,7 @@ const hackathonTargets = [
 const experienceCards = [
   {
     title: "Live Interactive Sessions",
-    desc: "Weekly live cohort masterclasses, project teardowns, and interactive breakdown of past winning hackathon solutions.",
+    desc: "Interactive cohort masterclasses, project teardowns, and tactical breakdown of past winning hackathon solutions.",
     icon: BookOpen,
     color: "bg-blue-50 dark:bg-blue-950/40 border-blue-200 dark:border-blue-800/40 text-blue-600 dark:text-blue-400",
   },
@@ -273,7 +410,7 @@ const experienceCards = [
   },
   {
     title: "Expert Mentor Guidance",
-    desc: "Weekly office hours with past SIH winners, startup founders, and senior AI engineers who critique your progress.",
+    desc: "Weekly office hours with past SIH winners, startup founders, and senior engineers who critique your progress.",
     icon: Brain,
     color: "bg-amber-50 dark:bg-amber-950/40 border-amber-200 dark:border-amber-800/40 text-amber-600 dark:text-amber-400",
   },
@@ -303,8 +440,8 @@ const targetPersonas = [
     icon: Users,
   },
   {
-    title: "AI Enthusiasts",
-    desc: "Engineers interested in leveraging AI APIs, LLM agents, and full-stack AI templates to build high-scoring apps.",
+    title: "Tech & Product Enthusiasts",
+    desc: "Engineers interested in leveraging modern stacks, web services, and full-stack templates to build high-scoring apps.",
     icon: Zap,
   },
   {
@@ -320,14 +457,14 @@ const cohortPrograms = [
     name: "First Hackathon Cohort",
     level: "Beginner Track",
     desc: "Perfect for students starting out. Focuses on core hackathon mechanics, team building, rapid MVP creation, and basic pitching.",
-    highlights: ["Team Formation & Matching", "Problem Selection Basics", "AI Scaffolding Starter Kits", "First Mock Hackathon"],
+    highlights: ["Team Formation & Matching", "Problem Selection Basics", "Rapid Scaffolding Starter Kits", "First Mock Hackathon"],
     recommended: false,
   },
   {
-    name: "AI Hackathon Cohort",
-    level: "AI-Native Track",
-    desc: "Designed for builders eager to create AI-first solutions: LLMs, RAG pipelines, vision models, and agentic workflows.",
-    highlights: ["AI APIs & Agent Architectures", "Rapid UI + AI Integration", "RAG & Vector Database Setup", "AI Jury Presentation"],
+    name: "Innovation Sprint Cohort",
+    level: "Full-Stack Builder Track",
+    desc: "Designed for builders eager to create complete end-to-end solutions: clean APIs, modern UIs, robust backends, and live deployments.",
+    highlights: ["Scalable System Architecture", "Rapid UI + Service Integration", "Database & API Contract Setup", "Jury Presentation Practice"],
     recommended: true,
   },
   {
@@ -354,7 +491,9 @@ const cohortPrograms = [
 ];
 
 export default function HackathonCohort() {
-  const [selectedWeek, setSelectedWeek] = useState(0);
+  const [selectedPhaseIndex, setSelectedPhaseIndex] = useState(0);
+  const [expandedMobilePhase, setExpandedMobilePhase] = useState<number | null>(0);
+
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
@@ -366,7 +505,7 @@ export default function HackathonCohort() {
     college: "",
     role: "Developer",
     experience: "Beginner",
-    programInterest: "AI Hackathon Cohort",
+    programInterest: "Innovation Sprint Cohort",
     message: "",
   });
 
@@ -436,10 +575,12 @@ ${formData.message || "No additional message provided."}`;
       college: "",
       role: "Developer",
       experience: "Beginner",
-      programInterest: "AI Hackathon Cohort",
+      programInterest: "Innovation Sprint Cohort",
       message: "",
     });
   };
+
+  const activePhase = roadmapPhases[selectedPhaseIndex];
 
   return (
     <div className="min-h-screen bg-background text-foreground overflow-hidden">
@@ -447,7 +588,7 @@ ${formData.message || "No additional message provided."}`;
       {/* 1. HERO SECTION */}
       {/* ========================================================================= */}
       <section className="relative pt-32 pb-24 lg:pt-36 lg:pb-32 overflow-hidden border-b border-border/60">
-        {/* Ambient Glow & Grid Background */}
+        {/* Ambient Background Lights */}
         <div className="absolute inset-0 pointer-events-none">
           <div className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[500px] bg-primary/10 rounded-full blur-[140px]" />
           <div className="absolute top-1/3 right-10 w-[400px] h-[400px] bg-amber-500/10 rounded-full blur-[120px]" />
@@ -488,7 +629,7 @@ ${formData.message || "No additional message provided."}`;
                 variants={fadeUp(2)}
                 className="text-muted-foreground text-base sm:text-lg leading-relaxed max-w-2xl"
               >
-                Aibility Hackathon Cohort is a structured training program where students join as a cohort and are guided through the <strong>COMPLETE hackathon journey</strong> — from team formation and problem statement selection to rapid AI building, judge-ready slide decks, and live demo defense.
+                Aibility Hackathon Cohort is a structured training program where students join as a cohort and are guided through the <strong>COMPLETE hackathon journey</strong> — from problem discovery and team alignment to rapid building, deck storytelling, and live jury defense.
               </motion.p>
 
               <motion.div
@@ -504,22 +645,22 @@ ${formData.message || "No additional message provided."}`;
                 </button>
 
                 <a
-                  href="#cohort-journey"
+                  href="#hackathon-roadmap"
                   className="px-7 py-3.5 rounded-lg text-sm font-semibold tracking-wide text-foreground border border-border bg-card hover:bg-accent/10 transition-colors duration-300 flex items-center gap-2"
                 >
-                  EXPLORE THE PROGRAM
+                  EXPLORE THE ROADMAP
                   <ChevronRight className="h-4 w-4 text-muted-foreground" />
                 </a>
               </motion.div>
 
-              {/* Quick Stat Badges */}
+              {/* Quick Pillars Badges */}
               <motion.div
                 variants={fadeUp(4)}
                 className="pt-6 grid grid-cols-3 gap-4 border-t border-border/60 max-w-lg"
               >
                 <div>
-                  <div className="text-xl sm:text-2xl font-bold text-foreground">8 Weeks</div>
-                  <div className="text-xs text-muted-foreground">Structured Roadmap</div>
+                  <div className="text-xl sm:text-2xl font-bold text-foreground">10 Phases</div>
+                  <div className="text-xs text-muted-foreground">Complete Roadmap</div>
                 </div>
                 <div>
                   <div className="text-xl sm:text-2xl font-bold text-amber-600 dark:text-amber-400">100%</div>
@@ -532,7 +673,7 @@ ${formData.message || "No additional message provided."}`;
               </motion.div>
             </motion.div>
 
-            {/* Right Interactive Visual: Connected Builder Network Node Graphic */}
+            {/* Right Visual Graphic */}
             <motion.div
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
@@ -546,16 +687,16 @@ ${formData.message || "No additional message provided."}`;
                 <div className="flex items-center justify-between mb-6 pb-4 border-b border-border/60">
                   <div className="flex items-center gap-2">
                     <div className="h-3 w-3 rounded-full bg-emerald-500 animate-pulse" />
-                    <span className="text-xs font-mono text-muted-foreground">COHORT_NETWORK // ACTIVE</span>
+                    <span className="text-xs font-mono text-muted-foreground">COHORT_FRAMEWORK // ACTIVE</span>
                   </div>
                   <span className="text-xs font-semibold px-2.5 py-0.5 rounded bg-primary/10 text-primary">
-                    AI-FIRST PIPELINE
+                    FULL-STACK PIPELINE
                   </span>
                 </div>
 
-                {/* Interactive Node Graph */}
+                {/* Node Network Graphic */}
                 <div className="relative py-8 px-2 flex flex-col items-center justify-center space-y-6">
-                  {/* Central Node */}
+                  {/* Central Hub */}
                   <motion.div
                     animate={{ scale: [1, 1.03, 1] }}
                     transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
@@ -566,48 +707,48 @@ ${formData.message || "No additional message provided."}`;
                     </div>
                     <h3 className="font-bold text-base tracking-wide">AIBILITY COHORT HUB</h3>
                     <p className="text-xs text-primary-foreground/80 mt-1">
-                      Central Guidance & Competition Accelerator
+                      Complete Hackathon Preparation Framework
                     </p>
                   </motion.div>
 
-                  {/* Radiating Nodes Grid */}
+                  {/* Radiating Nodes */}
                   <div className="grid grid-cols-2 gap-3 sm:gap-4 w-full">
-                    <div className="p-3.5 rounded-xl border border-border bg-background/80 hover:border-amber-500/50 transition-all text-left group/node shadow-sm">
+                    <div className="p-3.5 rounded-xl border border-border bg-background/80 hover:border-amber-500/50 transition-all text-left shadow-sm">
                       <div className="flex items-center gap-2 mb-1 text-amber-600 dark:text-amber-400 font-semibold text-xs">
-                        <Brain className="h-4 w-4" />
-                        <span>01. Ideation</span>
+                        <Search className="h-4 w-4" />
+                        <span>01. Discovery</span>
                       </div>
-                      <p className="text-xs text-muted-foreground">Problem decoding & UVP matrix</p>
+                      <p className="text-xs text-muted-foreground">Problem decoding & user research</p>
                     </div>
 
-                    <div className="p-3.5 rounded-xl border border-border bg-background/80 hover:border-blue-500/50 transition-all text-left group/node shadow-sm">
+                    <div className="p-3.5 rounded-xl border border-border bg-background/80 hover:border-blue-500/50 transition-all text-left shadow-sm">
                       <div className="flex items-center gap-2 mb-1 text-blue-600 dark:text-blue-400 font-semibold text-xs">
-                        <Zap className="h-4 w-4" />
-                        <span>02. AI Building</span>
+                        <Compass className="h-4 w-4" />
+                        <span>02. Strategy & MVP</span>
                       </div>
-                      <p className="text-xs text-muted-foreground">Rapid code & API integration</p>
+                      <p className="text-xs text-muted-foreground">Architecture & feature game plan</p>
                     </div>
 
-                    <div className="p-3.5 rounded-xl border border-border bg-background/80 hover:border-purple-500/50 transition-all text-left group/node shadow-sm">
+                    <div className="p-3.5 rounded-xl border border-border bg-background/80 hover:border-purple-500/50 transition-all text-left shadow-sm">
                       <div className="flex items-center gap-2 mb-1 text-purple-600 dark:text-purple-400 font-semibold text-xs">
                         <Sparkles className="h-4 w-4" />
-                        <span>03. UI/UX MVP</span>
+                        <span>03. Design & Code</span>
                       </div>
-                      <p className="text-xs text-muted-foreground">High-impact live interfaces</p>
+                      <p className="text-xs text-muted-foreground">UI/UX polish & sprint execution</p>
                     </div>
 
-                    <div className="p-3.5 rounded-xl border border-border bg-background/80 hover:border-emerald-500/50 transition-all text-left group/node shadow-sm">
+                    <div className="p-3.5 rounded-xl border border-border bg-background/80 hover:border-emerald-500/50 transition-all text-left shadow-sm">
                       <div className="flex items-center gap-2 mb-1 text-emerald-600 dark:text-emerald-400 font-semibold text-xs">
                         <Presentation className="h-4 w-4" />
-                        <span>04. Pitch Defense</span>
+                        <span>04. Pitch & Demo</span>
                       </div>
-                      <p className="text-xs text-muted-foreground">Judge Q&A & slide decks</p>
+                      <p className="text-xs text-muted-foreground">Deck story & live jury defense</p>
                     </div>
                   </div>
                 </div>
 
                 <div className="mt-4 pt-4 border-t border-border/60 flex items-center justify-between text-xs text-muted-foreground">
-                  <span>Targeted Competitions: SIH, Space Apps, Imagine Cup & AI Hacks</span>
+                  <span>Targeted Competitions: SIH, Space Apps, Imagine Cup & Innovation Hacks</span>
                   <span className="font-semibold text-primary cursor-pointer" onClick={() => setIsModalOpen(true)}>Apply Now &rarr;</span>
                 </div>
               </div>
@@ -629,7 +770,7 @@ ${formData.message || "No additional message provided."}`;
               What is the Aibility Hackathon Cohort?
             </h2>
             <p className="text-muted-foreground text-base leading-relaxed">
-              Most students fail hackathons not because they lack coding skill, but because they pick weak problem statements, build incomplete MVPs, or deliver unconvincing pitches. The Aibility Cohort solves this end-to-end.
+              Most teams fail hackathons not because they lack technical talent, but because they pick weak problem statements, build incomplete MVPs, or deliver unconvincing presentations. The Aibility Cohort solves this end-to-end.
             </p>
           </div>
 
@@ -643,7 +784,7 @@ ${formData.message || "No additional message provided."}`;
               </div>
               <h3 className="text-xl font-bold mb-3">Team Formation & Skill Alignment</h3>
               <p className="text-muted-foreground text-sm leading-relaxed">
-                Connect with compatible builders. Form balanced squads combining technical coders, AI engineers, UI designers, and strong presenters.
+                Connect with compatible builders. Form balanced squads combining technical coders, full-stack builders, UI designers, and strong pitch presenters.
               </p>
             </motion.div>
 
@@ -667,9 +808,9 @@ ${formData.message || "No additional message provided."}`;
               <div className="h-12 w-12 rounded-xl bg-purple-500/10 text-purple-600 dark:text-purple-400 flex items-center justify-center mb-6">
                 <Zap className="h-6 w-6" />
               </div>
-              <h3 className="text-xl font-bold mb-3">AI-First Speed Acceleration</h3>
+              <h3 className="text-xl font-bold mb-3">Work Smarter & Accelerate</h3>
               <p className="text-muted-foreground text-sm leading-relaxed">
-                Master modern AI tools, LLM APIs, and rapid prototyping workflows to build in 24 hours what used to take weeks.
+                Leverage modern developer workflows, API integrations, and smart tooling to build in 24 hours what used to take weeks.
               </p>
             </motion.div>
 
@@ -682,7 +823,7 @@ ${formData.message || "No additional message provided."}`;
               </div>
               <h3 className="text-xl font-bold mb-3">Pitch Deck & Demo Mastery</h3>
               <p className="text-muted-foreground text-sm leading-relaxed">
-                Design judge-focused 10-slide decks, structure 3-minute pitch stories, and create flawless live demo walkthroughs.
+                Design judge-focused slide decks, structure 3-minute pitch stories, and create flawless live demo walkthroughs.
               </p>
             </motion.div>
 
@@ -716,138 +857,229 @@ ${formData.message || "No additional message provided."}`;
       </section>
 
       {/* ========================================================================= */}
-      {/* 3. THE COHORT JOURNEY (TIMELINE) SECTION */}
+      {/* 3. THE HACKATHON ROADMAP (INTERACTIVE 10 PHASES) */}
       {/* ========================================================================= */}
-      <section id="cohort-journey" className="py-24 relative border-b border-border/60">
+      <section id="hackathon-roadmap" className="py-24 relative border-b border-border/60">
         <div className="mx-auto max-w-7xl px-6 sm:px-8 lg:px-10">
-          <div className="flex flex-col md:flex-row md:items-end justify-between mb-16 gap-6">
-            <div>
-              <span className="eyebrow text-amber-600 dark:text-amber-400">STRUCTURED ROADMAP</span>
-              <h2 className="text-3xl sm:text-4xl font-bold tracking-tight text-foreground mt-2">
-                The Cohort Journey
-              </h2>
-              <p className="text-muted-foreground text-sm sm:text-base mt-2 max-w-xl">
-                A step-by-step 8-week structured roadmap (configurable duration) designed to take you from zero idea to competition-winning team.
-              </p>
-            </div>
-
-            {/* Timeline Week Switcher */}
-            <div className="flex items-center gap-2 overflow-x-auto pb-2 hide-scrollbar">
-              {cohortTimeline.map((item, idx) => (
-                <button
-                  key={item.weeks}
-                  onClick={() => setSelectedWeek(idx)}
-                  className={`px-4 py-2 text-xs font-semibold rounded-lg whitespace-nowrap transition-all ${
-                    selectedWeek === idx
-                      ? "bg-primary text-primary-foreground shadow-md"
-                      : "bg-card border border-border text-muted-foreground hover:text-foreground"
-                  }`}
-                >
-                  {item.weeks}
-                </button>
-              ))}
-            </div>
+          <div className="text-center max-w-3xl mx-auto mb-12 space-y-4">
+            <span className="eyebrow text-amber-600 dark:text-amber-400">
+              ONE HACKATHON. TEN PHASES. ONE COMPLETE JOURNEY.
+            </span>
+            <h2 className="text-3xl sm:text-4xl font-bold tracking-tight text-foreground">
+              THE HACKATHON ROADMAP
+            </h2>
+            <p className="text-xl font-semibold text-primary uppercase tracking-wide">
+              FROM PROBLEM TO PITCH.
+            </p>
+            <p className="text-muted-foreground text-sm sm:text-base max-w-xl mx-auto">
+              Every hackathon is different. The fundamentals of preparation remain the same.
+            </p>
           </div>
 
-          {/* Selected Week Detailed Card View */}
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-            {/* Week List Navigation */}
-            <div className="lg:col-span-5 space-y-4">
-              {cohortTimeline.map((item, idx) => {
-                const IconComponent = item.icon;
-                const isSelected = selectedWeek === idx;
+          {/* DESKTOP ROADMAP NODE NAVIGATION (Hidden on mobile) */}
+          <div className="hidden lg:block mb-12">
+            <div className="grid grid-cols-5 gap-3 mb-3">
+              {roadmapPhases.slice(0, 5).map((phase, idx) => {
+                const isSelected = selectedPhaseIndex === idx;
+                const IconComp = phase.icon;
                 return (
-                  <motion.div
-                    key={item.weeks}
-                    onClick={() => setSelectedWeek(idx)}
-                    whileHover={{ x: 4 }}
-                    className={`p-5 rounded-xl border transition-all cursor-pointer ${
+                  <button
+                    key={phase.id}
+                    onClick={() => setSelectedPhaseIndex(idx)}
+                    className={`p-4 rounded-xl border text-left transition-all relative overflow-hidden group ${
                       isSelected
-                        ? "border-primary bg-primary/5 shadow-md"
-                        : "border-border bg-card/60 hover:bg-card"
+                        ? "border-primary bg-primary/10 shadow-lg ring-2 ring-primary/20"
+                        : "border-border bg-card hover:bg-accent/10"
                     }`}
                   >
-                    <div className="flex items-start justify-between">
-                      <div className="flex items-center gap-3">
-                        <div
-                          className={`p-2.5 rounded-lg border bg-background ${
-                            isSelected ? "border-primary text-primary" : "border-border text-muted-foreground"
-                          }`}
-                        >
-                          <IconComponent className="h-5 w-5" />
-                        </div>
-                        <div>
-                          <span className="text-xs font-mono font-semibold text-amber-600 dark:text-amber-400">
-                            {item.weeks}
-                          </span>
-                          <h4 className="font-bold text-sm text-foreground">{item.title}</h4>
-                        </div>
-                      </div>
-                      <ChevronRight
-                        className={`h-4 w-4 transition-transform ${
-                          isSelected ? "rotate-90 text-primary" : "text-muted-foreground"
-                        }`}
-                      />
+                    <div className="flex items-center justify-between mb-2">
+                      <span className="font-mono text-xs font-bold text-amber-600 dark:text-amber-400">
+                        {phase.id}
+                      </span>
+                      <IconComp className={`h-4 w-4 ${isSelected ? "text-primary" : "text-muted-foreground"}`} />
                     </div>
-                  </motion.div>
+                    <div className="font-bold text-sm text-foreground">{phase.name}</div>
+                    <div className="text-[11px] text-muted-foreground truncate">{phase.tagline}</div>
+                  </button>
                 );
               })}
             </div>
 
-            {/* Active Stage Detail Panel */}
-            <div className="lg:col-span-7">
-              <AnimatePresence mode="wait">
-                <motion.div
-                  key={selectedWeek}
-                  initial={{ opacity: 0, y: 15 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -15 }}
-                  transition={{ duration: 0.4 }}
-                  className="p-8 rounded-2xl border border-border bg-card shadow-xl space-y-6"
-                >
-                  <div className="flex items-center justify-between pb-4 border-b border-border/60">
-                    <span className="text-xs font-mono font-bold tracking-wider px-3 py-1 rounded bg-amber-500/10 text-amber-600 dark:text-amber-400 uppercase">
-                      {cohortTimeline[selectedWeek].phase}
+            <div className="grid grid-cols-5 gap-3">
+              {roadmapPhases.slice(5, 10).map((phase, idx) => {
+                const actualIdx = idx + 5;
+                const isSelected = selectedPhaseIndex === actualIdx;
+                const IconComp = phase.icon;
+                return (
+                  <button
+                    key={phase.id}
+                    onClick={() => setSelectedPhaseIndex(actualIdx)}
+                    className={`p-4 rounded-xl border text-left transition-all relative overflow-hidden group ${
+                      isSelected
+                        ? "border-primary bg-primary/10 shadow-lg ring-2 ring-primary/20"
+                        : "border-border bg-card hover:bg-accent/10"
+                    }`}
+                  >
+                    <div className="flex items-center justify-between mb-2">
+                      <span className="font-mono text-xs font-bold text-amber-600 dark:text-amber-400">
+                        {phase.id}
+                      </span>
+                      <IconComp className={`h-4 w-4 ${isSelected ? "text-primary" : "text-muted-foreground"}`} />
+                    </div>
+                    <div className="font-bold text-sm text-foreground">{phase.name}</div>
+                    <div className="text-[11px] text-muted-foreground truncate">{phase.tagline}</div>
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+
+          {/* DESKTOP SELECTED PHASE DISPLAY CARD (Hidden on mobile) */}
+          <div className="hidden lg:block">
+            <AnimatePresence mode="wait">
+              <motion.div
+                key={activePhase.id}
+                initial={{ opacity: 0, y: 15 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -15 }}
+                transition={{ duration: 0.35 }}
+                className="p-8 sm:p-10 rounded-3xl border border-border bg-card shadow-2xl space-y-6 relative overflow-hidden"
+              >
+                <div className="flex items-center justify-between pb-4 border-b border-border/60">
+                  <div className="flex items-center gap-3">
+                    <span className="font-mono text-lg font-extrabold px-3 py-1 rounded bg-amber-500/10 text-amber-600 dark:text-amber-400">
+                      PHASE {activePhase.id}
                     </span>
-                    <span className="text-sm font-semibold text-muted-foreground">
-                      {cohortTimeline[selectedWeek].weeks}
-                    </span>
+                    <h3 className="text-2xl font-bold text-foreground tracking-wide">
+                      {activePhase.name}
+                    </h3>
                   </div>
+                  <span className="text-sm font-semibold text-muted-foreground italic">
+                    "{activePhase.tagline}"
+                  </span>
+                </div>
 
-                  <h3 className="text-2xl font-bold text-foreground">
-                    {cohortTimeline[selectedWeek].title}
-                  </h3>
+                <div className="space-y-4">
+                  <h4 className="text-xs font-bold uppercase tracking-wider text-foreground">
+                    Key Activities:
+                  </h4>
+                  <div className="grid grid-cols-2 gap-3">
+                    {activePhase.activities.map((act, i) => (
+                      <div
+                        key={i}
+                        className="flex items-start gap-2.5 text-xs sm:text-sm text-foreground/90 bg-background/80 p-3.5 rounded-xl border border-border/60"
+                      >
+                        <CheckCircle2 className="h-4 w-4 text-emerald-500 shrink-0 mt-0.5" />
+                        <span>{act}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
 
-                  <p className="text-muted-foreground text-sm leading-relaxed">
-                    {cohortTimeline[selectedWeek].description}
-                  </p>
+                {/* Optional Message Highlight for Phase 06 (Accelerate) */}
+                {activePhase.message && (
+                  <div className="p-4 rounded-xl border border-indigo-500/30 bg-indigo-500/10 text-indigo-900 dark:text-indigo-200 text-xs sm:text-sm font-medium leading-relaxed">
+                    <strong>Note:</strong> {activePhase.message}
+                  </div>
+                )}
 
-                  <div className="space-y-3 pt-2">
-                    <h4 className="text-xs font-bold uppercase tracking-wider text-foreground">
-                      Key Deliverables & Milestones:
-                    </h4>
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                      {cohortTimeline[selectedWeek].milestones.map((m, i) => (
-                        <div key={i} className="flex items-start gap-2 text-xs text-foreground/90 bg-background/60 p-3 rounded-lg border border-border/60">
-                          <CheckCircle2 className="h-4 w-4 text-emerald-500 shrink-0 mt-0.5" />
-                          <span>{m}</span>
-                        </div>
-                      ))}
+                {/* Expected Output Box */}
+                <div className="p-5 rounded-2xl border border-amber-500/30 bg-amber-500/10 flex items-center justify-between">
+                  <div>
+                    <div className="text-xs font-bold text-amber-700 dark:text-amber-400 uppercase tracking-wider mb-1">
+                      EXPECTED OUTPUT
+                    </div>
+                    <div className="text-sm font-bold text-foreground">
+                      {activePhase.output}
                     </div>
                   </div>
+                  <button
+                    onClick={() => setIsModalOpen(true)}
+                    className="px-5 py-2.5 rounded-lg text-xs font-semibold text-primary-foreground bg-primary hover:bg-primary/90 transition-colors shadow-md"
+                  >
+                    Apply for Cohort &rarr;
+                  </button>
+                </div>
+              </motion.div>
+            </AnimatePresence>
+          </div>
 
-                  <div className="pt-4 border-t border-border/60 flex items-center justify-between">
-                    <span className="text-xs text-muted-foreground">Ready for this stage?</span>
-                    <button
-                      onClick={() => setIsModalOpen(true)}
-                      className="px-5 py-2 rounded-lg text-xs font-semibold text-primary-foreground bg-primary hover:bg-primary/90 transition-colors"
-                    >
-                      Join Next Cohort &rarr;
-                    </button>
-                  </div>
-                </motion.div>
-              </AnimatePresence>
-            </div>
+          {/* MOBILE EXPANDABLE VERTICAL TIMELINE ROADMAP (Visible on mobile & tablet) */}
+          <div className="lg:hidden space-y-4">
+            {roadmapPhases.map((phase, idx) => {
+              const isExpanded = expandedMobilePhase === idx;
+              const IconComp = phase.icon;
+              return (
+                <div
+                  key={phase.id}
+                  className="rounded-2xl border border-border bg-card overflow-hidden transition-all"
+                >
+                  <button
+                    onClick={() => setExpandedMobilePhase(isExpanded ? null : idx)}
+                    className="w-full p-5 flex items-center justify-between text-left focus:outline-none"
+                  >
+                    <div className="flex items-center gap-3">
+                      <span className="font-mono text-sm font-bold text-amber-600 dark:text-amber-400 px-2.5 py-1 rounded bg-amber-500/10">
+                        {phase.id}
+                      </span>
+                      <div>
+                        <div className="font-bold text-base text-foreground">{phase.name}</div>
+                        <div className="text-xs text-muted-foreground">{phase.tagline}</div>
+                      </div>
+                    </div>
+                    <ChevronDown
+                      className={`h-5 w-5 text-muted-foreground transition-transform duration-300 ${
+                        isExpanded ? "rotate-180 text-primary" : ""
+                      }`}
+                    />
+                  </button>
+
+                  <AnimatePresence>
+                    {isExpanded && (
+                      <motion.div
+                        initial={{ height: 0, opacity: 0 }}
+                        animate={{ height: "auto", opacity: 1 }}
+                        exit={{ height: 0, opacity: 0 }}
+                        transition={{ duration: 0.3 }}
+                        className="px-5 pb-5 pt-2 border-t border-border/60 space-y-4"
+                      >
+                        <div className="space-y-2">
+                          <div className="text-xs font-bold uppercase tracking-wider text-foreground">
+                            Key Activities:
+                          </div>
+                          <div className="space-y-2">
+                            {phase.activities.map((act, i) => (
+                              <div
+                                key={i}
+                                className="flex items-start gap-2 text-xs text-foreground/90 bg-background/60 p-2.5 rounded-lg border border-border/60"
+                              >
+                                <CheckCircle2 className="h-3.5 w-3.5 text-emerald-500 shrink-0 mt-0.5" />
+                                <span>{act}</span>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+
+                        {phase.message && (
+                          <div className="p-3 rounded-lg bg-indigo-500/10 border border-indigo-500/30 text-xs font-medium text-indigo-900 dark:text-indigo-200">
+                            {phase.message}
+                          </div>
+                        )}
+
+                        <div className="p-4 rounded-xl bg-amber-500/10 border border-amber-500/30">
+                          <div className="text-[10px] font-bold text-amber-700 dark:text-amber-400 uppercase tracking-wider mb-0.5">
+                            EXPECTED OUTPUT
+                          </div>
+                          <div className="text-xs font-bold text-foreground">
+                            {phase.output}
+                          </div>
+                        </div>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </div>
+              );
+            })}
           </div>
         </div>
       </section>
@@ -935,7 +1167,7 @@ ${formData.message || "No additional message provided."}`;
             ))}
           </div>
 
-          {/* Organization Disclaimer Note */}
+          {/* Context Note */}
           <div className="mt-12 p-4 rounded-xl border border-border bg-card/60 text-center max-w-4xl mx-auto text-xs text-muted-foreground leading-relaxed">
             <strong className="text-foreground">Disclaimer & Context Note:</strong> Aibility Hackathon Cohort is an independent training and incubation program. Mention of specific hackathons (e.g. Smart India Hackathon, NASA Space Apps, Google Solution Challenge, Microsoft Imagine Cup) is purely for illustrative purposes to demonstrate target hackathon formats, problem types, and preparation scope, and does not imply official partnership, endorsement, or sponsorship by these entities.
           </div>
@@ -943,7 +1175,7 @@ ${formData.message || "No additional message provided."}`;
       </section>
 
       {/* ========================================================================= */}
-      {/* 6. COHORT EXPERIENCE (5 INTERACTIVE CARDS) SECTION */}
+      {/* 6. COHORT EXPERIENCE SECTION */}
       {/* ========================================================================= */}
       <section className="py-24 bg-card/30 relative border-b border-border/60">
         <div className="mx-auto max-w-7xl px-6 sm:px-8 lg:px-10">
@@ -958,7 +1190,7 @@ ${formData.message || "No additional message provided."}`;
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {experienceCards.map((card, idx) => {
+            {experienceCards.map((card) => {
               const Icon = card.icon;
               return (
                 <motion.div
@@ -1225,13 +1457,13 @@ ${formData.message || "No additional message provided."}`;
             </div>
             <div className="p-6 rounded-xl border border-border bg-card space-y-3">
               <div className="font-mono text-2xl font-bold text-blue-500">02</div>
-              <h3 className="font-bold text-base">AI-First Approach</h3>
-              <p className="text-xs text-muted-foreground">Build 5x faster using state-of-the-art AI developer tools.</p>
+              <h3 className="font-bold text-base">Smart Workflows</h3>
+              <p className="text-xs text-muted-foreground">Build faster with modern developer tools and API contracts.</p>
             </div>
             <div className="p-6 rounded-xl border border-border bg-card space-y-3">
               <div className="font-mono text-2xl font-bold text-purple-500">03</div>
               <h3 className="font-bold text-base">Structured Roadmap</h3>
-              <p className="text-xs text-muted-foreground">Clear weekly objectives from ideation to final submission.</p>
+              <p className="text-xs text-muted-foreground">10 clear phases from problem discovery to final presentation.</p>
             </div>
             <div className="p-6 rounded-xl border border-border bg-card space-y-3">
               <div className="font-mono text-2xl font-bold text-emerald-500">04</div>
@@ -1259,8 +1491,9 @@ ${formData.message || "No additional message provided."}`;
               STARTS HERE.
             </span>
           </h2>
-          <p className="text-muted-foreground text-base sm:text-lg max-w-2xl mx-auto">
-            Stop guessing. Join the Aibility Hackathon Cohort, build with experienced mentors, and enter your next competition ready to win.
+          <p className="text-muted-foreground text-base sm:text-lg max-w-2xl mx-auto font-medium">
+            FROM THE FIRST PROBLEM STATEMENT TO THE FINAL PRESENTATION. <br className="hidden sm:inline" />
+            <span className="text-foreground font-bold">WE PREPARE YOU FOR THE JOURNEY IN BETWEEN.</span>
           </p>
 
           <div className="flex flex-wrap items-center justify-center gap-4 pt-4">
@@ -1401,7 +1634,7 @@ ${formData.message || "No additional message provided."}`;
                           className="w-full px-3.5 py-2.5 rounded-lg border border-border bg-background text-sm focus:outline-none focus:ring-2 focus:ring-primary"
                         >
                           <option value="Developer">Developer / Coder</option>
-                          <option value="AI Engineer">AI / ML Engineer</option>
+                          <option value="Full-Stack Engineer">Full-Stack Engineer</option>
                           <option value="UI/UX Designer">UI/UX Designer</option>
                           <option value="Pitch Presenter">Pitch Presenter / Lead</option>
                           <option value="Team Leader">Team Leader</option>
@@ -1433,7 +1666,7 @@ ${formData.message || "No additional message provided."}`;
                           className="w-full px-3.5 py-2.5 rounded-lg border border-border bg-background text-sm focus:outline-none focus:ring-2 focus:ring-primary"
                         >
                           <option value="First Hackathon Cohort">First Hackathon Cohort</option>
-                          <option value="AI Hackathon Cohort">AI Hackathon Cohort</option>
+                          <option value="Innovation Sprint Cohort">Innovation Sprint Cohort</option>
                           <option value="Advanced Hackathon Cohort">Advanced Hackathon Cohort</option>
                           <option value="College / Institution Cohort">College Campus Cohort</option>
                           <option value="Custom Hackathon Preparation">Custom 1-on-1 Preparation</option>
