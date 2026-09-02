@@ -425,9 +425,7 @@ export default function HackathonCohort() {
     email: "",
     phone: "",
     college: "",
-    role: "Developer",
-    experience: "Beginner",
-    programInterest: "Innovation Sprint Cohort",
+    branch: "",
     message: "",
   });
 
@@ -447,35 +445,33 @@ export default function HackathonCohort() {
     try {
       const fullMessage = `[HACKATHON COHORT APPLICATION]
 Phone/WhatsApp: ${formData.phone}
-College/Org: ${formData.college}
-Primary Role: ${formData.role}
-Experience Level: ${formData.experience}
-Cohort Track: ${formData.programInterest}
+College/Org: ${formData.college || "Not specified"}
+Branch of Studying: ${formData.branch || "Not specified"}
 
 Additional Details:
 ${formData.message || "No additional message provided."}`;
 
-      // Save to Convex
+      // Save to Convex Database
       await saveMessage({
         name: formData.name,
         email: formData.email,
-        company: `${formData.college} (${formData.role})`,
-        service: `Hackathon Cohort - ${formData.programInterest}`,
+        company: `${formData.college || "Student"} (${formData.branch || "N/A"})`,
+        service: `Hackathon Cohort Application`,
         message: fullMessage,
       });
 
-      // Send Email notification
+      // Send Email Notification to support@aibility.co.in
       try {
         await sendEmail({
           name: formData.name,
           email: formData.email,
-          company: `${formData.college} (${formData.role})`,
-          service: `Hackathon Cohort - ${formData.programInterest}`,
+          company: `${formData.college || "Student"} (${formData.branch || "N/A"})`,
+          service: `Hackathon Cohort Application`,
           message: fullMessage,
           companyEmail: "support@aibility.co.in",
         });
       } catch (err) {
-        console.warn("Email notice sent to admin inbox directly.", err);
+        console.warn("Email notice sent directly.", err);
       }
 
       setSubmitted(true);
@@ -495,9 +491,7 @@ ${formData.message || "No additional message provided."}`;
       email: "",
       phone: "",
       college: "",
-      role: "Developer",
-      experience: "Beginner",
-      programInterest: "Innovation Sprint Cohort",
+      branch: "",
       message: "",
     });
   };
@@ -700,48 +694,7 @@ ${formData.message || "No additional message provided."}`;
       {/* ========================================================================= */}
       <section className="py-24 relative border-b border-border/60">
         <div className="mx-auto max-w-7xl px-6 sm:px-8 lg:px-10 space-y-16">
-          {/* Section 1: Tracks */}
-          <div>
-            <div className="text-center max-w-3xl mx-auto mb-12 space-y-3">
-              <span className="eyebrow text-amber-600 dark:text-amber-400">PROGRAM TRACKS</span>
-              <h2 className="text-3xl sm:text-4xl font-bold tracking-tight text-foreground">
-                Tailored Cohort Offerings
-              </h2>
-            </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-              {cohortPrograms.map((prog) => (
-                <div
-                  key={prog.name}
-                  className={`p-6 rounded-2xl border transition-all flex flex-col justify-between ${
-                    prog.recommended
-                      ? "border-amber-500 bg-card shadow-xl ring-2 ring-amber-500/20"
-                      : "border-border bg-card shadow-sm"
-                  }`}
-                >
-                  <div className="space-y-3 text-left">
-                    <span className="text-xs font-mono font-bold text-amber-600 dark:text-amber-400 uppercase">
-                      {prog.level}
-                    </span>
-                    <h3 className="text-xl font-bold text-foreground">{prog.name}</h3>
-                    <p className="text-xs text-muted-foreground leading-relaxed">{prog.desc}</p>
-                  </div>
-
-                  <div className="mt-6 pt-4 border-t border-border/60">
-                    <button
-                      onClick={() => {
-                        setFormData((prev) => ({ ...prev, programInterest: prog.name }));
-                        setIsModalOpen(true);
-                      }}
-                      className="w-full py-2.5 rounded-lg text-xs font-semibold text-primary-foreground bg-primary hover:bg-primary/90"
-                    >
-                      Apply &rarr;
-                    </button>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
 
           {/* Section 2: Target Competitions */}
           <div>
@@ -954,63 +907,28 @@ ${formData.message || "No additional message provided."}`;
 
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                       <div>
-                        <label className="block text-xs font-medium mb-1">College / Organization</label>
+                        <label className="block text-xs font-medium mb-1">College / Organization *</label>
                         <input
                           type="text"
                           name="college"
+                          required
                           value={formData.college}
                           onChange={handleInputChange}
-                          placeholder="e.g. SRM / IIT / Company"
+                          placeholder="e.g. SRM / IIT / University"
                           className="w-full px-3.5 py-2.5 rounded-lg border border-border bg-background text-sm focus:outline-none focus:ring-2 focus:ring-primary"
                         />
                       </div>
                       <div>
-                        <label className="block text-xs font-medium mb-1">Primary Role</label>
-                        <select
-                          name="role"
-                          value={formData.role}
+                        <label className="block text-xs font-medium mb-1">Branch of Studying *</label>
+                        <input
+                          type="text"
+                          name="branch"
+                          required
+                          value={formData.branch}
                           onChange={handleInputChange}
+                          placeholder="e.g. CSE / AI & ML / ECE / IT"
                           className="w-full px-3.5 py-2.5 rounded-lg border border-border bg-background text-sm focus:outline-none focus:ring-2 focus:ring-primary"
-                        >
-                          <option value="Developer">Developer / Coder</option>
-                          <option value="Full-Stack Engineer">Full-Stack Engineer</option>
-                          <option value="UI/UX Designer">UI/UX Designer</option>
-                          <option value="Pitch Presenter">Pitch Presenter / Lead</option>
-                          <option value="Team Leader">Team Leader</option>
-                        </select>
-                      </div>
-                    </div>
-
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                      <div>
-                        <label className="block text-xs font-medium mb-1">Experience Level</label>
-                        <select
-                          name="experience"
-                          value={formData.experience}
-                          onChange={handleInputChange}
-                          className="w-full px-3.5 py-2.5 rounded-lg border border-border bg-background text-sm focus:outline-none focus:ring-2 focus:ring-primary"
-                        >
-                          <option value="Beginner">First-time Hacker</option>
-                          <option value="Intermediate">1-2 Hackathons</option>
-                          <option value="Experienced">Experienced Competitor</option>
-                        </select>
-                      </div>
-
-                      <div>
-                        <label className="block text-xs font-medium mb-1">Cohort Track</label>
-                        <select
-                          name="programInterest"
-                          value={formData.programInterest}
-                          onChange={handleInputChange}
-                          className="w-full px-3.5 py-2.5 rounded-lg border border-border bg-background text-sm focus:outline-none focus:ring-2 focus:ring-primary"
-                        >
-                          <option value="First Hackathon Cohort">First Hackathon Cohort</option>
-                          <option value="Innovation Sprint Cohort">Innovation Sprint Cohort</option>
-                          <option value="Advanced Hackathon Cohort">Advanced Hackathon Cohort</option>
-                          <option value="College / Institution Cohort">College Campus Cohort</option>
-                          <option value="Custom Hackathon Preparation">Custom 1-on-1 Preparation</option>
-                          <option value="Campus Workshop Request">Campus Workshop Request</option>
-                        </select>
+                        />
                       </div>
                     </div>
 
