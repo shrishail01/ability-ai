@@ -1,4 +1,4 @@
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence, useScroll, useTransform, useSpring } from "framer-motion";
 import {
   Trophy,
   Rocket,
@@ -30,7 +30,7 @@ import {
   FileCheck,
   Cpu,
 } from "lucide-react";
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { Link } from "react-router";
 import { useMutation, useAction } from "convex/react";
 import { api } from "../convex/_generated/api";
@@ -53,218 +53,114 @@ const stagger = {
 };
 
 // ============================================================================
-// 10 HACKATHON ROADMAP PHASES (REPLACES WEEK-BY-WEEK TIMELINE)
+// 5 MAJOR STAGES FOR THE HACKATHON JOURNEY
 // ============================================================================
-export interface RoadmapPhase {
+export interface JourneyStage {
   id: string;
   num: number;
-  name: string;
-  tagline: string;
+  title: string;
+  subtitle: string;
   icon: any;
   color: string;
-  borderColor: string;
   accentColor: string;
-  activities: string[];
-  message?: string;
-  output: string;
+  badgeColor: string;
+  learnings: string[];
+  takeaway: string;
 }
 
-const roadmapPhases: RoadmapPhase[] = [
+const journeyStages: JourneyStage[] = [
   {
     id: "01",
     num: 1,
-    name: "DISCOVER",
-    tagline: "Understand the Challenge",
+    title: "DISCOVER",
+    subtitle: "Understand the challenge.",
     icon: Search,
     color: "from-blue-500/20 to-indigo-500/20",
-    borderColor: "border-blue-500/30",
     accentColor: "text-blue-600 dark:text-blue-400",
-    activities: [
-      "Decode the problem statement",
-      "Understand the requirements",
-      "Research the domain",
-      "Identify users and stakeholders",
-      "Understand constraints",
-      "Study judging criteria",
+    badgeColor: "bg-blue-500/10 text-blue-600 dark:text-blue-400 border-blue-500/30",
+    learnings: [
+      "How to read a hackathon problem statement",
+      "How to identify the real problem",
+      "How to understand users and requirements",
+      "How to research the problem",
+      "How to identify constraints",
     ],
-    output: "A clear understanding of the challenge.",
+    takeaway: "A clear understanding of what needs to be solved.",
   },
   {
     id: "02",
     num: 2,
-    name: "DEFINE",
-    tagline: "Find the Right Problem",
-    icon: Target,
-    color: "from-cyan-500/20 to-blue-500/20",
-    borderColor: "border-cyan-500/30",
-    accentColor: "text-cyan-600 dark:text-cyan-400",
-    activities: [
-      "Identify the core problem",
-      "Validate the problem",
-      "Understand user pain points",
-      "Define the scope",
-      "Identify what actually needs to be solved",
+    title: "IDEATE",
+    subtitle: "Turn problems into possibilities.",
+    icon: Lightbulb,
+    color: "from-amber-500/20 to-yellow-500/20",
+    accentColor: "text-amber-600 dark:text-amber-400",
+    badgeColor: "bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/30",
+    learnings: [
+      "Brainstorm solution ideas",
+      "Think beyond obvious solutions",
+      "Compare different approaches",
+      "Evaluate feasibility",
+      "Select a strong concept",
     ],
-    output: "A focused problem statement.",
+    takeaway: "A focused solution worth building.",
   },
   {
     id: "03",
     num: 3,
-    name: "IDEATE",
-    tagline: "Turn Problems Into Solutions",
-    icon: Lightbulb,
-    color: "from-amber-500/20 to-yellow-500/20",
-    borderColor: "border-amber-500/30",
-    accentColor: "text-amber-600 dark:text-amber-400",
-    activities: [
-      "Brainstorm solutions",
-      "Explore multiple approaches",
-      "Compare ideas",
-      "Evaluate feasibility",
-      "Identify innovation opportunities",
-      "Select the strongest concept",
+    title: "BUILD",
+    subtitle: "Turn the idea into something real.",
+    icon: Code2,
+    color: "from-emerald-500/20 to-teal-500/20",
+    accentColor: "text-emerald-600 dark:text-emerald-400",
+    badgeColor: "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/30",
+    learnings: [
+      "Plan the product",
+      "Choose the right technology",
+      "Build a working prototype",
+      "Divide work within the team",
+      "Manage time and priorities",
+      "Test while building",
     ],
-    output: "A clear and validated solution idea.",
+    takeaway: "A functional prototype you can demonstrate.",
   },
   {
     id: "04",
     num: 4,
-    name: "STRATEGIZE",
-    tagline: "Build the Game Plan",
-    icon: Compass,
+    title: "PITCH",
+    subtitle: "Make people understand why your solution matters.",
+    icon: Presentation,
     color: "from-purple-500/20 to-pink-500/20",
-    borderColor: "border-purple-500/30",
     accentColor: "text-purple-600 dark:text-purple-400",
-    activities: [
-      "Form the team",
-      "Assign responsibilities",
-      "Choose the technology stack",
-      "Break the project into tasks",
-      "Prioritize features",
-      "Plan development around the deadline",
+    badgeColor: "bg-purple-500/10 text-purple-600 dark:text-purple-400 border-purple-500/30",
+    learnings: [
+      "Structure your story",
+      "Explain the problem clearly",
+      "Present the solution",
+      "Show innovation and impact",
+      "Build a strong pitch deck",
+      "Practice your presentation",
     ],
-    output: "A realistic execution plan.",
+    takeaway: "A clear story that judges can remember.",
   },
   {
     id: "05",
     num: 5,
-    name: "BUILD",
-    tagline: "Turn Ideas Into Reality",
-    icon: Code2,
-    color: "from-emerald-500/20 to-teal-500/20",
-    borderColor: "border-emerald-500/30",
-    accentColor: "text-emerald-600 dark:text-emerald-400",
-    activities: [
-      "Design the architecture",
-      "Develop the core product",
-      "Build the frontend",
-      "Build the backend",
-      "Integrate required services",
-      "Create the MVP",
-      "Connect the complete workflow",
-    ],
-    output: "A functional prototype.",
-  },
-  {
-    id: "06",
-    num: 6,
-    name: "ACCELERATE",
-    tagline: "Work Smarter",
-    icon: Zap,
-    color: "from-indigo-500/20 to-purple-500/20",
-    borderColor: "border-indigo-500/30",
-    accentColor: "text-indigo-600 dark:text-indigo-400",
-    activities: [
-      "Research assistance",
-      "Faster ideation",
-      "Coding assistance",
-      "Debugging",
-      "Design exploration",
-      "Documentation",
-      "Productivity workflows",
-    ],
-    message: "Use the right tools to move faster without compromising your own thinking.",
-    output: "Faster iteration and better productivity.",
-  },
-  {
-    id: "07",
-    num: 7,
-    name: "REFINE",
-    tagline: "Make It Competition-Ready",
-    icon: Shield,
-    color: "from-orange-500/20 to-amber-500/20",
-    borderColor: "border-orange-500/30",
-    accentColor: "text-orange-600 dark:text-orange-400",
-    activities: [
-      "Test the product",
-      "Fix bugs",
-      "Improve usability",
-      "Improve UI/UX",
-      "Validate the solution",
-      "Gather feedback",
-      "Remove unnecessary features",
-      "Strengthen the core experience",
-    ],
-    output: "A polished and reliable prototype.",
-  },
-  {
-    id: "08",
-    num: 8,
-    name: "PITCH",
-    tagline: "Tell the Story",
-    icon: Presentation,
-    color: "from-rose-500/20 to-pink-500/20",
-    borderColor: "border-rose-500/30",
-    accentColor: "text-rose-600 dark:text-rose-400",
-    activities: [
-      "Define the problem",
-      "Explain the solution",
-      "Explain the innovation",
-      "Show the impact",
-      "Explain the technology",
-      "Create the pitch deck",
-      "Practice the presentation",
-    ],
-    output: "A clear and memorable pitch.",
-  },
-  {
-    id: "09",
-    num: 9,
-    name: "DEMO",
-    tagline: "Show What You Built",
-    icon: Flame,
-    color: "from-violet-500/20 to-indigo-500/20",
-    borderColor: "border-violet-500/30",
-    accentColor: "text-violet-600 dark:text-violet-400",
-    activities: [
-      "Create the demo flow",
-      "Prepare the product walkthrough",
-      "Practice the live demonstration",
-      "Prepare backup plans",
-      "Handle technical issues",
-      "Practice likely questions",
-    ],
-    output: "A confident product demonstration.",
-  },
-  {
-    id: "10",
-    num: 10,
-    name: "COMPETE",
-    tagline: "Face the Judges",
+    title: "COMPETE",
+    subtitle: "Walk into the competition prepared.",
     icon: Trophy,
-    color: "from-amber-500/20 to-yellow-500/20",
-    borderColor: "border-amber-500/30",
-    accentColor: "text-amber-600 dark:text-amber-400",
-    activities: [
-      "Understand evaluation criteria",
-      "Prepare for questions",
-      "Defend technical decisions",
-      "Explain impact",
+    color: "from-amber-500/30 to-rose-500/30",
+    accentColor: "text-amber-500 dark:text-amber-400",
+    badgeColor: "bg-amber-500/20 text-amber-500 border-amber-500/40",
+    learnings: [
+      "Handle judge questions",
+      "Explain technical decisions",
+      "Demonstrate the product",
       "Handle pressure",
-      "Complete final submission",
-      "Prepare the final checklist",
+      "Understand evaluation criteria",
+      "Prepare the final submission",
     ],
-    output: "A team ready for the competition.",
+    takeaway: "A team ready to compete with confidence.",
   },
 ];
 
@@ -490,10 +386,360 @@ const cohortPrograms = [
   },
 ];
 
-export default function HackathonCohort() {
-  const [selectedPhaseIndex, setSelectedPhaseIndex] = useState(0);
-  const [expandedMobilePhase, setExpandedMobilePhase] = useState<number | null>(0);
+// ============================================================================
+// SCROLL-DRIVEN ANIMATED HACKATHON ROADMAP COMPONENT
+// ============================================================================
+function ScrollDrivenRoadmap({ onOpenModal }: { onOpenModal: () => void }) {
+  const containerRef = useRef<HTMLDivElement>(null);
 
+  // Scroll Progress
+  const { scrollYProgress } = useScroll({
+    target: containerRef,
+    offset: ["start start", "end end"],
+  });
+
+  const smoothProgress = useSpring(scrollYProgress, { stiffness: 90, damping: 20 });
+
+  // Map scroll progress to active stage index (0 to 4)
+  const [activeIdx, setActiveIdx] = useState(0);
+
+  // Sync scrollYProgress to active index
+  useTransform(smoothProgress, (val) => {
+    let nextIdx = 0;
+    if (val >= 0.8) nextIdx = 4;
+    else if (val >= 0.6) nextIdx = 3;
+    else if (val >= 0.4) nextIdx = 2;
+    else if (val >= 0.2) nextIdx = 1;
+    else nextIdx = 0;
+
+    if (nextIdx !== activeIdx) {
+      setActiveIdx(nextIdx);
+    }
+    return val;
+  });
+
+  const currentStage = journeyStages[activeIdx];
+
+  // SVG Marker position transform (Y position from top of canvas)
+  const markerYPercent = useTransform(smoothProgress, [0, 1], [10, 90]);
+
+  return (
+    <section
+      id="hackathon-roadmap"
+      ref={containerRef}
+      className="relative min-h-[300vh] bg-background border-b border-border/60"
+    >
+      {/* Sticky viewport frame */}
+      <div className="sticky top-0 h-screen overflow-hidden flex flex-col justify-between py-8 px-4 sm:px-8 lg:px-12 bg-background/95 backdrop-blur-sm z-10">
+        {/* SECTION HEADER */}
+        <div className="text-center max-w-3xl mx-auto space-y-1.5 z-20 shrink-0">
+          <span className="eyebrow text-amber-600 dark:text-amber-400 font-mono font-bold tracking-widest text-xs uppercase">
+            THE HACKATHON JOURNEY
+          </span>
+          <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold tracking-tight text-foreground uppercase">
+            From the first problem statement to the final pitch.
+          </h2>
+          <p className="text-xs sm:text-sm text-muted-foreground">
+            Follow the journey. Learn what matters. Build with confidence.
+          </p>
+        </div>
+
+        {/* ========================================================================= */}
+        {/* DESKTOP LAYOUT (ALTERNATING STAGE CARDS + CENTER ANIMATED PATH) */}
+        {/* ========================================================================= */}
+        <div className="hidden lg:grid grid-cols-12 gap-8 items-center h-full max-w-7xl mx-auto w-full py-4 relative">
+          {/* Left Stage Details Panel */}
+          <div className="col-span-5 flex flex-col justify-center space-y-4 pr-4">
+            <AnimatePresence mode="wait">
+              <motion.div
+                key={currentStage.id}
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: 20 }}
+                transition={{ duration: 0.3 }}
+                className="p-7 rounded-2xl border border-border bg-card shadow-2xl space-y-5"
+              >
+                <div className="flex items-center justify-between pb-3 border-b border-border/60">
+                  <div className="flex items-center gap-2.5">
+                    <span className={`px-2.5 py-0.5 rounded text-xs font-mono font-bold border ${currentStage.badgeColor}`}>
+                      STAGE {currentStage.id}
+                    </span>
+                    <h3 className="text-xl font-bold text-foreground tracking-wide">
+                      {currentStage.title}
+                    </h3>
+                  </div>
+                  <currentStage.icon className={`h-5 w-5 ${currentStage.accentColor}`} />
+                </div>
+
+                <p className="text-xs font-semibold text-muted-foreground italic">
+                  "{currentStage.subtitle}"
+                </p>
+
+                <div className="space-y-2">
+                  <h4 className="text-[11px] font-bold uppercase tracking-wider text-foreground">
+                    WHAT YOU LEARN:
+                  </h4>
+                  <ul className="space-y-2">
+                    {currentStage.learnings.map((item, idx) => (
+                      <li key={idx} className="flex items-start gap-2 text-xs text-foreground/90 bg-background/60 p-2.5 rounded-lg border border-border/60">
+                        <CheckCircle2 className="h-3.5 w-3.5 text-emerald-500 shrink-0 mt-0.5" />
+                        <span>{item}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+
+                <div className="p-3.5 rounded-xl border border-amber-500/30 bg-amber-500/10">
+                  <div className="text-[10px] font-bold text-amber-700 dark:text-amber-400 uppercase tracking-wider mb-0.5">
+                    TAKEAWAY
+                  </div>
+                  <div className="text-xs font-bold text-foreground">
+                    {currentStage.takeaway}
+                  </div>
+                </div>
+              </motion.div>
+            </AnimatePresence>
+          </div>
+
+          {/* Center Glowing Path & Moving Marker */}
+          <div className="col-span-2 relative h-full flex flex-col items-center justify-between py-6">
+            {/* Background Path Line */}
+            <div className="absolute top-10 bottom-10 w-1 bg-border/60 rounded-full" />
+
+            {/* Scroll-Driven Animated Glowing Path Line */}
+            <motion.div
+              style={{
+                scaleY: smoothProgress,
+                transformOrigin: "top",
+              }}
+              className="absolute top-10 bottom-10 w-1 bg-gradient-to-b from-blue-500 via-amber-500 to-rose-500 rounded-full shadow-[0_0_12px_rgba(245,158,11,0.5)]"
+            />
+
+            {/* 5 Destination Stage Nodes */}
+            {journeyStages.map((stage, idx) => {
+              const isActive = activeIdx === idx;
+              const isPassed = activeIdx >= idx;
+              const StageIcon = stage.icon;
+
+              return (
+                <button
+                  key={stage.id}
+                  onClick={() => setActiveIdx(idx)}
+                  className={`relative z-20 flex flex-col items-center group transition-transform ${
+                    isActive ? "scale-125" : "scale-100"
+                  }`}
+                >
+                  <div
+                    className={`h-11 w-11 rounded-full flex items-center justify-center border-2 transition-all shadow-md ${
+                      isActive
+                        ? "bg-primary text-primary-foreground border-amber-500 ring-4 ring-amber-500/20"
+                        : isPassed
+                        ? "bg-card text-foreground border-primary"
+                        : "bg-card text-muted-foreground border-border"
+                    }`}
+                  >
+                    {idx === 4 ? (
+                      <Trophy className="h-5 w-5 text-amber-400" />
+                    ) : (
+                      <StageIcon className="h-5 w-5" />
+                    )}
+                  </div>
+                  <span
+                    className={`mt-1 font-mono text-[10px] font-bold tracking-wider uppercase px-2 py-0.5 rounded ${
+                      isActive
+                        ? "bg-amber-500 text-slate-950 font-extrabold"
+                        : "bg-background text-muted-foreground border border-border"
+                    }`}
+                  >
+                    {stage.id} {stage.title}
+                  </span>
+                </button>
+              );
+            })}
+          </div>
+
+          {/* Right Summary / Destination Nodes Status Panel */}
+          <div className="col-span-5 flex flex-col justify-center space-y-4 pl-4">
+            <div className="p-6 rounded-2xl border border-border bg-card/80 backdrop-blur-md space-y-4">
+              <div className="flex items-center justify-between pb-3 border-b border-border/60">
+                <span className="text-xs font-mono font-bold text-muted-foreground uppercase">
+                  JOURNEY PROGRESS // STAGE {currentStage.id} OF 05
+                </span>
+                <span className="text-xs font-semibold px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-600 dark:text-emerald-400">
+                  SCROLL ACTIVE
+                </span>
+              </div>
+
+              {/* Node Overview Trail */}
+              <div className="space-y-2.5">
+                {journeyStages.map((stg, i) => {
+                  const isCurrent = activeIdx === i;
+                  const isDone = activeIdx > i;
+                  return (
+                    <div
+                      key={stg.id}
+                      onClick={() => setActiveIdx(i)}
+                      className={`p-3 rounded-xl border flex items-center justify-between cursor-pointer transition-all ${
+                        isCurrent
+                          ? "border-amber-500/60 bg-amber-500/10 shadow-sm"
+                          : isDone
+                          ? "border-border bg-background/50 text-foreground"
+                          : "border-border/40 bg-background/20 text-muted-foreground opacity-60"
+                      }`}
+                    >
+                      <div className="flex items-center gap-3">
+                        <span className="font-mono text-xs font-bold text-amber-600 dark:text-amber-400">
+                          {stg.id}
+                        </span>
+                        <div>
+                          <div className="font-bold text-xs text-foreground">{stg.title}</div>
+                          <div className="text-[10px] text-muted-foreground">{stg.subtitle}</div>
+                        </div>
+                      </div>
+                      {isDone ? (
+                        <CheckCircle2 className="h-4 w-4 text-emerald-500" />
+                      ) : isCurrent ? (
+                        <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-primary text-primary-foreground">
+                          ACTIVE
+                        </span>
+                      ) : (
+                        <span className="text-[10px] font-mono text-muted-foreground">NEXT</span>
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
+
+              {/* Stage 05 (COMPETE) Final CTA Spotlight Card when scroll reaches end */}
+              {activeIdx === 4 && (
+                <motion.div
+                  initial={{ opacity: 0, scale: 0.95 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  className="p-4 rounded-xl border border-amber-500/40 bg-gradient-to-br from-amber-500/20 to-primary/20 text-center space-y-2 mt-4"
+                >
+                  <div className="inline-flex p-2 rounded-full bg-amber-500/20 text-amber-400">
+                    <Trophy className="h-5 w-5 animate-bounce" />
+                  </div>
+                  <h4 className="font-bold text-sm text-foreground uppercase">
+                    READY TO COMPETE.
+                  </h4>
+                  <p className="text-xs text-muted-foreground">
+                    Build smarter. Pitch better. Compete with confidence.
+                  </p>
+                  <button
+                    onClick={onOpenModal}
+                    className="w-full py-2.5 rounded-lg text-xs font-bold text-slate-950 bg-amber-400 hover:bg-amber-300 transition-colors shadow-md"
+                  >
+                    JOIN THE COHORT &rarr;
+                  </button>
+                </motion.div>
+              )}
+            </div>
+          </div>
+        </div>
+
+        {/* ========================================================================= */}
+        {/* MOBILE LAYOUT (VERTICAL SCROLL TIMELINE) */}
+        {/* ========================================================================= */}
+        <div className="lg:hidden flex-1 overflow-y-auto py-4 px-2 space-y-4">
+          <div className="relative border-l-2 border-primary/40 pl-6 space-y-6">
+            {journeyStages.map((stage, idx) => {
+              const isActive = activeIdx === idx;
+              const StageIcon = stage.icon;
+              return (
+                <div key={stage.id} className="relative">
+                  {/* Node Circle */}
+                  <div
+                    onClick={() => setActiveIdx(idx)}
+                    className={`absolute -left-[31px] top-0 h-8 w-8 rounded-full border-2 flex items-center justify-center cursor-pointer transition-all ${
+                      isActive
+                        ? "bg-primary text-primary-foreground border-amber-500 ring-2 ring-amber-500/20"
+                        : "bg-card text-muted-foreground border-border"
+                    }`}
+                  >
+                    {idx === 4 ? <Trophy className="h-4 w-4 text-amber-400" /> : <StageIcon className="h-4 w-4" />}
+                  </div>
+
+                  {/* Stage Card */}
+                  <div
+                    onClick={() => setActiveIdx(idx)}
+                    className={`p-4 rounded-xl border transition-all ${
+                      isActive
+                        ? "border-primary bg-card shadow-md"
+                        : "border-border bg-card/60"
+                    }`}
+                  >
+                    <div className="flex items-center justify-between mb-1">
+                      <span className="font-mono text-xs font-bold text-amber-600 dark:text-amber-400">
+                        STAGE {stage.id}
+                      </span>
+                      <span className="font-bold text-sm text-foreground">{stage.title}</span>
+                    </div>
+                    <div className="text-xs text-muted-foreground mb-3">{stage.subtitle}</div>
+
+                    {isActive && (
+                      <motion.div
+                        initial={{ opacity: 0, height: 0 }}
+                        animate={{ opacity: 1, height: "auto" }}
+                        className="space-y-3 pt-2 border-t border-border/60"
+                      >
+                        <div className="space-y-1.5">
+                          <div className="text-[10px] font-bold uppercase tracking-wider text-foreground">
+                            WHAT YOU LEARN:
+                          </div>
+                          {stage.learnings.map((item, i) => (
+                            <div key={i} className="flex items-start gap-1.5 text-xs text-muted-foreground bg-background/60 p-2 rounded border border-border/40">
+                              <CheckCircle2 className="h-3.5 w-3.5 text-emerald-500 shrink-0 mt-0.5" />
+                              <span>{item}</span>
+                            </div>
+                          ))}
+                        </div>
+
+                        <div className="p-3 rounded-lg bg-amber-500/10 border border-amber-500/30">
+                          <div className="text-[10px] font-bold text-amber-600 dark:text-amber-400 uppercase tracking-wider">
+                            TAKEAWAY
+                          </div>
+                          <div className="text-xs font-bold text-foreground">
+                            {stage.takeaway}
+                          </div>
+                        </div>
+                      </motion.div>
+                    )}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+
+          {/* Mobile Final CTA */}
+          <div className="p-5 rounded-2xl border border-amber-500/40 bg-gradient-to-br from-amber-500/10 to-primary/10 text-center space-y-3 mt-6">
+            <Trophy className="h-8 w-8 text-amber-500 mx-auto" />
+            <h3 className="font-bold text-base text-foreground uppercase">
+              READY FOR YOUR NEXT HACKATHON?
+            </h3>
+            <p className="text-xs text-muted-foreground">
+              Build smarter. Pitch better. Compete with confidence.
+            </p>
+            <button
+              onClick={onOpenModal}
+              className="w-full py-3 rounded-xl font-bold text-primary-foreground bg-primary hover:bg-primary/90 shadow-md"
+            >
+              JOIN THE COHORT
+            </button>
+          </div>
+        </div>
+
+        {/* Scroll Helper Prompt */}
+        <div className="text-center text-[11px] font-mono text-muted-foreground shrink-0 pt-2 flex items-center justify-center gap-2">
+          <span>SCROLL DOWN TO ADVANCE THE JOURNEY</span>
+          <ChevronDown className="h-3.5 w-3.5 animate-bounce text-amber-500" />
+        </div>
+      </div>
+    </section>
+  );
+}
+
+export default function HackathonCohort() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
@@ -580,8 +826,6 @@ ${formData.message || "No additional message provided."}`;
     });
   };
 
-  const activePhase = roadmapPhases[selectedPhaseIndex];
-
   return (
     <div className="min-h-screen bg-background text-foreground overflow-hidden">
       {/* ========================================================================= */}
@@ -659,7 +903,7 @@ ${formData.message || "No additional message provided."}`;
                 className="pt-6 grid grid-cols-3 gap-4 border-t border-border/60 max-w-lg"
               >
                 <div>
-                  <div className="text-xl sm:text-2xl font-bold text-foreground">10 Phases</div>
+                  <div className="text-xl sm:text-2xl font-bold text-foreground">5 Stages</div>
                   <div className="text-xs text-muted-foreground">Complete Roadmap</div>
                 </div>
                 <div>
@@ -716,7 +960,7 @@ ${formData.message || "No additional message provided."}`;
                     <div className="p-3.5 rounded-xl border border-border bg-background/80 hover:border-amber-500/50 transition-all text-left shadow-sm">
                       <div className="flex items-center gap-2 mb-1 text-amber-600 dark:text-amber-400 font-semibold text-xs">
                         <Search className="h-4 w-4" />
-                        <span>01. Discovery</span>
+                        <span>01. Discover</span>
                       </div>
                       <p className="text-xs text-muted-foreground">Problem decoding & user research</p>
                     </div>
@@ -724,23 +968,23 @@ ${formData.message || "No additional message provided."}`;
                     <div className="p-3.5 rounded-xl border border-border bg-background/80 hover:border-blue-500/50 transition-all text-left shadow-sm">
                       <div className="flex items-center gap-2 mb-1 text-blue-600 dark:text-blue-400 font-semibold text-xs">
                         <Compass className="h-4 w-4" />
-                        <span>02. Strategy & MVP</span>
+                        <span>02. Ideate</span>
                       </div>
-                      <p className="text-xs text-muted-foreground">Architecture & feature game plan</p>
+                      <p className="text-xs text-muted-foreground">Brainstorm & concept selection</p>
                     </div>
 
                     <div className="p-3.5 rounded-xl border border-border bg-background/80 hover:border-purple-500/50 transition-all text-left shadow-sm">
                       <div className="flex items-center gap-2 mb-1 text-purple-600 dark:text-purple-400 font-semibold text-xs">
                         <Sparkles className="h-4 w-4" />
-                        <span>03. Design & Code</span>
+                        <span>03. Build</span>
                       </div>
-                      <p className="text-xs text-muted-foreground">UI/UX polish & sprint execution</p>
+                      <p className="text-xs text-muted-foreground">Prototype development & MVP</p>
                     </div>
 
                     <div className="p-3.5 rounded-xl border border-border bg-background/80 hover:border-emerald-500/50 transition-all text-left shadow-sm">
                       <div className="flex items-center gap-2 mb-1 text-emerald-600 dark:text-emerald-400 font-semibold text-xs">
                         <Presentation className="h-4 w-4" />
-                        <span>04. Pitch & Demo</span>
+                        <span>04. Pitch & Compete</span>
                       </div>
                       <p className="text-xs text-muted-foreground">Deck story & live jury defense</p>
                     </div>
@@ -857,232 +1101,9 @@ ${formData.message || "No additional message provided."}`;
       </section>
 
       {/* ========================================================================= */}
-      {/* 3. THE HACKATHON ROADMAP (INTERACTIVE 10 PHASES) */}
+      {/* 3. SCROLL-DRIVEN ANIMATED HACKATHON ROADMAP (5 MAJOR STAGES) */}
       {/* ========================================================================= */}
-      <section id="hackathon-roadmap" className="py-24 relative border-b border-border/60">
-        <div className="mx-auto max-w-7xl px-6 sm:px-8 lg:px-10">
-          <div className="text-center max-w-3xl mx-auto mb-12 space-y-4">
-            <span className="eyebrow text-amber-600 dark:text-amber-400">
-              ONE HACKATHON. TEN PHASES. ONE COMPLETE JOURNEY.
-            </span>
-            <h2 className="text-3xl sm:text-4xl font-bold tracking-tight text-foreground">
-              THE HACKATHON ROADMAP
-            </h2>
-            <p className="text-xl font-semibold text-primary uppercase tracking-wide">
-              FROM PROBLEM TO PITCH.
-            </p>
-            <p className="text-muted-foreground text-sm sm:text-base max-w-xl mx-auto">
-              Every hackathon is different. The fundamentals of preparation remain the same.
-            </p>
-          </div>
-
-          {/* DESKTOP ROADMAP NODE NAVIGATION (Hidden on mobile) */}
-          <div className="hidden lg:block mb-12">
-            <div className="grid grid-cols-5 gap-3 mb-3">
-              {roadmapPhases.slice(0, 5).map((phase, idx) => {
-                const isSelected = selectedPhaseIndex === idx;
-                const IconComp = phase.icon;
-                return (
-                  <button
-                    key={phase.id}
-                    onClick={() => setSelectedPhaseIndex(idx)}
-                    className={`p-4 rounded-xl border text-left transition-all relative overflow-hidden group ${
-                      isSelected
-                        ? "border-primary bg-primary/10 shadow-lg ring-2 ring-primary/20"
-                        : "border-border bg-card hover:bg-accent/10"
-                    }`}
-                  >
-                    <div className="flex items-center justify-between mb-2">
-                      <span className="font-mono text-xs font-bold text-amber-600 dark:text-amber-400">
-                        {phase.id}
-                      </span>
-                      <IconComp className={`h-4 w-4 ${isSelected ? "text-primary" : "text-muted-foreground"}`} />
-                    </div>
-                    <div className="font-bold text-sm text-foreground">{phase.name}</div>
-                    <div className="text-[11px] text-muted-foreground truncate">{phase.tagline}</div>
-                  </button>
-                );
-              })}
-            </div>
-
-            <div className="grid grid-cols-5 gap-3">
-              {roadmapPhases.slice(5, 10).map((phase, idx) => {
-                const actualIdx = idx + 5;
-                const isSelected = selectedPhaseIndex === actualIdx;
-                const IconComp = phase.icon;
-                return (
-                  <button
-                    key={phase.id}
-                    onClick={() => setSelectedPhaseIndex(actualIdx)}
-                    className={`p-4 rounded-xl border text-left transition-all relative overflow-hidden group ${
-                      isSelected
-                        ? "border-primary bg-primary/10 shadow-lg ring-2 ring-primary/20"
-                        : "border-border bg-card hover:bg-accent/10"
-                    }`}
-                  >
-                    <div className="flex items-center justify-between mb-2">
-                      <span className="font-mono text-xs font-bold text-amber-600 dark:text-amber-400">
-                        {phase.id}
-                      </span>
-                      <IconComp className={`h-4 w-4 ${isSelected ? "text-primary" : "text-muted-foreground"}`} />
-                    </div>
-                    <div className="font-bold text-sm text-foreground">{phase.name}</div>
-                    <div className="text-[11px] text-muted-foreground truncate">{phase.tagline}</div>
-                  </button>
-                );
-              })}
-            </div>
-          </div>
-
-          {/* DESKTOP SELECTED PHASE DISPLAY CARD (Hidden on mobile) */}
-          <div className="hidden lg:block">
-            <AnimatePresence mode="wait">
-              <motion.div
-                key={activePhase.id}
-                initial={{ opacity: 0, y: 15 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -15 }}
-                transition={{ duration: 0.35 }}
-                className="p-8 sm:p-10 rounded-3xl border border-border bg-card shadow-2xl space-y-6 relative overflow-hidden"
-              >
-                <div className="flex items-center justify-between pb-4 border-b border-border/60">
-                  <div className="flex items-center gap-3">
-                    <span className="font-mono text-lg font-extrabold px-3 py-1 rounded bg-amber-500/10 text-amber-600 dark:text-amber-400">
-                      PHASE {activePhase.id}
-                    </span>
-                    <h3 className="text-2xl font-bold text-foreground tracking-wide">
-                      {activePhase.name}
-                    </h3>
-                  </div>
-                  <span className="text-sm font-semibold text-muted-foreground italic">
-                    "{activePhase.tagline}"
-                  </span>
-                </div>
-
-                <div className="space-y-4">
-                  <h4 className="text-xs font-bold uppercase tracking-wider text-foreground">
-                    Key Activities:
-                  </h4>
-                  <div className="grid grid-cols-2 gap-3">
-                    {activePhase.activities.map((act, i) => (
-                      <div
-                        key={i}
-                        className="flex items-start gap-2.5 text-xs sm:text-sm text-foreground/90 bg-background/80 p-3.5 rounded-xl border border-border/60"
-                      >
-                        <CheckCircle2 className="h-4 w-4 text-emerald-500 shrink-0 mt-0.5" />
-                        <span>{act}</span>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-
-                {/* Optional Message Highlight for Phase 06 (Accelerate) */}
-                {activePhase.message && (
-                  <div className="p-4 rounded-xl border border-indigo-500/30 bg-indigo-500/10 text-indigo-900 dark:text-indigo-200 text-xs sm:text-sm font-medium leading-relaxed">
-                    <strong>Note:</strong> {activePhase.message}
-                  </div>
-                )}
-
-                {/* Expected Output Box */}
-                <div className="p-5 rounded-2xl border border-amber-500/30 bg-amber-500/10 flex items-center justify-between">
-                  <div>
-                    <div className="text-xs font-bold text-amber-700 dark:text-amber-400 uppercase tracking-wider mb-1">
-                      EXPECTED OUTPUT
-                    </div>
-                    <div className="text-sm font-bold text-foreground">
-                      {activePhase.output}
-                    </div>
-                  </div>
-                  <button
-                    onClick={() => setIsModalOpen(true)}
-                    className="px-5 py-2.5 rounded-lg text-xs font-semibold text-primary-foreground bg-primary hover:bg-primary/90 transition-colors shadow-md"
-                  >
-                    Apply for Cohort &rarr;
-                  </button>
-                </div>
-              </motion.div>
-            </AnimatePresence>
-          </div>
-
-          {/* MOBILE EXPANDABLE VERTICAL TIMELINE ROADMAP (Visible on mobile & tablet) */}
-          <div className="lg:hidden space-y-4">
-            {roadmapPhases.map((phase, idx) => {
-              const isExpanded = expandedMobilePhase === idx;
-              const IconComp = phase.icon;
-              return (
-                <div
-                  key={phase.id}
-                  className="rounded-2xl border border-border bg-card overflow-hidden transition-all"
-                >
-                  <button
-                    onClick={() => setExpandedMobilePhase(isExpanded ? null : idx)}
-                    className="w-full p-5 flex items-center justify-between text-left focus:outline-none"
-                  >
-                    <div className="flex items-center gap-3">
-                      <span className="font-mono text-sm font-bold text-amber-600 dark:text-amber-400 px-2.5 py-1 rounded bg-amber-500/10">
-                        {phase.id}
-                      </span>
-                      <div>
-                        <div className="font-bold text-base text-foreground">{phase.name}</div>
-                        <div className="text-xs text-muted-foreground">{phase.tagline}</div>
-                      </div>
-                    </div>
-                    <ChevronDown
-                      className={`h-5 w-5 text-muted-foreground transition-transform duration-300 ${
-                        isExpanded ? "rotate-180 text-primary" : ""
-                      }`}
-                    />
-                  </button>
-
-                  <AnimatePresence>
-                    {isExpanded && (
-                      <motion.div
-                        initial={{ height: 0, opacity: 0 }}
-                        animate={{ height: "auto", opacity: 1 }}
-                        exit={{ height: 0, opacity: 0 }}
-                        transition={{ duration: 0.3 }}
-                        className="px-5 pb-5 pt-2 border-t border-border/60 space-y-4"
-                      >
-                        <div className="space-y-2">
-                          <div className="text-xs font-bold uppercase tracking-wider text-foreground">
-                            Key Activities:
-                          </div>
-                          <div className="space-y-2">
-                            {phase.activities.map((act, i) => (
-                              <div
-                                key={i}
-                                className="flex items-start gap-2 text-xs text-foreground/90 bg-background/60 p-2.5 rounded-lg border border-border/60"
-                              >
-                                <CheckCircle2 className="h-3.5 w-3.5 text-emerald-500 shrink-0 mt-0.5" />
-                                <span>{act}</span>
-                              </div>
-                            ))}
-                          </div>
-                        </div>
-
-                        {phase.message && (
-                          <div className="p-3 rounded-lg bg-indigo-500/10 border border-indigo-500/30 text-xs font-medium text-indigo-900 dark:text-indigo-200">
-                            {phase.message}
-                          </div>
-                        )}
-
-                        <div className="p-4 rounded-xl bg-amber-500/10 border border-amber-500/30">
-                          <div className="text-[10px] font-bold text-amber-700 dark:text-amber-400 uppercase tracking-wider mb-0.5">
-                            EXPECTED OUTPUT
-                          </div>
-                          <div className="text-xs font-bold text-foreground">
-                            {phase.output}
-                          </div>
-                        </div>
-                      </motion.div>
-                    )}
-                  </AnimatePresence>
-                </div>
-              );
-            })}
-          </div>
-        </div>
-      </section>
+      <ScrollDrivenRoadmap onOpenModal={() => setIsModalOpen(true)} />
 
       {/* ========================================================================= */}
       {/* 4. WHAT YOU WILL LEARN (10 CARDS) SECTION */}
@@ -1462,8 +1483,8 @@ ${formData.message || "No additional message provided."}`;
             </div>
             <div className="p-6 rounded-xl border border-border bg-card space-y-3">
               <div className="font-mono text-2xl font-bold text-purple-500">03</div>
-              <h3 className="font-bold text-base">Structured Roadmap</h3>
-              <p className="text-xs text-muted-foreground">10 clear phases from problem discovery to final presentation.</p>
+              <h3 className="font-bold text-base">Structured Journey</h3>
+              <p className="text-xs text-muted-foreground">5 clear stages from problem discovery to final presentation.</p>
             </div>
             <div className="p-6 rounded-xl border border-border bg-card space-y-3">
               <div className="font-mono text-2xl font-bold text-emerald-500">04</div>
