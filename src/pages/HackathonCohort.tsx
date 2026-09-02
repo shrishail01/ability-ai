@@ -253,11 +253,100 @@ const cohortPrograms = [
 ];
 
 // ============================================================================
+// STAGE ITEM WITH SCROLL-DRIVEN CONTINUOUS FADE-IN & FADE-OFF
+// ============================================================================
+function StageItemWithFade({ stage, idx }: { stage: RoadmapStageData; idx: number }) {
+  const itemRef = useRef<HTMLDivElement>(null);
+
+  // Calculate scroll position relative to this individual stage element
+  const { scrollYProgress } = useScroll({
+    target: itemRef,
+    offset: ["start 95%", "start 35%", "end 35%", "end 5%"],
+  });
+
+  // Continuous interpolation: smooth fade-in as stage enters viewport, smooth fade-off as stage leaves viewport (scrolling up or down)
+  const opacity = useTransform(scrollYProgress, [0, 0.25, 0.75, 1], [0, 1, 1, 0]);
+  const translateY = useTransform(scrollYProgress, [0, 0.25, 0.75, 1], [35, 0, 0, -35]);
+  const scale = useTransform(scrollYProgress, [0, 0.25, 0.75, 1], [0.95, 1, 1, 0.95]);
+  const IconComp = stage.icon;
+
+  return (
+    <motion.div
+      ref={itemRef}
+      style={{ opacity, y: translateY, scale }}
+      className="relative flex flex-col md:flex-row md:items-start justify-between gap-8 pb-4"
+    >
+      {/* Node Circle along vertical path */}
+      <div className="absolute -left-[27px] sm:-left-[35px] md:-left-[39px] top-0 h-10 w-10 sm:h-12 sm:w-12 rounded-full bg-card border-2 border-amber-500 text-amber-500 shadow-md flex items-center justify-center font-mono font-extrabold text-sm sm:text-base z-20">
+        {stage.id}
+      </div>
+
+      {/* Main Content Area (Clean typography, NO box cards!) */}
+      <div className="space-y-4 max-w-2xl">
+        <div className="space-y-1">
+          <div className="flex items-center gap-3">
+            <span className="font-mono text-xs font-bold text-amber-500 tracking-wider">
+              STAGE {stage.id}
+            </span>
+            <div className="h-px w-16 bg-border/60" />
+            <IconComp className="h-4 w-4 text-muted-foreground" />
+          </div>
+          <h3 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-foreground uppercase">
+            {stage.title}
+          </h3>
+          <p className="text-sm font-medium text-muted-foreground italic">
+            "{stage.subtitle}"
+          </p>
+        </div>
+
+        {/* Learnings List */}
+        <div className="space-y-2 pt-1">
+          <div className="text-xs font-mono font-bold uppercase tracking-widest text-foreground">
+            WHAT YOU'LL LEARN:
+          </div>
+          <div className="space-y-2">
+            {stage.learnings.map((item, i) => (
+              <div
+                key={i}
+                className="flex items-start gap-3 py-1.5 border-b border-border/40 text-xs sm:text-sm text-foreground/90"
+              >
+                <CheckCircle2 className="h-4 w-4 text-emerald-500 shrink-0 mt-0.5" />
+                <span>{item}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Takeaway */}
+        <div className="pt-2 flex items-center gap-3 text-xs sm:text-sm font-semibold">
+          <span className="px-2.5 py-0.5 rounded bg-amber-500/10 text-amber-600 dark:text-amber-400 font-mono text-xs font-bold">
+            TAKEAWAY
+          </span>
+          <span className="text-foreground">{stage.takeaway}</span>
+        </div>
+      </div>
+
+      {/* Right Side Stage Visual Badge */}
+      <div className="hidden md:flex flex-col items-center justify-center p-6 rounded-2xl border border-border/60 bg-card/50 text-center w-56 shrink-0 self-start mt-2">
+        <div className="p-3 rounded-full bg-amber-500/10 text-amber-500 mb-2">
+          <IconComp className="h-6 w-6" />
+        </div>
+        <span className="font-mono text-xs font-bold text-muted-foreground uppercase">
+          PHASE {stage.id} // ACTIVE
+        </span>
+        <span className="text-xs font-bold text-foreground mt-1">
+          {stage.title}
+        </span>
+      </div>
+    </motion.div>
+  );
+}
+
+// ============================================================================
 // IN-FLOW NATURAL SCROLL ROADMAP (ZERO GAP, ALL STAGES VISIBLE IN SEQUENCE)
 // ============================================================================
 function InFlowJourneyRoadmap({ onOpenModal }: { onOpenModal: () => void }) {
   const containerRef = useRef<HTMLDivElement>(null);
-  const shouldReduceMotion = useReducedMotion();
 
   // Calculate continuous scroll progress across the section for the road line fill
   const { scrollYProgress } = useScroll({
@@ -302,83 +391,10 @@ function InFlowJourneyRoadmap({ onOpenModal }: { onOpenModal: () => void }) {
             className="absolute left-[15px] sm:left-[23px] md:left-[27px] top-6 bottom-6 w-1 bg-gradient-to-b from-amber-500 via-blue-500 to-emerald-500 rounded-full shadow-[0_0_12px_rgba(245,158,11,0.5)] pointer-events-none"
           />
 
-          {/* All 6 Stages Flowing Sequentially */}
-          {journeyStages.map((stage, idx) => {
-            const IconComp = stage.icon;
-            return (
-              <motion.div
-                key={stage.id}
-                initial={{ opacity: 0, y: 35 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, margin: "-80px" }}
-                transition={{ duration: 0.6, delay: 0.05 }}
-                className="relative flex flex-col md:flex-row md:items-start justify-between gap-8 pb-4"
-              >
-                {/* Node Circle along vertical path */}
-                <div className="absolute -left-[27px] sm:-left-[35px] md:-left-[39px] top-0 h-10 w-10 sm:h-12 sm:w-12 rounded-full bg-card border-2 border-amber-500 text-amber-500 shadow-md flex items-center justify-center font-mono font-extrabold text-sm sm:text-base z-20">
-                  {stage.id}
-                </div>
-
-                {/* Main Content Area (Clean typography, NO box cards!) */}
-                <div className="space-y-4 max-w-2xl">
-                  <div className="space-y-1">
-                    <div className="flex items-center gap-3">
-                      <span className="font-mono text-xs font-bold text-amber-500 tracking-wider">
-                        STAGE {stage.id}
-                      </span>
-                      <div className="h-px w-16 bg-border/60" />
-                      <IconComp className="h-4 w-4 text-muted-foreground" />
-                    </div>
-                    <h3 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-foreground uppercase">
-                      {stage.title}
-                    </h3>
-                    <p className="text-sm font-medium text-muted-foreground italic">
-                      "{stage.subtitle}"
-                    </p>
-                  </div>
-
-                  {/* Learnings List */}
-                  <div className="space-y-2 pt-1">
-                    <div className="text-xs font-mono font-bold uppercase tracking-widest text-foreground">
-                      WHAT YOU'LL LEARN:
-                    </div>
-                    <div className="space-y-2">
-                      {stage.learnings.map((item, i) => (
-                        <div
-                          key={i}
-                          className="flex items-start gap-3 py-1.5 border-b border-border/40 text-xs sm:text-sm text-foreground/90"
-                        >
-                          <CheckCircle2 className="h-4 w-4 text-emerald-500 shrink-0 mt-0.5" />
-                          <span>{item}</span>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-
-                  {/* Takeaway */}
-                  <div className="pt-2 flex items-center gap-3 text-xs sm:text-sm font-semibold">
-                    <span className="px-2.5 py-0.5 rounded bg-amber-500/10 text-amber-600 dark:text-amber-400 font-mono text-xs font-bold">
-                      TAKEAWAY
-                    </span>
-                    <span className="text-foreground">{stage.takeaway}</span>
-                  </div>
-                </div>
-
-                {/* Right Side Stage Visual Badge */}
-                <div className="hidden md:flex flex-col items-center justify-center p-6 rounded-2xl border border-border/60 bg-card/50 text-center w-56 shrink-0 self-start mt-2">
-                  <div className="p-3 rounded-full bg-amber-500/10 text-amber-500 mb-2">
-                    <IconComp className="h-6 w-6" />
-                  </div>
-                  <span className="font-mono text-xs font-bold text-muted-foreground uppercase">
-                    PHASE {stage.id} // ACTIVE
-                  </span>
-                  <span className="text-xs font-bold text-foreground mt-1">
-                    {stage.title}
-                  </span>
-                </div>
-              </motion.div>
-            );
-          })}
+          {/* All 6 Stages Flowing Sequentially with Scroll-Driven Fade-In & Fade-Off */}
+          {journeyStages.map((stage, idx) => (
+            <StageItemWithFade key={stage.id} stage={stage} idx={idx} />
+          ))}
         </div>
 
         {/* SECTION FOOTER CTA (Flows directly into Program Tracks with NO gap!) */}
@@ -675,7 +691,7 @@ ${formData.message || "No additional message provided."}`;
       </section>
 
       {/* ========================================================================= */}
-      {/* 03. IN-FLOW SCROLL ROADMAP (ZERO GAP, ALL STAGES VISIBLE IN SEQUENCE) */}
+      {/* 03. IN-FLOW SCROLL ROADMAP (WITH SCROLL-DRIVEN FADE-IN & FADE-OFF!) */}
       {/* ========================================================================= */}
       <InFlowJourneyRoadmap onOpenModal={() => setIsModalOpen(true)} />
 
