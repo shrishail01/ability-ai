@@ -8,7 +8,6 @@ import { faqItems } from "../data/faq";
 import { getImageUrl } from "../lib/utils";
 import * as Icons from "lucide-react";
 import { ThreeHero } from "../components/home/ThreeHero";
-import { HeroAnnouncementBanner } from "../components/home/HeroAnnouncementBanner";
 import { useQuery } from "convex/react";
 import { api } from "../convex/_generated/api";
 import { TiltCard } from "../components/shared/TiltCard";
@@ -186,9 +185,6 @@ export default function Landing() {
         <motion.div style={{ opacity: heroOpacity }} className="relative z-10 w-full pt-16 md:pt-20 pb-12 md:pb-16">
           <div className="mx-auto max-w-7xl px-6 sm:px-8 lg:px-10">
             <div className="max-w-4xl text-left flex flex-col items-start justify-start w-full">
-              {/* Auto-moving eye-catching product & cohort announcement banner */}
-              <HeroAnnouncementBanner />
-
               <motion.p
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}

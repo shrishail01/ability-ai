@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Sparkles, ArrowRight, Flame, Trophy, Rocket, ChevronLeft, ChevronRight } from "lucide-react";
+import { Sparkles, ArrowRight, ChevronLeft, ChevronRight } from "lucide-react";
 import { Link } from "react-router";
 import { useQuery } from "convex/react";
 import { api } from "../../convex/_generated/api";
@@ -39,31 +39,24 @@ const defaultAnnouncements: AnnouncementItem[] = [
   },
 ];
 
-export function HeroAnnouncementBanner() {
-  const cmsAnnouncements = useQuery(api.cms.listAnnouncements);
-
-  const activeAnnouncements: AnnouncementItem[] =
-    cmsAnnouncements && cmsAnnouncements.length > 0
-      ? cmsAnnouncements.filter((a: any) => a.active !== false)
-      : defaultAnnouncements;
-
+function AnnouncementBannerContent({ items }: { items: AnnouncementItem[] }) {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
 
   // Auto-rotate slides every 4.5 seconds
   useEffect(() => {
-    if (activeAnnouncements.length <= 1 || isPaused) return;
+    if (items.length <= 1 || isPaused) return;
 
     const timer = setInterval(() => {
-      setCurrentIndex((prev) => (prev + 1) % activeAnnouncements.length);
+      setCurrentIndex((prev) => (prev + 1) % items.length);
     }, 4500);
 
     return () => clearInterval(timer);
-  }, [activeAnnouncements.length, isPaused]);
+  }, [items.length, isPaused]);
 
-  if (!activeAnnouncements || activeAnnouncements.length === 0) return null;
+  if (!items || items.length === 0) return null;
 
-  const current = activeAnnouncements[currentIndex % activeAnnouncements.length];
+  const current = items[currentIndex % items.length];
 
   return (
     <div
@@ -91,7 +84,7 @@ export function HeroAnnouncementBanner() {
                     {current.badge}
                   </span>
                   <span className="text-[10px] font-mono text-muted-foreground hidden sm:inline">
-                    // ANNOUNCEMENT {currentIndex + 1} OF {activeAnnouncements.length}
+                    // ANNOUNCEMENT {currentIndex + 1} OF {items.length}
                   </span>
                 </div>
 
@@ -116,12 +109,12 @@ export function HeroAnnouncementBanner() {
             </Link>
 
             {/* Slider Dots / Nav Controls */}
-            {activeAnnouncements.length > 1 && (
+            {items.length > 1 && (
               <div className="flex items-center gap-1">
                 <button
                   onClick={() =>
                     setCurrentIndex(
-                      (prev) => (prev - 1 + activeAnnouncements.length) % activeAnnouncements.length
+                      (prev) => (prev - 1 + items.length) % items.length
                     )
                   }
                   className="p-1 rounded-lg hover:bg-accent/20 text-muted-foreground hover:text-foreground transition-colors"
@@ -129,7 +122,7 @@ export function HeroAnnouncementBanner() {
                   <ChevronLeft className="h-4 w-4" />
                 </button>
                 <div className="flex gap-1 px-1">
-                  {activeAnnouncements.map((_, i) => (
+                  {items.map((_, i) => (
                     <button
                       key={i}
                       onClick={() => setCurrentIndex(i)}
@@ -140,7 +133,7 @@ export function HeroAnnouncementBanner() {
                   ))}
                 </div>
                 <button
-                  onClick={() => setCurrentIndex((prev) => (prev + 1) % activeAnnouncements.length)}
+                  onClick={() => setCurrentIndex((prev) => (prev + 1) % items.length)}
                   className="p-1 rounded-lg hover:bg-accent/20 text-muted-foreground hover:text-foreground transition-colors"
                 >
                   <ChevronRight className="h-4 w-4" />
@@ -152,4 +145,21 @@ export function HeroAnnouncementBanner() {
       </div>
     </div>
   );
+}
+
+export function HeroAnnouncementBanner() {
+  let cmsAnnouncements: any[] | undefined;
+  try {
+    // Safely query Convex database
+    cmsAnnouncements = useQuery(api.cms.listAnnouncements as any);
+  } catch (e) {
+    console.warn("Using default hero announcements fallback", e);
+  }
+
+  const activeItems: AnnouncementItem[] =
+    cmsAnnouncements && Array.isArray(cmsAnnouncements) && cmsAnnouncements.length > 0
+      ? cmsAnnouncements.filter((a: any) => a.active !== false)
+      : defaultAnnouncements;
+
+  return <AnnouncementBannerContent items={activeItems} />;
 }
