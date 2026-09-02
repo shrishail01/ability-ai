@@ -32,6 +32,7 @@ const sidebarLinks = [
   { label: "Blog Posts", href: "/admin/blog", icon: FileText },
   { label: "Team", href: "/admin/team", icon: Users },
   { label: "Testimonials", href: "/admin/testimonials", icon: MessageSquare },
+  { label: "Announcements & Ads", href: "/admin/announcements", icon: Sparkles },
   { label: "Messages", href: "/admin/messages", icon: Mail },
   { label: "Settings", href: "/admin/settings", icon: Settings },
 ];

@@ -110,6 +110,16 @@ const schema = defineSchema(
       message: v.string(),
       createdAt: v.string(),
     }),
+
+    cms_announcements: defineTable({
+      badge: v.string(),
+      title: v.string(),
+      description: v.string(),
+      link: v.string(),
+      ctaText: v.string(),
+      active: v.boolean(),
+      order: v.number(),
+    }).index("by_order", ["order"]),
   },
   {
     schemaValidation: false,

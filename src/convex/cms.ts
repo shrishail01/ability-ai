@@ -662,4 +662,63 @@ export const sendContactEmail = action({
   },
 });
 
+// ==================== ANNOUNCEMENTS / HERO ADS ====================
+
+export const listAnnouncements = query({
+  args: {},
+  handler: async (ctx) => {
+    return await ctx.db.query("cms_announcements").withIndex("by_order").collect();
+  },
+});
+
+export const addAnnouncement = mutation({
+  args: {
+    badge: v.string(),
+    title: v.string(),
+    description: v.string(),
+    link: v.string(),
+    ctaText: v.string(),
+    active: v.boolean(),
+  },
+  handler: async (ctx, args) => {
+    await requireAdmin(ctx);
+    const existing = await ctx.db.query("cms_announcements").collect();
+    const order = existing.length;
+    return await ctx.db.insert("cms_announcements", {
+      ...args,
+      order,
+    });
+  },
+});
+
+export const updateAnnouncement = mutation({
+  args: {
+    id: v.id("cms_announcements"),
+    badge: v.optional(v.string()),
+    title: v.optional(v.string()),
+    description: v.optional(v.string()),
+    link: v.optional(v.string()),
+    ctaText: v.optional(v.string()),
+    active: v.optional(v.boolean()),
+    order: v.optional(v.number()),
+  },
+  handler: async (ctx, args) => {
+    await requireAdmin(ctx);
+    const { id, ...updates } = args;
+    const patch: any = {};
+    for (const [key, value] of Object.entries(updates)) {
+      if (value !== undefined) patch[key] = value;
+    }
+    await ctx.db.patch(id, patch);
+  },
+});
+
+export const deleteAnnouncement = mutation({
+  args: { id: v.id("cms_announcements") },
+  handler: async (ctx, args) => {
+    await requireAdmin(ctx);
+    await ctx.db.delete(args.id);
+  },
+});
+
 
