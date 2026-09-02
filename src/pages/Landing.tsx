@@ -8,6 +8,7 @@ import { faqItems } from "../data/faq";
 import { getImageUrl } from "../lib/utils";
 import * as Icons from "lucide-react";
 import { ThreeHero } from "../components/home/ThreeHero";
+import { ExploreRoadmap } from "../components/home/ExploreRoadmap";
 import { useQuery } from "convex/react";
 import { api } from "../convex/_generated/api";
 import { TiltCard } from "../components/shared/TiltCard";
@@ -393,40 +394,8 @@ export default function Landing() {
         </div>
       </section>
 
-      {/* ===== PROCESS ===== */}
-      <section className="py-20 md:py-28">
-        <div className="mx-auto max-w-7xl px-6 sm:px-8 lg:px-10">
-          <div className="max-w-xl mb-16">
-            <SectionLabel>Our Process</SectionLabel>
-            <SectionTitle>How We Work</SectionTitle>
-            <SectionDescription>
-              A proven methodology that delivers exceptional results, every time.
-            </SectionDescription>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-0 divide-y md:divide-y-0 md:divide-x divide-border">
-            {[
-              { step: "01", title: "Discover", description: "We dive deep into your business, goals, and vision." },
-              { step: "02", title: "Design", description: "We craft beautiful, user-centered designs." },
-              { step: "03", title: "Build", description: "We develop using modern stacks with agile sprints." },
-              { step: "04", title: "Launch", description: "We deploy, test, and optimize for a flawless launch." },
-            ].map((item, i) => (
-              <motion.div
-                key={item.step}
-                initial={{ opacity: 0, y: 15 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.6, delay: i * 0.1, ease: [0.25, 0.1, 0.25, 1] }}
-                className="p-8 md:p-10"
-              >
-                <span className="text-2xl font-bold text-gold mb-4 block">{item.step}</span>
-                <h3 className="text-base font-semibold mb-2">{item.title}</h3>
-                <p className="text-sm text-muted-foreground leading-relaxed">{item.description}</p>
-              </motion.div>
-            ))}
-          </div>
-        </div>
-      </section>
+      {/* ===== EXPLORE ROADMAP ===== */}
+      <ExploreRoadmap />
 
 
 
