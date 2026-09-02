@@ -1,4 +1,4 @@
-import { useRef, useState, useEffect } from "react";
+import { useRef, useState } from "react";
 import {
   motion,
   useScroll,
@@ -58,7 +58,7 @@ const stagger = {
 };
 
 // ============================================================================
-// STAGE DATA FOR THE CONTINUOUS ANIMATED HACKATHON ROADMAP
+// STAGE DATA FOR THE HACKATHON JOURNEY
 // ============================================================================
 export interface RoadmapStageData {
   id: string;
@@ -68,7 +68,8 @@ export interface RoadmapStageData {
   icon: any;
   learnings: string[];
   takeaway: string;
-  centerProgress: number;
+  accentColor: string;
+  borderColor: string;
 }
 
 const journeyStages: RoadmapStageData[] = [
@@ -78,6 +79,8 @@ const journeyStages: RoadmapStageData[] = [
     title: "DISCOVER",
     subtitle: "Understand the challenge.",
     icon: Search,
+    accentColor: "text-amber-500",
+    borderColor: "border-amber-500/40",
     learnings: [
       "How to read a hackathon problem statement",
       "How to identify the real problem",
@@ -86,7 +89,6 @@ const journeyStages: RoadmapStageData[] = [
       "How to identify constraints",
     ],
     takeaway: "A clear understanding of what needs to be solved.",
-    centerProgress: 0.08,
   },
   {
     id: "02",
@@ -94,6 +96,8 @@ const journeyStages: RoadmapStageData[] = [
     title: "IDEATE",
     subtitle: "Turn problems into possibilities.",
     icon: Lightbulb,
+    accentColor: "text-blue-500",
+    borderColor: "border-blue-500/40",
     learnings: [
       "Brainstorm solution ideas",
       "Think beyond obvious solutions",
@@ -102,7 +106,6 @@ const journeyStages: RoadmapStageData[] = [
       "Select a strong concept",
     ],
     takeaway: "A focused solution worth building.",
-    centerProgress: 0.25,
   },
   {
     id: "03",
@@ -110,6 +113,8 @@ const journeyStages: RoadmapStageData[] = [
     title: "BUILD",
     subtitle: "Turn the idea into something real.",
     icon: Code2,
+    accentColor: "text-emerald-500",
+    borderColor: "border-emerald-500/40",
     learnings: [
       "Plan the product",
       "Choose the right technology",
@@ -119,7 +124,6 @@ const journeyStages: RoadmapStageData[] = [
       "Test while building",
     ],
     takeaway: "A functional prototype you can demonstrate.",
-    centerProgress: 0.42,
   },
   {
     id: "04",
@@ -127,6 +131,8 @@ const journeyStages: RoadmapStageData[] = [
     title: "VALIDATE",
     subtitle: "Test, improve and strengthen the solution.",
     icon: Shield,
+    accentColor: "text-purple-500",
+    borderColor: "border-purple-500/40",
     learnings: [
       "Test the product with users",
       "Fix bugs and refine performance",
@@ -135,7 +141,6 @@ const journeyStages: RoadmapStageData[] = [
       "Validate technical stability",
     ],
     takeaway: "A battle-tested MVP ready for evaluation.",
-    centerProgress: 0.59,
   },
   {
     id: "05",
@@ -143,6 +148,8 @@ const journeyStages: RoadmapStageData[] = [
     title: "SHOWCASE",
     subtitle: "Make people understand why your solution matters.",
     icon: Presentation,
+    accentColor: "text-rose-500",
+    borderColor: "border-rose-500/40",
     learnings: [
       "Structure your story",
       "Explain the problem clearly",
@@ -152,7 +159,6 @@ const journeyStages: RoadmapStageData[] = [
       "Practice your presentation",
     ],
     takeaway: "A clear story that judges can remember.",
-    centerProgress: 0.76,
   },
   {
     id: "06",
@@ -160,6 +166,8 @@ const journeyStages: RoadmapStageData[] = [
     title: "FINISH",
     subtitle: "Walk into the competition prepared.",
     icon: Trophy,
+    accentColor: "text-amber-400",
+    borderColor: "border-amber-400/50",
     learnings: [
       "Handle judge questions",
       "Explain technical decisions",
@@ -169,7 +177,6 @@ const journeyStages: RoadmapStageData[] = [
       "Prepare the final submission",
     ],
     takeaway: "A team ready to compete with confidence.",
-    centerProgress: 0.93,
   },
 ];
 
@@ -246,229 +253,142 @@ const cohortPrograms = [
 ];
 
 // ============================================================================
-// CONTINUOUS SCROLL-DRIVEN STAGE ITEM (NO BOX CARDS!)
+// IN-FLOW NATURAL SCROLL ROADMAP (ZERO GAP, ALL STAGES VISIBLE IN SEQUENCE)
 // ============================================================================
-function StageContentDirect({
-  stage,
-  smoothProgress,
-}: {
-  stage: RoadmapStageData;
-  smoothProgress: any;
-}) {
-  const p = stage.centerProgress;
-
-  // Continuous interpolated transforms: opacity, translateY, scale
-  const opacity = useTransform(
-    smoothProgress,
-    [p - 0.12, p - 0.03, p + 0.03, p + 0.12],
-    [0, 1, 1, 0]
-  );
-
-  const translateY = useTransform(
-    smoothProgress,
-    [p - 0.12, p, p + 0.12],
-    [30, 0, -30]
-  );
-
-  const scale = useTransform(
-    smoothProgress,
-    [p - 0.12, p, p + 0.12],
-    [0.95, 1, 0.95]
-  );
-
-  return (
-    <motion.div
-      style={{ opacity, y: translateY, scale }}
-      className="space-y-6 max-w-xl text-left"
-    >
-      {/* Stage Header */}
-      <div className="space-y-2">
-        <div className="flex items-center gap-3">
-          <span className="font-mono text-sm font-bold text-amber-500 tracking-wider">
-            STAGE {stage.id}
-          </span>
-          <div className="h-px flex-1 bg-border/60" />
-        </div>
-        <h3 className="text-3xl sm:text-4xl font-extrabold tracking-tight text-foreground uppercase">
-          {stage.title}
-        </h3>
-        <p className="text-base font-medium text-muted-foreground italic">
-          "{stage.subtitle}"
-        </p>
-      </div>
-
-      {/* What You'll Learn (Clean typography & border list, NO card containers!) */}
-      <div className="space-y-3">
-        <div className="text-xs font-mono font-bold uppercase tracking-widest text-foreground">
-          WHAT YOU'LL LEARN:
-        </div>
-        <div className="space-y-2.5">
-          {stage.learnings.map((item, idx) => (
-            <div
-              key={idx}
-              className="flex items-start gap-3 py-1.5 border-b border-border/40 text-sm text-foreground/90"
-            >
-              <CheckCircle2 className="h-4 w-4 text-emerald-500 shrink-0 mt-0.5" />
-              <span>{item}</span>
-            </div>
-          ))}
-        </div>
-      </div>
-
-      {/* Takeaway tag */}
-      <div className="pt-2 flex items-center gap-3 text-xs font-bold">
-        <span className="px-2 py-0.5 rounded bg-amber-500/10 text-amber-600 dark:text-amber-400 font-mono">
-          TAKEAWAY
-        </span>
-        <span className="text-foreground">{stage.takeaway}</span>
-      </div>
-    </motion.div>
-  );
-}
-
-// ============================================================================
-// NO-GAP SCROLL-DRIVEN ROADMAP COMPONENT
-// ============================================================================
-function ScrollDrivenJourneyRoadmap({ onOpenModal }: { onOpenModal: () => void }) {
+function InFlowJourneyRoadmap({ onOpenModal }: { onOpenModal: () => void }) {
   const containerRef = useRef<HTMLDivElement>(null);
   const shouldReduceMotion = useReducedMotion();
 
-  // Tight outer scroll distance (220vh so there is zero empty gap!)
+  // Calculate continuous scroll progress across the section for the road line fill
   const { scrollYProgress } = useScroll({
     target: containerRef,
-    offset: ["start start", "end end"],
+    offset: ["start 80%", "end 20%"],
   });
 
-  // Spring physics for continuous scroll
   const smoothProgress = useSpring(scrollYProgress, {
     stiffness: 100,
-    damping: 24,
+    damping: 26,
     restDelta: 0.001,
   });
-
-  // Animated marker Y position along vertical path (12% to 88%)
-  const markerYPercent = useTransform(smoothProgress, [0, 1], [12, 88]);
-
-  if (shouldReduceMotion) {
-    return (
-      <section className="py-20 bg-background border-b border-border">
-        <div className="mx-auto max-w-7xl px-6 sm:px-8 lg:px-10 space-y-10">
-          <div className="text-center max-w-3xl mx-auto space-y-3">
-            <span className="eyebrow text-amber-500 font-mono">THE HACKATHON ROADMAP</span>
-            <h2 className="text-3xl font-bold uppercase">THE HACKATHON JOURNEY</h2>
-            <p className="text-muted-foreground text-sm">
-              From the first problem statement to the final pitch.
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {journeyStages.map((stg) => (
-              <div key={stg.id} className="space-y-3 p-6 border-l-2 border-amber-500 text-left">
-                <span className="font-mono text-xs text-amber-500">STAGE {stg.id}</span>
-                <h3 className="font-bold text-lg uppercase">{stg.title}</h3>
-                <p className="text-xs text-muted-foreground italic">"{stg.subtitle}"</p>
-                <ul className="space-y-1.5 text-xs text-foreground">
-                  {stg.learnings.map((l, i) => (
-                    <li key={i} className="flex items-center gap-2">
-                      <CheckCircle2 className="h-3.5 w-3.5 text-emerald-500 shrink-0" />
-                      <span>{l}</span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-    );
-  }
 
   return (
     <section
       id="hackathon-journey-roadmap"
       ref={containerRef}
-      className="relative min-h-[220vh] bg-background border-b border-border/60"
+      className="py-20 relative bg-background border-b border-border/60"
     >
-      {/* Sticky Viewport Frame (No awkward gap, clean flex composition) */}
-      <div className="sticky top-0 h-screen overflow-hidden flex flex-col justify-between py-8 px-6 sm:px-10 lg:px-16 bg-background/95 backdrop-blur-sm z-10">
+      <div className="mx-auto max-w-6xl px-6 sm:px-8 lg:px-10 space-y-16">
         {/* SECTION HEADER */}
-        <div className="text-center max-w-3xl mx-auto space-y-2 z-30 shrink-0">
+        <div className="text-center max-w-3xl mx-auto space-y-3">
           <span className="eyebrow text-amber-500 font-mono font-bold tracking-widest text-xs uppercase">
             THE HACKATHON ROADMAP
           </span>
-          <h2 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold tracking-tight text-foreground uppercase">
+          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-foreground uppercase">
             THE HACKATHON JOURNEY
           </h2>
-          <p className="text-xs sm:text-sm text-muted-foreground max-w-xl mx-auto">
+          <p className="text-sm sm:text-base text-muted-foreground max-w-xl mx-auto leading-relaxed">
             From the first problem statement to the final pitch. Follow the journey. Learn what matters. Build with confidence.
           </p>
         </div>
 
-        {/* ========================================================================= */}
-        {/* CONTINUOUS SCROLL COMPOSITION (NO BOX CARDS!) */}
-        {/* ========================================================================= */}
-        <div className="flex-1 grid grid-cols-12 gap-8 items-center max-w-7xl mx-auto w-full py-4 relative z-20">
-          {/* Left Column: Direct Stage Content Typography */}
-          <div className="col-span-12 md:col-span-7 relative h-full flex items-center pr-4">
-            {journeyStages.map((stage) => (
-              <div key={stage.id} className="absolute inset-0 flex items-center pointer-events-none">
-                <div className="w-full pointer-events-auto">
-                  <StageContentDirect stage={stage} smoothProgress={smoothProgress} />
+        {/* NATURAL VERTICAL JOURNEY TIMELINE (NO STICKY GAP!) */}
+        <div className="relative pl-6 sm:pl-10 md:pl-12 space-y-16 text-left">
+          {/* Continuous Background Line */}
+          <div className="absolute left-[15px] sm:left-[23px] md:left-[27px] top-6 bottom-6 w-1 bg-border/60 rounded-full pointer-events-none" />
+
+          {/* Scroll-Driven Animated Line Fill */}
+          <motion.div
+            style={{ scaleY: smoothProgress, transformOrigin: "top" }}
+            className="absolute left-[15px] sm:left-[23px] md:left-[27px] top-6 bottom-6 w-1 bg-gradient-to-b from-amber-500 via-blue-500 to-emerald-500 rounded-full shadow-[0_0_12px_rgba(245,158,11,0.5)] pointer-events-none"
+          />
+
+          {/* All 6 Stages Flowing Sequentially */}
+          {journeyStages.map((stage, idx) => {
+            const IconComp = stage.icon;
+            return (
+              <motion.div
+                key={stage.id}
+                initial={{ opacity: 0, y: 35 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: "-80px" }}
+                transition={{ duration: 0.6, delay: 0.05 }}
+                className="relative flex flex-col md:flex-row md:items-start justify-between gap-8 pb-4"
+              >
+                {/* Node Circle along vertical path */}
+                <div className="absolute -left-[27px] sm:-left-[35px] md:-left-[39px] top-0 h-10 w-10 sm:h-12 sm:w-12 rounded-full bg-card border-2 border-amber-500 text-amber-500 shadow-md flex items-center justify-center font-mono font-extrabold text-sm sm:text-base z-20">
+                  {stage.id}
                 </div>
-              </div>
-            ))}
-          </div>
 
-          {/* Right Column: Animated Vertical Road & Stage Node Indicators */}
-          <div className="hidden md:flex col-span-5 relative h-full flex-col justify-between py-6 items-center pl-8 border-l border-border/40">
-            {/* Vertical Road Line */}
-            <div className="absolute top-6 bottom-6 left-1/2 -translate-x-1/2 w-1 bg-border/60 rounded-full pointer-events-none" />
-
-            {/* Scroll-Driven Animated Line Fill */}
-            <motion.div
-              style={{ scaleY: smoothProgress, transformOrigin: "top" }}
-              className="absolute top-6 bottom-6 left-1/2 -translate-x-1/2 w-1 bg-gradient-to-b from-blue-500 via-amber-500 to-emerald-500 rounded-full shadow-[0_0_12px_rgba(245,158,11,0.5)] pointer-events-none"
-            />
-
-            {/* Glowing Marker Orb */}
-            <motion.div
-              style={{ top: `${markerYPercent.get()}%` }}
-              className="absolute left-1/2 -translate-x-1/2 -translate-y-1/2 h-5 w-5 rounded-full bg-amber-400 ring-4 ring-amber-500/30 shadow-lg pointer-events-none z-30"
-            >
-              <div className="h-2 w-2 rounded-full bg-slate-950 animate-ping m-1" />
-            </motion.div>
-
-            {/* Node Labels along the path */}
-            {journeyStages.map((stg, idx) => {
-              const DestIcon = stg.icon;
-              return (
-                <div
-                  key={stg.id}
-                  className="relative z-20 flex items-center gap-3 w-full max-w-xs justify-center"
-                >
-                  <div className="h-9 w-9 rounded-full bg-card border border-border flex items-center justify-center text-foreground font-mono text-xs font-bold shadow-sm">
-                    {stg.id}
-                  </div>
-                  <div className="text-left">
-                    <div className="text-xs font-bold uppercase tracking-wider text-foreground">
-                      {stg.title}
+                {/* Main Content Area (Clean typography, NO box cards!) */}
+                <div className="space-y-4 max-w-2xl">
+                  <div className="space-y-1">
+                    <div className="flex items-center gap-3">
+                      <span className="font-mono text-xs font-bold text-amber-500 tracking-wider">
+                        STAGE {stage.id}
+                      </span>
+                      <div className="h-px w-16 bg-border/60" />
+                      <IconComp className="h-4 w-4 text-muted-foreground" />
                     </div>
-                    <div className="text-[10px] text-muted-foreground">{stg.subtitle}</div>
+                    <h3 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-foreground uppercase">
+                      {stage.title}
+                    </h3>
+                    <p className="text-sm font-medium text-muted-foreground italic">
+                      "{stage.subtitle}"
+                    </p>
+                  </div>
+
+                  {/* Learnings List */}
+                  <div className="space-y-2 pt-1">
+                    <div className="text-xs font-mono font-bold uppercase tracking-widest text-foreground">
+                      WHAT YOU'LL LEARN:
+                    </div>
+                    <div className="space-y-2">
+                      {stage.learnings.map((item, i) => (
+                        <div
+                          key={i}
+                          className="flex items-start gap-3 py-1.5 border-b border-border/40 text-xs sm:text-sm text-foreground/90"
+                        >
+                          <CheckCircle2 className="h-4 w-4 text-emerald-500 shrink-0 mt-0.5" />
+                          <span>{item}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Takeaway */}
+                  <div className="pt-2 flex items-center gap-3 text-xs sm:text-sm font-semibold">
+                    <span className="px-2.5 py-0.5 rounded bg-amber-500/10 text-amber-600 dark:text-amber-400 font-mono text-xs font-bold">
+                      TAKEAWAY
+                    </span>
+                    <span className="text-foreground">{stage.takeaway}</span>
                   </div>
                 </div>
-              );
-            })}
-          </div>
+
+                {/* Right Side Stage Visual Badge */}
+                <div className="hidden md:flex flex-col items-center justify-center p-6 rounded-2xl border border-border/60 bg-card/50 text-center w-56 shrink-0 self-start mt-2">
+                  <div className="p-3 rounded-full bg-amber-500/10 text-amber-500 mb-2">
+                    <IconComp className="h-6 w-6" />
+                  </div>
+                  <span className="font-mono text-xs font-bold text-muted-foreground uppercase">
+                    PHASE {stage.id} // ACTIVE
+                  </span>
+                  <span className="text-xs font-bold text-foreground mt-1">
+                    {stage.title}
+                  </span>
+                </div>
+              </motion.div>
+            );
+          })}
         </div>
 
-        {/* BOTTOM RELEASE CTA AT STAGE 06 */}
-        <div className="text-center pt-2 pb-2 shrink-0 z-30">
+        {/* SECTION FOOTER CTA (Flows directly into Program Tracks with NO gap!) */}
+        <div className="pt-8 text-center border-t border-border/60">
           <button
             onClick={onOpenModal}
-            className="inline-flex items-center gap-2 px-6 py-2.5 rounded-full text-xs font-bold tracking-wider text-slate-950 bg-amber-400 hover:bg-amber-300 shadow-md transition-all"
+            className="px-8 py-3.5 rounded-full text-xs sm:text-sm font-bold tracking-wider text-slate-950 bg-amber-400 hover:bg-amber-300 shadow-xl transition-all inline-flex items-center gap-2.5"
           >
             JOIN THE COHORT NOW
-            <ArrowRight className="h-3.5 w-3.5" />
+            <ArrowRight className="h-4 w-4" />
           </button>
         </div>
       </div>
@@ -755,9 +675,9 @@ ${formData.message || "No additional message provided."}`;
       </section>
 
       {/* ========================================================================= */}
-      {/* 03. NO-GAP SCROLL ROADMAP (DIRECT TYPOGRAPHY, NO CARD BOXES!) */}
+      {/* 03. IN-FLOW SCROLL ROADMAP (ZERO GAP, ALL STAGES VISIBLE IN SEQUENCE) */}
       {/* ========================================================================= */}
-      <ScrollDrivenJourneyRoadmap onOpenModal={() => setIsModalOpen(true)} />
+      <InFlowJourneyRoadmap onOpenModal={() => setIsModalOpen(true)} />
 
       {/* ========================================================================= */}
       {/* 04. PROGRAM TRACKS & TARGET COMPETITIONS */}
